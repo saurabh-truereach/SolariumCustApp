@@ -75,55 +75,51 @@ export const sendOtpThunk = createAsyncThunk(
 );
 
 /**
- * Login with OTP Async Thunk
+ * Login with phone and OTP
  */
-export const loginThunk = createAsyncThunk(
-  'auth/login',
-  async ({phone, otp}: {phone: string; otp: string}, {rejectWithValue}) => {
+export const loginWithOtp = createAsyncThunk(
+  'auth/loginWithOtp',
+  async (
+    {phone, otp}: {phone: string; otp: string},
+    {rejectWithValue}
+  ) => {
     try {
-      // Simulate API call
+      // Simulate API call - replace with real API in later tasks
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Demo validation
+      // Demo: Accept OTP 123456, reject others
       if (otp !== '123456') {
-        return rejectWithValue('Invalid OTP. Please try again.');
+        throw new Error('Invalid OTP. Please try again.');
       }
-      
-      // In real app, this would call your login API
-      // const response = await authService.login({phone, otp});
-      
-      const authData = {
-        token: 'demo_token_' + Date.now(),
-        refreshToken: 'demo_refresh_' + Date.now(),
-        user: {
-          id: 'user_1',
-          phone: phone,
-          name: 'Demo User',
-          email: 'demo@example.com',
-        },
+
+      const user: User = {
+        id: `user_${Date.now()}`,
+        phone,
+        name: 'Demo User',
+        email: 'demo@solarium.com',
       };
+
+      const token = `demo_token_${Date.now()}`;
       
-      // Store auth data
-      await setStorageItem(STORAGE_KEYS.AUTH_TOKEN, authData.token);
-      await setStorageItem(STORAGE_KEYS.USER_DATA, authData.user);
-      
-      console.log('[Auth] Login successful');
-      return authData;
+      // Store in encrypted storage
+      await setStorageItem(STORAGE_KEYS.AUTH_TOKEN, token);
+      await setStorageItem(STORAGE_KEYS.USER_DATA, user);
+
+      return {token, user};
     } catch (error: any) {
-      console.error('[Auth] Login error:', error);
       return rejectWithValue(error.message || 'Login failed');
     }
   }
 );
 
 /**
- * Logout Async Thunk
+ * Logout and clear storage
  */
-export const logoutThunk = createAsyncThunk(
+export const logoutUser = createAsyncThunk(
   'auth/logout',
-  async (_, {rejectWithValue}) => {
+  async (_, {}) => {
     try {
-      // Remove stored auth data
+      // Clear encrypted storage
       await removeStorageItem(STORAGE_KEYS.AUTH_TOKEN);
       await removeStorageItem(STORAGE_KEYS.USER_DATA);
       
@@ -132,13 +128,13 @@ export const logoutThunk = createAsyncThunk(
       
       console.log('[Auth] Logout successful');
       return true;
-    } catch (error: any) {
+    } catch (error) {
       console.error('[Auth] Logout error:', error);
-      return rejectWithValue(error.message || 'Logout failed');
+      // Still dispatch logout even if storage clear fails
+      return true;
     }
   }
 );
-
 /**
  * Refresh Token Async Thunk
  */
@@ -262,20 +258,20 @@ const authSlice = createSlice({
       })
       
       // Login
-      .addCase(loginThunk.pending, state => {
+      .addCase(loginWithOtp.pending, state => {
         state.isLoading = true;
         state.error = undefined;
       })
-      .addCase(loginThunk.fulfilled, (state, action) => {
+      .addCase(loginWithOtp.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isLoggedIn = true;
         state.token = action.payload.token;
-        state.refreshToken = action.payload.refreshToken;
+        // state.refreshToken = action.payload.refreshToken;
         state.user = action.payload.user;
         state.lastLoginTime = Date.now();
         state.error = undefined;
       })
-      .addCase(loginThunk.rejected, (state, action) => {
+      .addCase(loginWithOtp.rejected, (state, action) => {
         state.isLoading = false;
         state.isLoggedIn = false;
         state.token = undefined;
@@ -285,10 +281,10 @@ const authSlice = createSlice({
       })
       
       // Logout
-      .addCase(logoutThunk.pending, state => {
+      .addCase(logoutUser.pending, state => {
         state.isLoading = true;
       })
-      .addCase(logoutThunk.fulfilled, state => {
+      .addCase(logoutUser.fulfilled, state => {
         state.isLoading = false;
         state.isLoggedIn = false;
         state.token = undefined;
@@ -297,7 +293,7 @@ const authSlice = createSlice({
         state.lastLoginTime = undefined;
         state.error = undefined;
       })
-      .addCase(logoutThunk.rejected, (state, action) => {
+      .addCase(logoutUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       })

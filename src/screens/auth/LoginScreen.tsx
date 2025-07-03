@@ -12,7 +12,7 @@ import {useAppTheme} from '../../theme/ThemeProvider';
 import {useAppDispatch, useAppSelector} from '../../hooks/useTypedRedux';
 import {
   sendOtpThunk,
-  loginThunk,
+  loginWithOtp,
   selectIsLoading,
   selectIsSendingOtp,
   selectAuthError,
@@ -80,7 +80,7 @@ const LoginScreen: React.FC<Props> = ({navigation: _navigation}) => {
     }
 
     try {
-      await dispatch(loginThunk({phone, otp})).unwrap();
+      await dispatch(loginWithOtp({phone, otp})).unwrap();
       // Success is handled automatically by the thunk
     } catch (error) {
       // Error is handled automatically by the thunk, but we can show an alert

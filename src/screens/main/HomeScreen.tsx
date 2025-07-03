@@ -10,7 +10,7 @@ import type {MainTabScreenProps} from '../../navigation/types';
 import {SafeAreaLayout} from '../../components';
 import {useAppTheme} from '../../theme/ThemeProvider';
 import {useAppDispatch, useAppSelector} from '../../hooks/useTypedRedux';
-import {logoutThunk, selectUser} from '../../store/authSlice';
+import {logoutUser, selectUser} from '../../store/authSlice';
 
 type Props = MainTabScreenProps<'Home'>;
 
@@ -27,7 +27,7 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
    */
   const handleLogout = async () => {
     try {
-      await dispatch(logoutThunk()).unwrap();
+      await dispatch(logoutUser()).unwrap();
     } catch (error) {
       console.error('[HomeScreen] Logout error:', error);
       // Even if logout fails, we should still log out locally
