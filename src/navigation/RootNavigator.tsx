@@ -10,9 +10,9 @@ import {
   DefaultTheme,
 } from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import type {RootStackParamList} from './types';
 import {linkingConfig, NAVIGATION_PERSISTENCE_KEY} from './types';
+import {getStorageItem, setStorageItem} from '../utils/storageHelpers';
 import AuthStack from './AuthStack';
 import MainTabNavigator from './MainTabNavigator';
 import {ServiceDetailScreen} from '../screens';
@@ -40,12 +40,9 @@ const RootNavigator: React.FC = () => {
   useEffect(() => {
     const restoreState = async () => {
       try {
-        const savedStateString = await EncryptedStorage.getItem(
-          NAVIGATION_PERSISTENCE_KEY
-        );
-        const state = savedStateString ? JSON.parse(savedStateString) : undefined;
+        const state = await getStorageItem(NAVIGATION_PERSISTENCE_KEY);
 
-        if (state !== undefined) {
+        if (state !== null) {
           setInitialState(state);
         }
       } catch (e) {
@@ -65,10 +62,7 @@ const RootNavigator: React.FC = () => {
    */
   const onStateChange = (state: any) => {
     if (isReady && state) {
-      EncryptedStorage.setItem(
-        NAVIGATION_PERSISTENCE_KEY,
-        JSON.stringify(state)
-      ).catch(e => {
+      setStorageItem(NAVIGATION_PERSISTENCE_KEY, state).catch((e: any) => {
         console.warn('[Navigation] Failed to persist navigation state:', e);
       });
     }

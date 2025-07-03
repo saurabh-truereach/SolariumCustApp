@@ -10,7 +10,7 @@ import type {MainTabScreenProps} from '../../navigation/types';
 import {SafeAreaLayout} from '../../components';
 import {useAppTheme} from '../../theme/ThemeProvider';
 import {useAppDispatch, useAppSelector} from '../../hooks/useTypedRedux';
-import {logout, selectUser} from '../../store/authSlice';
+import {logoutThunk, selectUser} from '../../store/authSlice';
 
 type Props = MainTabScreenProps<'Home'>;
 
@@ -25,8 +25,13 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
   /**
    * Handle logout
    */
-  const handleLogout = () => {
-    dispatch(logout());
+  const handleLogout = async () => {
+    try {
+      await dispatch(logoutThunk()).unwrap();
+    } catch (error) {
+      console.error('[HomeScreen] Logout error:', error);
+      // Even if logout fails, we should still log out locally
+    }
   };
 
   /**
@@ -45,12 +50,15 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
           <Card.Content>
             <Text
               variant="headlineMedium"
-              style={[styles.welcome, {color: theme.colors.primary}]}>
+              style={[styles.welcome, {color: theme.colors.primary}]}
+              accessibilityLabel={`Welcome ${user?.name || 'User'}`}
+              accessibilityRole="header">
               Welcome, {user?.name || 'User'}!
             </Text>
             <Text
               variant="bodyLarge"
-              style={[styles.subtitle, {color: theme.colors.onSurface}]}>
+              style={[styles.subtitle, {color: theme.colors.onSurface}]}
+              accessibilityLabel="Your solar energy journey starts here">
               Your solar energy journey starts here
             </Text>
           </Card.Content>
@@ -70,7 +78,9 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
                 mode="contained"
                 onPress={() => navigation.navigate('Services')}
                 style={styles.actionButton}
-                icon="solar-power">
+                icon="solar-power"
+                accessibilityLabel="Browse Services"
+                accessibilityHint="Navigate to services screen to explore solar energy options">
                 Browse Services
               </Button>
               
@@ -78,7 +88,9 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
                 mode="outlined"
                 onPress={() => navigation.navigate('MyRecords')}
                 style={styles.actionButton}
-                icon="file-document">
+                icon="file-document"
+                accessibilityLabel="My Records"
+                accessibilityHint="View your personal solar energy records and history">
                 My Records
               </Button>
               
@@ -86,7 +98,9 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
                 mode="outlined"
                 onPress={() => navigation.navigate('Documents')}
                 style={styles.actionButton}
-                icon="folder">
+                icon="folder"
+                accessibilityLabel="Documents"
+                accessibilityHint="Access your important documents and files">
                 Documents
               </Button>
             </View>
@@ -135,7 +149,9 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
                   mode="outlined"
                   onPress={testDeepLink}
                   style={styles.actionButton}
-                  icon="link">
+                  icon="link"
+                  accessibilityLabel="Test Deep Link"
+                  accessibilityHint="Test deep linking functionality by navigating to service detail screen">
                   Test Deep Link
                 </Button>
                 
@@ -143,7 +159,9 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
                   mode="contained-tonal"
                   onPress={handleLogout}
                   style={styles.actionButton}
-                  icon="logout">
+                  icon="logout"
+                  accessibilityLabel="Logout"
+                  accessibilityHint="Sign out of your account and return to login screen">
                   Logout
                 </Button>
               </View>

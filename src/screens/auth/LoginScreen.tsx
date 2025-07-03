@@ -11,10 +11,10 @@ import {SafeAreaLayout} from '../../components';
 import {useAppTheme} from '../../theme/ThemeProvider';
 import {useAppDispatch, useAppSelector} from '../../hooks/useTypedRedux';
 import {
-  loginRequest,
-  loginSuccess,
-  loginFailure,
+  sendOtpThunk,
+  loginThunk,
   selectIsLoading,
+  selectIsSendingOtp,
   selectAuthError,
 } from '../../store/authSlice';
 
@@ -27,6 +27,7 @@ const LoginScreen: React.FC<Props> = ({navigation: _navigation}) => {
   const theme = useAppTheme();
   const dispatch = useAppDispatch();
   const isLoading = useAppSelector(selectIsLoading);
+  const isSendingOtp = useAppSelector(selectIsSendingOtp);
   const error = useAppSelector(selectAuthError);
 
   const [phone, setPhone] = useState('');
@@ -34,7 +35,6 @@ const LoginScreen: React.FC<Props> = ({navigation: _navigation}) => {
   const [otpSent, setOtpSent] = useState(false);
   const [phoneBlurred, setPhoneBlurred] = useState(false);
   const [otpBlurred, setOtpBlurred] = useState(false);
-  const [isSendingOtp, setIsSendingOtp] = useState(false);
 
   /**
    * Validate phone number (10 digits)
@@ -55,54 +55,37 @@ const LoginScreen: React.FC<Props> = ({navigation: _navigation}) => {
   /**
    * Handle sending OTP
    */
-  const handleSendOtp = useCallback(() => {
+  const handleSendOtp = useCallback(async () => {
     if (!validatePhone(phone)) {
       Alert.alert('Invalid Phone', 'Please enter a valid 10-digit phone number');
       return;
     }
 
-    setIsSendingOtp(true);
-    
-    // Simulate OTP sending
-    setTimeout(() => {
-      setIsSendingOtp(false);
+    try {
+      await dispatch(sendOtpThunk(phone)).unwrap();
       setOtpSent(true);
-      dispatch(loginFailure('')); // Reset Redux loading and error state
       Alert.alert('OTP Sent', `OTP sent to ${phone}. Use 123456 for demo.`);
-    }, 1000);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to send OTP. Please try again.');
+    }
   }, [phone, validatePhone, dispatch]);
 
   /**
    * Handle login with OTP
    */
-  const handleLogin = useCallback(() => {
+  const handleLogin = useCallback(async () => {
     if (!validateOtp(otp)) {
       Alert.alert('Invalid OTP', 'Please enter a valid 6-digit OTP');
       return;
     }
 
-    dispatch(loginRequest());
-
-    // Simulate login process
-    setTimeout(() => {
-      if (otp === '123456') {
-        // Success
-        dispatch(
-          loginSuccess({
-            token: 'demo_token_' + Date.now(),
-            user: {
-              id: 'user_1',
-              phone: phone,
-              name: 'Demo User',
-              email: 'demo@example.com',
-            },
-          })
-        );
-      } else {
-        // Failure
-        dispatch(loginFailure('Invalid OTP. Please try again.'));
-      }
-    }, 1500);
+    try {
+      await dispatch(loginThunk({phone, otp})).unwrap();
+      // Success is handled automatically by the thunk
+    } catch (error) {
+      // Error is handled automatically by the thunk, but we can show an alert
+      Alert.alert('Login Failed', error as string);
+    }
   }, [otp, phone, dispatch, validateOtp]);
 
   /**
@@ -114,7 +97,6 @@ const LoginScreen: React.FC<Props> = ({navigation: _navigation}) => {
     setOtpSent(false);
     setPhoneBlurred(false);
     setOtpBlurred(false);
-    setIsSendingOtp(false);
   }, []);
 
   return (
