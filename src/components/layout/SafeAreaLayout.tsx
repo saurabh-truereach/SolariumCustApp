@@ -44,33 +44,49 @@ const SafeAreaLayout: React.FC<SafeAreaLayoutProps> = ({
   const theme = useAppTheme();
   const bgColor = backgroundColor || theme.colors.background;
 
-  // Inner content component
-  const InnerContent = () => (
-    <View style={[styles.content, {backgroundColor: bgColor}, style]}>
-      {children}
-    </View>
-  );
+  // Render content based on configuration
+  const renderContent = () => {
+    if (keyboardAvoiding) {
+      return (
+        <KeyboardAvoidingView
+          style={styles.keyboardAvoidingView}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+          {scrollable ? (
+            <ScrollView
+              style={[styles.scrollView, {backgroundColor: bgColor}]}
+              contentContainerStyle={[styles.scrollContent, style]}
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}>
+              {children}
+            </ScrollView>
+          ) : (
+            <View style={[styles.content, {backgroundColor: bgColor}, style]}>
+              {children}
+            </View>
+          )}
+        </KeyboardAvoidingView>
+      );
+    }
 
-  // Scrollable content wrapper
-  const ScrollableContent = () => (
-    <ScrollView
-      style={[styles.scrollView, {backgroundColor: bgColor}]}
-      contentContainerStyle={[styles.scrollContent, style]}
-      keyboardShouldPersistTaps="handled"
-      showsVerticalScrollIndicator={false}>
-      {children}
-    </ScrollView>
-  );
+    if (scrollable) {
+      return (
+        <ScrollView
+          style={[styles.scrollView, {backgroundColor: bgColor}]}
+          contentContainerStyle={[styles.scrollContent, style]}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}>
+          {children}
+        </ScrollView>
+      );
+    }
 
-  // Keyboard avoiding wrapper
-  const KeyboardAvoidingContent = () => (
-    <KeyboardAvoidingView
-      style={styles.keyboardAvoidingView}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
-      {scrollable ? <ScrollableContent /> : <InnerContent />}
-    </KeyboardAvoidingView>
-  );
+    return (
+      <View style={[styles.content, {backgroundColor: bgColor}, style]}>
+        {children}
+      </View>
+    );
+  };
 
   return (
     <>
@@ -82,7 +98,7 @@ const SafeAreaLayout: React.FC<SafeAreaLayoutProps> = ({
       <SafeAreaView
         style={[styles.container, {backgroundColor: bgColor}]}
         edges={edges}>
-        {keyboardAvoiding ? <KeyboardAvoidingContent /> : scrollable ? <ScrollableContent /> : <InnerContent />}
+        {renderContent()}
       </SafeAreaView>
     </>
   );
