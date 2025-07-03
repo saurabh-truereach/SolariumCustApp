@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ErrorBoundary catches and displays error 1`] = `null`;
+
+exports[`ErrorBoundary renders children when there is no error 1`] = `null`;
