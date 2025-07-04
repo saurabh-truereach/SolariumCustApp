@@ -1,11 +1,62 @@
-# OSX
-#
+###############################################################################
+#  OS-level cruft
+###############################################################################
 .DS_Store
+Thumbs.db
+ 
+###############################################################################
+#   Node / Yarn / JS tool-chain
+###############################################################################
+node_modules/
+npm-debug.log*
+yarn-error.log*
+.eslintcache
+.jest/
+*.tsbuildinfo
 
-
-# Xcode
-#
-build/
+# Comment-out this block **only** if you *intentionally* commit Yarn’s cache.
+.yarn/cache/
+.yarn/unplugged/
+.yarn/builds/
+.yarn/install-state.gz
+.yarn/*.tmp
+###############################################################################
+ 
+###############################################################################
+#   React-Native / Metro
+###############################################################################
+.metro-cache/
+.bundle/
+*.bundle                     
+.metro-health-check*
+ 
+###############################################################################
+#  Android
+###############################################################################
+android/.gradle/
+android/**/app/build/
+.cxx/
+*.apk
+*.aab
+*.hprof
+*.keystore
+*.jks
+!android/app/debug.keystore  # keep the shared debug key exactly as you asked
+ 
+###############################################################################
+#   iOS & CocoaPods
+###############################################################################
+ios/Pods/
+ios/Podfile.lock
+ios/build/                  
+*.xcarchive
+*.dSYM*
+*.ipa
+*.xcuserstate
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+xcuserdata/
+DerivedData/
 *.pbxuser
 !default.pbxuser
 *.mode1v3
@@ -14,67 +65,74 @@ build/
 !default.mode2v3
 *.perspectivev3
 !default.perspectivev3
-xcuserdata
 *.xccheckout
-*.moved-aside
-DerivedData
 *.hmap
-*.ipa
-*.xcuserstate
-**/.xcode.env.local
-
-# Android/IntelliJ
-#
-build/
-.idea
-.gradle
-local.properties
-*.iml
-*.hprof
-.cxx/
-*.keystore
-!debug.keystore
-.kotlin/
-
-# node.js
-#
-node_modules/
-npm-debug.log
-yarn-error.log
-
-# fastlane
-#
-# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
-# screenshots whenever they are needed.
-# For more information about the recommended setup visit:
-# https://docs.fastlane.tools/best-practices/source-control/
-
-**/fastlane/report.xml
-**/fastlane/Preview.html
+*.moved-aside
+ios/.xcode.env
+ios/.xcode.env.local
+ 
+###############################################################################
+#   Expo & EAS
+###############################################################################
+.expo/
+.expo-shared/
+dist/
+ 
+###############################################################################
+#  Fastlane
+###############################################################################
+fastlane/builds/
+fastlane/screenshots/
+fastlane/test_output/
+fastlane/Preview.html
+fastlane/report.xml
 **/fastlane/screenshots
 **/fastlane/test_output
-
-# Bundle artifact
-*.jsbundle
-
-# Ruby / CocoaPods
-**/Pods/
-/vendor/bundle/
-
-# Temporary files created by Metro to check the health of the file watcher
-.metro-health-check*
-
-# testing
-/coverage
-
-# Yarn
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
-
-# environment variables
-.env
-.env.*
+**/fastlane/Preview.html
+**/fastlane/report.xml
+ 
+###############################################################################
+#  Tests & Coverage (incl. Cypress)
+###############################################################################
+coverage/
+jest-coverage/
+**/coverage/
+*.lcov
+cypress/videos/
+cypress/screenshots/
+ 
+###############################################################################
+#  Secrets & certificates
+###############################################################################
+.env*
+!.env.example
+*.p8
+*.p12
+*.pem
+*.cer
+*.mobileprovision
+secrets/
+AuthKey*.p8
+ 
+###############################################################################
+#   Large binary assets (videos only — images/icons stay)
+###############################################################################
+*.mp4
+*.mov
+*.mkv
+*.avi
+*.wmv
+*.flv
+*.webm
+ 
+###############################################################################
+#   Husky
+###############################################################################
+.husky/_
+ 
+###############################################################################
+#   IDE configs
+###############################################################################
+.vscode/
+.idea/
+.kotlin/
