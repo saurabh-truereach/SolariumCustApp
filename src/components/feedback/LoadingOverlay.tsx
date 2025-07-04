@@ -4,13 +4,7 @@
  */
 
 import React from 'react';
-import {
-  ActivityIndicator,
-  Modal,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {ActivityIndicator, Modal, StyleSheet, Text, View} from 'react-native';
 import {useAppTheme} from '../../theme/ThemeProvider';
 
 /**
@@ -83,12 +77,14 @@ export const PersistenceLoadingOverlay: React.FC<PersistenceLoadingProps> = ({
       transparent
       animationType="fade"
       visible={visible}
-      statusBarTranslucent>
+      statusBarTranslucent
+    >
       <View
         style={[
           styles.overlay,
           {backgroundColor: theme.colors.background + 'F0'}, // 94% opacity
-        ]}>
+        ]}
+      >
         <View
           style={[
             styles.container,
@@ -96,17 +92,18 @@ export const PersistenceLoadingOverlay: React.FC<PersistenceLoadingProps> = ({
               backgroundColor: theme.colors.surface,
               ...theme.shadows.large,
             },
-          ]}>
+          ]}
+        >
           {/* Stage Icon */}
           <Text style={styles.stageIcon}>{getStageIcon()}</Text>
-          
+
           {/* Loading Spinner */}
           <ActivityIndicator
             size="large"
             color={theme.colors.primary}
             style={styles.spinner}
           />
-          
+
           {/* Stage Message */}
           <Text
             style={[
@@ -116,13 +113,19 @@ export const PersistenceLoadingOverlay: React.FC<PersistenceLoadingProps> = ({
                 fontSize: theme.typography.fontSize.md,
                 fontFamily: theme.typography.fontFamily.medium,
               },
-            ]}>
+            ]}
+          >
             {getStageMessage()}
           </Text>
-          
+
           {/* Progress Bar */}
           {progress !== undefined && (
-            <View style={[styles.progressContainer, {backgroundColor: theme.colors.outline}]}>
+            <View
+              style={[
+                styles.progressContainer,
+                {backgroundColor: theme.colors.outline},
+              ]}
+            >
               <View
                 style={[
                   styles.progressBar,
@@ -134,7 +137,7 @@ export const PersistenceLoadingOverlay: React.FC<PersistenceLoadingProps> = ({
               />
             </View>
           )}
-          
+
           {/* Progress Text */}
           {progress !== undefined && (
             <Text
@@ -144,7 +147,8 @@ export const PersistenceLoadingOverlay: React.FC<PersistenceLoadingProps> = ({
                   color: theme.colors.onSurfaceVariant,
                   fontSize: theme.typography.fontSize.sm,
                 },
-              ]}>
+              ]}
+            >
               {Math.round(progress)}%
             </Text>
           )}
@@ -177,7 +181,8 @@ const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
       transparent
       animationType="fade"
       visible={visible}
-      statusBarTranslucent>
+      statusBarTranslucent
+    >
       <View
         style={[
           styles.overlay,
@@ -186,7 +191,8 @@ const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
               ? theme.colors.background + '80' // 50% opacity
               : theme.colors.background + 'E6', // 90% opacity
           },
-        ]}>
+        ]}
+      >
         <View
           style={[
             styles.container,
@@ -194,7 +200,8 @@ const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
               backgroundColor: theme.colors.surface,
               ...theme.shadows.medium,
             },
-          ]}>
+          ]}
+        >
           <ActivityIndicator
             size={size}
             color={spinnerColor}
@@ -209,7 +216,8 @@ const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
                   fontSize: theme.typography.fontSize.sm,
                   fontFamily: theme.typography.fontFamily.medium,
                 },
-              ]}>
+              ]}
+            >
               {message}
             </Text>
           )}

@@ -4,7 +4,13 @@
  */
 
 import React, {useState} from 'react';
-import {Alert, ScrollView, StyleSheet, View, TouchableOpacity} from 'react-native';
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+} from 'react-native';
 import {Card, Text} from 'react-native-paper';
 import type {MainTabScreenProps} from '../../navigation/types';
 import {SafeAreaLayout} from '../../components';
@@ -34,36 +40,32 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
    * Handle logout
    */
   const handleLogout = async () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-          onPress: () => {
-            announceForAccessibility('Logout cancelled');
-          },
+    Alert.alert('Logout', 'Are you sure you want to logout?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+        onPress: () => {
+          announceForAccessibility('Logout cancelled');
         },
-        {
-          text: 'Logout',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              setIsLoading(true);
-              screenReaderUtils.announceLoading(true, 'logout');
-              await dispatch(logoutUser()).unwrap();
-              screenReaderUtils.announceSuccess('Logged out successfully');
-            } catch (error) {
-              console.error('[Home] Logout error:', error);
-              announceForAccessibility('Logout failed, please try again');
-            } finally {
-              setIsLoading(false);
-            }
-          },
+      },
+      {
+        text: 'Logout',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            setIsLoading(true);
+            screenReaderUtils.announceLoading(true, 'logout');
+            await dispatch(logoutUser()).unwrap();
+            screenReaderUtils.announceSuccess('Logged out successfully');
+          } catch (error) {
+            console.error('[Home] Logout error:', error);
+            announceForAccessibility('Logout failed, please try again');
+          } finally {
+            setIsLoading(false);
+          }
         },
-      ]
-    );
+      },
+    ]);
   };
 
   /**
@@ -76,14 +78,12 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
 
   return (
     <SafeAreaLayout backgroundColor={theme.colors.background}>
-      <ScrollView 
+      <ScrollView
         style={[styles.container, {backgroundColor: theme.colors.background}]}
-        {...createTextA11yProps('Home screen content')}>
-        
+        {...createTextA11yProps('Home screen content')}
+      >
         {/* Welcome Header */}
-        <Card 
-          style={styles.card}
-          {...createTextA11yProps('Welcome card')}>
+        <Card style={styles.card} {...createTextA11yProps('Welcome card')}>
           <Card.Content>
             <Text
               style={[styles.welcome, {color: theme.colors.primary}]}
@@ -91,47 +91,59 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
                 `Welcome, ${user?.name || 'User'}!`,
                 'header',
                 a11yTestIds.welcomeMessage
-              )}>
+              )}
+            >
               Welcome, {user?.name || 'User'}!
             </Text>
             <Text
               style={[styles.subtitle, {color: theme.colors.onSurface}]}
-              {...createTextA11yProps('Your solar energy journey starts here')}>
+              {...createTextA11yProps('Your solar energy journey starts here')}
+            >
               Your solar energy journey starts here
             </Text>
           </Card.Content>
         </Card>
 
         {/* User Info Card */}
-        <Card 
+        <Card
           style={styles.card}
-          {...createTextA11yProps('Account information card')}>
+          {...createTextA11yProps('Account information card')}
+        >
           <Card.Content>
             <Text
               style={[styles.sectionTitle, {color: theme.colors.onSurface}]}
-              {...createTextA11yProps('Account Information', 'header')}>
+              {...createTextA11yProps('Account Information', 'header')}
+            >
               Account Information
             </Text>
-            
-            <View 
+
+            <View
               style={styles.userInfo}
-              {...createTextA11yProps('User details', 'text', a11yTestIds.userInfo)}>
-              <Text 
+              {...createTextA11yProps(
+                'User details',
+                'text',
+                a11yTestIds.userInfo
+              )}
+            >
+              <Text
                 style={styles.infoItem}
-                {...createTextA11yProps(`Phone number: ${user?.phone}`)}>
+                {...createTextA11yProps(`Phone number: ${user?.phone}`)}
+              >
                 Phone: {user?.phone}
               </Text>
               {user?.email && (
-                <Text 
+                <Text
                   style={styles.infoItem}
-                  {...createTextA11yProps(`Email address: ${user.email}`)}>
+                  {...createTextA11yProps(`Email address: ${user.email}`)}
+                >
                   Email: {user.email}
                 </Text>
               )}
               {user?.address && (
-                <Text 
+                <Text
                   style={styles.infoItem}
-                  {...createTextA11yProps(`Address: ${user.address}`)}>
+                  {...createTextA11yProps(`Address: ${user.address}`)}
+                >
                   Address: {user.address}
                 </Text>
               )}
@@ -140,42 +152,56 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
         </Card>
 
         {/* Redux Store Status */}
-        <Card 
+        <Card
           style={styles.card}
-          {...createTextA11yProps('System status card')}>
+          {...createTextA11yProps('System status card')}
+        >
           <Card.Content>
             <Text
               style={[styles.sectionTitle, {color: theme.colors.onSurface}]}
-              {...createTextA11yProps('Redux Store Status', 'header')}>
+              {...createTextA11yProps('Redux Store Status', 'header')}
+            >
               Redux Store Status
             </Text>
-            
-            <View 
+
+            <View
               style={styles.statusContainer}
-              {...createTextA11yProps('System status information', 'text', a11yTestIds.statusCard)}>
-              <Text 
+              {...createTextA11yProps(
+                'System status information',
+                'text',
+                a11yTestIds.statusCard
+              )}
+            >
+              <Text
                 style={[styles.status, {color: theme.colors.primary}]}
-                {...createTextA11yProps(`User authenticated: ${user ? 'Yes' : 'No'}`)}>
+                {...createTextA11yProps(
+                  `User authenticated: ${user ? 'Yes' : 'No'}`
+                )}
+              >
                 ✅ User authenticated: {user ? 'Yes' : 'No'}
               </Text>
-              <Text 
+              <Text
                 style={[styles.status, {color: theme.colors.primary}]}
-                {...createTextA11yProps(`Token stored: ${user ? 'Yes' : 'No'}`)}>
+                {...createTextA11yProps(`Token stored: ${user ? 'Yes' : 'No'}`)}
+              >
                 ✅ Token stored: {user ? 'Yes' : 'No'}
               </Text>
-              <Text 
+              <Text
                 style={[styles.status, {color: theme.colors.primary}]}
-                {...createTextA11yProps('Navigation working: Yes')}>
+                {...createTextA11yProps('Navigation working: Yes')}
+              >
                 ✅ Navigation working: Yes
               </Text>
-              <Text 
+              <Text
                 style={[styles.status, {color: theme.colors.primary}]}
-                {...createTextA11yProps('Redux integrated: Yes')}>
+                {...createTextA11yProps('Redux integrated: Yes')}
+              >
                 ✅ Redux integrated: Yes
               </Text>
-              <Text 
+              <Text
                 style={[styles.status, {color: theme.colors.primary}]}
-                {...createTextA11yProps('Accessibility features: Enabled')}>
+                {...createTextA11yProps('Accessibility features: Enabled')}
+              >
                 ✅ Accessibility features: Enabled
               </Text>
             </View>
@@ -184,16 +210,18 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
 
         {/* Development Tools */}
         {__DEV__ && (
-          <Card 
+          <Card
             style={styles.card}
-            {...createTextA11yProps('Development tools card')}>
+            {...createTextA11yProps('Development tools card')}
+          >
             <Card.Content>
               <Text
                 style={[styles.sectionTitle, {color: theme.colors.onSurface}]}
-                {...createTextA11yProps('Development Tools', 'header')}>
+                {...createTextA11yProps('Development Tools', 'header')}
+              >
                 Development Tools
               </Text>
-              
+
               <View style={styles.actionsSection}>
                 <TouchableOpacity
                   style={[
@@ -210,8 +238,14 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
                     'Tap to logout from the application',
                     isLoading,
                     a11yTestIds.logoutButton
-                  )}>
-                  <Text style={[styles.logoutButtonText, {color: theme.colors.onError}]}>
+                  )}
+                >
+                  <Text
+                    style={[
+                      styles.logoutButtonText,
+                      {color: theme.colors.onError},
+                    ]}
+                  >
                     {isLoading ? 'Logging out...' : 'Logout'}
                   </Text>
                 </TouchableOpacity>
@@ -226,8 +260,14 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
                   {...createButtonA11yProps(
                     'Test Deep Link',
                     'Tap to test navigation to service detail page'
-                  )}>
-                  <Text style={[styles.testButtonText, {color: theme.colors.onSecondary}]}>
+                  )}
+                >
+                  <Text
+                    style={[
+                      styles.testButtonText,
+                      {color: theme.colors.onSecondary},
+                    ]}
+                  >
                     Test Deep Link
                   </Text>
                 </TouchableOpacity>

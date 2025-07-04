@@ -26,7 +26,7 @@ const authTransform = {
     if (outboundState?.lastLoginTime) {
       const tokenAge = Date.now() - outboundState.lastLoginTime;
       const maxAge = 24 * 60 * 60 * 1000; // 24 hours
-      
+
       if (tokenAge > maxAge) {
         console.log('[Persist] Token expired, clearing auth state');
         return {
@@ -62,4 +62,4 @@ export const persistConfig = {
   writeFailHandler: (err: Error) => {
     console.error('[Persist] Write failed:', err);
   },
-}; 
+};

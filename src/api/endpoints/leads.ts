@@ -4,13 +4,18 @@
  */
 
 import {createApi} from '@reduxjs/toolkit/query/react';
-import {baseQuery, transformResponse, transformError, provideTags} from '../baseQuery';
+import {
+  baseQuery,
+  transformResponse,
+  transformError,
+  provideTags,
+} from '../baseQuery';
 import type {PaginatedRequest, PaginatedResponse} from '../../utils/apiHelpers';
 
 /**
  * Lead Types
  */
-export type LeadStatus = 
+export type LeadStatus =
   | 'New Lead'
   | 'In Discussion'
   | 'Physical Meeting Assigned'
@@ -134,7 +139,7 @@ export const leadsApi = createApi({
   reducerPath: 'leadsApi',
   baseQuery,
   tagTypes: ['Lead', 'Quotation', 'Document'],
-  endpoints: (builder) => ({
+  endpoints: builder => ({
     /**
      * Get leads with filters
      */
@@ -148,26 +153,24 @@ export const leadsApi = createApi({
       },
       transformResponse: transformResponse<PaginatedResponse<Lead>>,
       transformErrorResponse: transformError,
-      providesTags: (result) => provideTags('Lead', result?.data),
+      providesTags: result => provideTags('Lead', result?.data),
     }),
 
     /**
      * Get lead by ID
      */
     getLeadById: builder.query<Lead, string>({
-      query: (leadId) => `leads/${leadId}`,
+      query: leadId => `leads/${leadId}`,
       transformResponse: transformResponse<Lead>,
       transformErrorResponse: transformError,
-      providesTags: (result, error, leadId) => [
-        {type: 'Lead', id: leadId},
-      ],
+      providesTags: (result, error, leadId) => [{type: 'Lead', id: leadId}],
     }),
 
     /**
      * Create new lead
      */
     createLead: builder.mutation<Lead, CreateLeadRequest>({
-      query: (data) => ({
+      query: data => ({
         url: 'leads',
         method: 'POST',
         body: data,
@@ -178,7 +181,7 @@ export const leadsApi = createApi({
       // Demo implementation
       queryFn: async (arg, queryApi, extraOptions, baseQuery) => {
         await new Promise(resolve => setTimeout(resolve, 1000));
-        
+
         const demoLead: Lead = {
           id: `lead_${Date.now()}`,
           customerId: 'current_user_id',
@@ -227,7 +230,7 @@ export const leadsApi = createApi({
      * Get quotations for a lead
      */
     getLeadQuotations: builder.query<Quotation[], string>({
-      query: (leadId) => `leads/${leadId}/quotations`,
+      query: leadId => `leads/${leadId}/quotations`,
       transformResponse: transformResponse<Quotation[]>,
       transformErrorResponse: transformError,
       providesTags: (result, error, leadId) => [
@@ -238,20 +241,25 @@ export const leadsApi = createApi({
     /**
      * Accept quotation
      */
-    acceptQuotation: builder.mutation<{message: string}, {quotationId: string}>({
-      query: ({quotationId}) => ({
-        url: `quotations/${quotationId}/accept`,
-        method: 'POST',
-      }),
-      transformResponse: transformResponse<{message: string}>,
-      transformErrorResponse: transformError,
-      invalidatesTags: ['Lead', 'Quotation'],
-    }),
+    acceptQuotation: builder.mutation<{message: string}, {quotationId: string}>(
+      {
+        query: ({quotationId}) => ({
+          url: `quotations/${quotationId}/accept`,
+          method: 'POST',
+        }),
+        transformResponse: transformResponse<{message: string}>,
+        transformErrorResponse: transformError,
+        invalidatesTags: ['Lead', 'Quotation'],
+      }
+    ),
 
     /**
      * Reject quotation
      */
-    rejectQuotation: builder.mutation<{message: string}, {quotationId: string; reason?: string}>({
+    rejectQuotation: builder.mutation<
+      {message: string},
+      {quotationId: string; reason?: string}
+    >({
       query: ({quotationId, reason}) => ({
         url: `quotations/${quotationId}/reject`,
         method: 'POST',
@@ -291,19 +299,17 @@ export const leadsApi = createApi({
      * Get lead documents
      */
     getLeadDocuments: builder.query<Document[], string>({
-      query: (leadId) => `leads/${leadId}/documents`,
+      query: leadId => `leads/${leadId}/documents`,
       transformResponse: transformResponse<Document[]>,
       transformErrorResponse: transformError,
-      providesTags: (result, error, leadId) => [
-        {type: 'Document', id: leadId},
-      ],
+      providesTags: (result, error, leadId) => [{type: 'Document', id: leadId}],
     }),
 
     /**
      * Delete lead
      */
     deleteLead: builder.mutation<{message: string}, string>({
-      query: (leadId) => ({
+      query: leadId => ({
         url: `leads/${leadId}`,
         method: 'DELETE',
       }),

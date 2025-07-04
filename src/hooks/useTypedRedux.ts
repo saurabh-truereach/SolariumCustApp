@@ -25,7 +25,7 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
  */
 export const useAppAction = () => {
   const dispatch = useAppDispatch();
-  
+
   return useCallback(
     <T extends Parameters<AppDispatch>[0]>(action: T) => {
       return dispatch(action);
@@ -63,7 +63,7 @@ export const useAuthAPI = () => {
   const [verifyOtp] = authApi.useVerifyOtpMutation();
   const [logout] = authApi.useLogoutUserMutation();
   const [updateProfile] = authApi.useUpdateProfileMutation();
-  
+
   return {
     sendOtp,
     verifyOtp,
@@ -82,13 +82,13 @@ export const useServicesAPI = () => {
     error: servicesError,
     refetch: refetchServices,
   } = servicesApi.useGetServicesQuery({});
-  
+
   const {
     data: categories,
     isLoading: categoriesLoading,
     error: categoriesError,
   } = servicesApi.useGetServiceCategoriesQuery();
-  
+
   return {
     services,
     servicesLoading,
@@ -110,11 +110,11 @@ export const useLeadsAPI = () => {
     error: leadsError,
     refetch: refetchLeads,
   } = leadsApi.useGetLeadsQuery({});
-  
+
   const [createLead] = leadsApi.useCreateLeadMutation();
   const [updateLead] = leadsApi.useUpdateLeadMutation();
   const [deleteLead] = leadsApi.useDeleteLeadMutation();
-  
+
   return {
     leads,
     leadsLoading,
@@ -131,19 +131,33 @@ export const useLeadsAPI = () => {
  */
 export const useAPILoadingStates = () => {
   const authQueries = useAppSelector(state => state.authApi?.queries || {});
-  const servicesQueries = useAppSelector(state => state.servicesApi?.queries || {});
+  const servicesQueries = useAppSelector(
+    state => state.servicesApi?.queries || {}
+  );
   const leadsQueries = useAppSelector(state => state.leadsApi?.queries || {});
-  
-  const isAnyLoading = 
-    Object.values(authQueries).some((query: any) => query?.status === 'pending') ||
-    Object.values(servicesQueries).some((query: any) => query?.status === 'pending') ||
-    Object.values(leadsQueries).some((query: any) => query?.status === 'pending');
-  
+
+  const isAnyLoading =
+    Object.values(authQueries).some(
+      (query: any) => query?.status === 'pending'
+    ) ||
+    Object.values(servicesQueries).some(
+      (query: any) => query?.status === 'pending'
+    ) ||
+    Object.values(leadsQueries).some(
+      (query: any) => query?.status === 'pending'
+    );
+
   return {
     isAnyLoading,
-    authLoading: Object.values(authQueries).some((query: any) => query?.status === 'pending'),
-    servicesLoading: Object.values(servicesQueries).some((query: any) => query?.status === 'pending'),
-    leadsLoading: Object.values(leadsQueries).some((query: any) => query?.status === 'pending'),
+    authLoading: Object.values(authQueries).some(
+      (query: any) => query?.status === 'pending'
+    ),
+    servicesLoading: Object.values(servicesQueries).some(
+      (query: any) => query?.status === 'pending'
+    ),
+    leadsLoading: Object.values(leadsQueries).some(
+      (query: any) => query?.status === 'pending'
+    ),
   };
 };
 

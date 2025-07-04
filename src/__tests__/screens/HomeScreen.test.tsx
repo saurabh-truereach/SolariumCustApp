@@ -5,7 +5,12 @@
 import React from 'react';
 import {Alert} from 'react-native';
 import {fireEvent, waitFor} from '@testing-library/react-native';
-import {renderWithProviders, createMockAuthState, createMockUser, asyncTest} from '../../utils/testUtils';
+import {
+  renderWithProviders,
+  createMockAuthState,
+  createMockUser,
+  asyncTest,
+} from '../../utils/testUtils';
 import HomePlaceholder from '../../screens/HomePlaceholder';
 
 // Mock Alert
@@ -31,7 +36,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
       const {toJSON} = renderWithProviders(<HomePlaceholder />, {
         preloadedState: preloadedState as any,
       });
-      
+
       expect(toJSON()).toMatchSnapshot();
     });
 
@@ -40,7 +45,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
       const {getByText} = renderWithProviders(<HomePlaceholder />, {
         preloadedState: preloadedState as any,
       });
-      
+
       expect(getByText('Welcome, Test User!')).toBeTruthy();
       expect(getByText('Phone: 1234567890')).toBeTruthy();
     });
@@ -50,9 +55,11 @@ describe('Enhanced HomePlaceholder Screen', () => {
       const {getByText} = renderWithProviders(<HomePlaceholder />, {
         preloadedState: preloadedState as any,
       });
-      
+
       expect(getByText('Home (protected)')).toBeTruthy();
-      expect(getByText(/This is a placeholder for the main home screen/)).toBeTruthy();
+      expect(
+        getByText(/This is a placeholder for the main home screen/)
+      ).toBeTruthy();
     });
   });
 
@@ -62,11 +69,11 @@ describe('Enhanced HomePlaceholder Screen', () => {
       const preloadedState = {
         auth: {...mockAuthState, user: customUser},
       };
-      
+
       const {getByText} = renderWithProviders(<HomePlaceholder />, {
         preloadedState: preloadedState as any,
       });
-      
+
       expect(getByText('Welcome, John Doe!')).toBeTruthy();
     });
 
@@ -75,11 +82,11 @@ describe('Enhanced HomePlaceholder Screen', () => {
       const preloadedState = {
         auth: {...mockAuthState, user: customUser},
       };
-      
+
       const {getByText} = renderWithProviders(<HomePlaceholder />, {
         preloadedState: preloadedState as any,
       });
-      
+
       expect(getByText('Phone: 9876543210')).toBeTruthy();
     });
 
@@ -87,11 +94,11 @@ describe('Enhanced HomePlaceholder Screen', () => {
       const preloadedState = {
         auth: {...mockAuthState, user: {...mockUser, name: undefined}},
       };
-      
+
       const {getByText} = renderWithProviders(<HomePlaceholder />, {
         preloadedState: preloadedState as any,
       });
-      
+
       expect(getByText('Welcome, User!')).toBeTruthy();
     });
 
@@ -99,11 +106,11 @@ describe('Enhanced HomePlaceholder Screen', () => {
       const preloadedState = {
         auth: {...mockAuthState, user: undefined},
       };
-      
+
       const {getByText} = renderWithProviders(<HomePlaceholder />, {
         preloadedState: preloadedState as any,
       });
-      
+
       expect(getByText('Welcome, User!')).toBeTruthy();
     });
   });
@@ -114,7 +121,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
       const {getByText} = renderWithProviders(<HomePlaceholder />, {
         preloadedState: preloadedState as any,
       });
-      
+
       expect(getByText('Redux Store Status')).toBeTruthy();
       expect(getByText('✅ User authenticated: Yes')).toBeTruthy();
       expect(getByText('✅ Token stored: Yes')).toBeTruthy();
@@ -131,11 +138,11 @@ describe('Enhanced HomePlaceholder Screen', () => {
           token: undefined,
         },
       };
-      
+
       const {getByText} = renderWithProviders(<HomePlaceholder />, {
         preloadedState: unauthenticatedState as any,
       });
-      
+
       expect(getByText('✅ User authenticated: No')).toBeTruthy();
       expect(getByText('✅ Token stored: No')).toBeTruthy();
     });
@@ -145,14 +152,14 @@ describe('Enhanced HomePlaceholder Screen', () => {
       const {getByText} = renderWithProviders(<HomePlaceholder />, {
         preloadedState: preloadedState as any,
       });
-      
+
       const statusItems = [
         '✅ User authenticated: Yes',
         '✅ Token stored: Yes',
         '✅ Navigation working: Yes',
         '✅ Redux integrated: Yes',
       ];
-      
+
       statusItems.forEach(status => {
         expect(getByText(status)).toBeTruthy();
       });
@@ -165,7 +172,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
       const {getByText} = renderWithProviders(<HomePlaceholder />, {
         preloadedState: preloadedState as any,
       });
-      
+
       if (__DEV__) {
         expect(getByText('Logout')).toBeTruthy();
       }
@@ -177,11 +184,11 @@ describe('Enhanced HomePlaceholder Screen', () => {
         const {getByText} = renderWithProviders(<HomePlaceholder />, {
           preloadedState: preloadedState as any,
         });
-        
+
         if (__DEV__) {
           const logoutButton = getByText('Logout');
           fireEvent.press(logoutButton);
-          
+
           expect(Alert.alert).toHaveBeenCalledWith(
             'Logout',
             'Are you sure you want to logout?',
@@ -200,11 +207,11 @@ describe('Enhanced HomePlaceholder Screen', () => {
         const {getByText, store} = renderWithProviders(<HomePlaceholder />, {
           preloadedState: preloadedState as any,
         });
-        
+
         if (__DEV__) {
           const logoutButton = getByText('Logout');
           fireEvent.press(logoutButton);
-          
+
           // Wait for logout action to be dispatched
           await waitFor(() => {
             const state = store.getState();
@@ -218,11 +225,11 @@ describe('Enhanced HomePlaceholder Screen', () => {
       const loadingState = {
         auth: {...mockAuthState, isLoading: true},
       };
-      
+
       const {getByText} = renderWithProviders(<HomePlaceholder />, {
         preloadedState: loadingState as any,
       });
-      
+
       if (__DEV__) {
         const logoutButton = getByText('Logging out...');
         expect(logoutButton.props.accessibilityState?.disabled).toBe(true);
@@ -233,11 +240,11 @@ describe('Enhanced HomePlaceholder Screen', () => {
       const loadingState = {
         auth: {...mockAuthState, isLoading: true},
       };
-      
+
       const {getByText} = renderWithProviders(<HomePlaceholder />, {
         preloadedState: loadingState as any,
       });
-      
+
       if (__DEV__) {
         expect(getByText('Logging out...')).toBeTruthy();
       }
@@ -250,10 +257,10 @@ describe('Enhanced HomePlaceholder Screen', () => {
       const {getByLabelText} = renderWithProviders(<HomePlaceholder />, {
         preloadedState: preloadedState as any,
       });
-      
+
       expect(getByLabelText('Welcome message')).toBeTruthy();
       expect(getByLabelText('Home screen placeholder')).toBeTruthy();
-      
+
       if (__DEV__) {
         expect(getByLabelText('Logout button')).toBeTruthy();
       }
@@ -264,7 +271,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
       const {getByLabelText} = renderWithProviders(<HomePlaceholder />, {
         preloadedState: preloadedState as any,
       });
-      
+
       if (__DEV__) {
         const logoutButton = getByLabelText('Logout button');
         expect(logoutButton.props.accessibilityHint).toBe(
@@ -277,11 +284,11 @@ describe('Enhanced HomePlaceholder Screen', () => {
       const loadingState = {
         auth: {...mockAuthState, isLoading: true},
       };
-      
+
       const {getByLabelText} = renderWithProviders(<HomePlaceholder />, {
         preloadedState: loadingState as any,
       });
-      
+
       if (__DEV__) {
         const logoutButton = getByLabelText('Logout button');
         expect(logoutButton.props.accessibilityState?.disabled).toBe(true);
@@ -295,11 +302,11 @@ describe('Enhanced HomePlaceholder Screen', () => {
       const {getByText} = renderWithProviders(<HomePlaceholder />, {
         preloadedState: preloadedState as any,
       });
-      
+
       // Welcome text should use primary color
       const welcomeText = getByText('Welcome, Test User!');
       expect(welcomeText).toBeTruthy();
-      
+
       // Status items should use success color
       const statusText = getByText('✅ User authenticated: Yes');
       expect(statusText).toBeTruthy();
@@ -310,10 +317,10 @@ describe('Enhanced HomePlaceholder Screen', () => {
       const {getByText} = renderWithProviders(<HomePlaceholder />, {
         preloadedState: preloadedState as any,
       });
-      
+
       const welcomeText = getByText('Welcome, Test User!');
       const infoCard = getByText('Redux Store Status');
-      
+
       expect(welcomeText).toBeTruthy();
       expect(infoCard).toBeTruthy();
     });
@@ -323,14 +330,14 @@ describe('Enhanced HomePlaceholder Screen', () => {
     it('renders efficiently', () => {
       const startTime = performance.now();
       const preloadedState = {auth: mockAuthState};
-      
+
       renderWithProviders(<HomePlaceholder />, {
         preloadedState: preloadedState as any,
       });
-      
+
       const endTime = performance.now();
       const renderTime = endTime - startTime;
-      
+
       expect(renderTime).toBeLessThan(100);
     });
 
@@ -340,9 +347,9 @@ describe('Enhanced HomePlaceholder Screen', () => {
         const {store, rerender} = renderWithProviders(<HomePlaceholder />, {
           preloadedState: preloadedState as any,
         });
-        
+
         const startTime = performance.now();
-        
+
         // Update state multiple times
         for (let i = 0; i < 5; i++) {
           store.dispatch({
@@ -351,10 +358,10 @@ describe('Enhanced HomePlaceholder Screen', () => {
           });
           rerender(<HomePlaceholder />);
         }
-        
+
         const endTime = performance.now();
         const totalTime = endTime - startTime;
-        
+
         expect(totalTime).toBeLessThan(500);
       })();
     });
@@ -364,7 +371,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
     it('handles missing auth state gracefully', () => {
       // Don't provide auth state
       const {getByText} = renderWithProviders(<HomePlaceholder />);
-      
+
       expect(getByText('Welcome, User!')).toBeTruthy();
       expect(getByText('Home (protected)')).toBeTruthy();
     });
@@ -380,28 +387,30 @@ describe('Enhanced HomePlaceholder Screen', () => {
           },
         },
       };
-      
+
       const {getByText} = renderWithProviders(<HomePlaceholder />, {
         preloadedState: malformedState as any,
       });
-      
+
       expect(getByText('Welcome, User!')).toBeTruthy();
     });
 
     it('handles logout errors gracefully', async () => {
       await asyncTest(async () => {
         // Mock logout to fail
-        const mockLogout = jest.fn().mockRejectedValue(new Error('Logout failed'));
-        
+        const mockLogout = jest
+          .fn()
+          .mockRejectedValue(new Error('Logout failed'));
+
         const preloadedState = {auth: mockAuthState};
         const {getByText} = renderWithProviders(<HomePlaceholder />, {
           preloadedState: preloadedState as any,
         });
-        
+
         if (__DEV__) {
           const logoutButton = getByText('Logout');
           fireEvent.press(logoutButton);
-          
+
           // Should not crash the app
           await waitFor(() => {
             expect(getByText('Welcome, Test User!')).toBeTruthy();
@@ -417,7 +426,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
       const {queryByText} = renderWithProviders(<HomePlaceholder />, {
         preloadedState: preloadedState as any,
       });
-      
+
       if (__DEV__) {
         expect(queryByText('Logout')).toBeTruthy();
       } else {
@@ -430,7 +439,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
       const {getByText} = renderWithProviders(<HomePlaceholder />, {
         preloadedState: preloadedState as any,
       });
-      
+
       // Core functionality should always be available
       expect(getByText('Welcome, Test User!')).toBeTruthy();
       expect(getByText('Home (protected)')).toBeTruthy();
@@ -441,7 +450,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
   describe('Component Lifecycle', () => {
     it('handles component mounting correctly', () => {
       const preloadedState = {auth: mockAuthState};
-      
+
       expect(() => {
         renderWithProviders(<HomePlaceholder />, {
           preloadedState: preloadedState as any,
@@ -454,7 +463,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
       const {unmount} = renderWithProviders(<HomePlaceholder />, {
         preloadedState: preloadedState as any,
       });
-      
+
       expect(() => unmount()).not.toThrow();
     });
 
@@ -463,7 +472,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
       const {rerender} = renderWithProviders(<HomePlaceholder />, {
         preloadedState: preloadedState as any,
       });
-      
+
       expect(() => {
         rerender(<HomePlaceholder />);
         rerender(<HomePlaceholder />);

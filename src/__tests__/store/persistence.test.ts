@@ -39,10 +39,12 @@ describe('Essential Persistence', () => {
     };
 
     // Dispatch login action
-    store.dispatch(loginSuccess({
-      token: 'test_token',
-      user: mockUser,
-    }));
+    store.dispatch(
+      loginSuccess({
+        token: 'test_token',
+        user: mockUser,
+      })
+    );
 
     // Flush persistence
     await persistor.flush();
@@ -67,4 +69,4 @@ describe('Essential Persistence', () => {
     await storeUtils.flush();
     // Should not throw an error
   });
-}); 
+});

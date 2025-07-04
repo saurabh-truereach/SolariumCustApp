@@ -84,16 +84,16 @@ export const persistenceHelpers = {
     try {
       const testKey = 'persistence_health_check';
       const testValue = {timestamp: Date.now()};
-      
+
       // Try to write and read a test value
       await persistor.flush();
-      
+
       // Check if we can access the underlying storage
       const storage = require('react-native-encrypted-storage').default;
       await storage.setItem(testKey, JSON.stringify(testValue));
       const retrieved = await storage.getItem(testKey);
       await storage.removeItem(testKey);
-      
+
       return retrieved !== null;
     } catch (error) {
       console.error('[Persistence] Health check failed:', error);
@@ -110,20 +110,20 @@ export const createPersistenceListeners = () => {
     onRehydrate: (key: string) => {
       console.log(`[Persistence] Rehydrating ${key}`);
     },
-    
+
     onPause: () => {
       console.log('[Persistence] Persistence paused');
     },
-    
+
     onPersist: () => {
       console.log('[Persistence] State persisted');
     },
-    
+
     onError: (error: Error) => {
       console.error('[Persistence] Persistence error:', error);
     },
   };
-  
+
   return listeners;
 };
 

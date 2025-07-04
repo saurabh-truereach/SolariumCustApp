@@ -17,17 +17,21 @@ const HelpScreen: React.FC<Props> = () => {
 
   return (
     <SafeAreaLayout>
-      <View style={[styles.container, {backgroundColor: theme.colors.background}]}>
+      <View
+        style={[styles.container, {backgroundColor: theme.colors.background}]}
+      >
         <Card style={styles.card}>
           <Card.Content>
             <Text
               variant="headlineMedium"
-              style={[styles.title, {color: theme.colors.primary}]}>
+              style={[styles.title, {color: theme.colors.primary}]}
+            >
               Help & Support
             </Text>
             <Text
               variant="bodyLarge"
-              style={[styles.description, {color: theme.colors.onSurface}]}>
+              style={[styles.description, {color: theme.colors.onSurface}]}
+            >
               Support tickets and help resources will be displayed here.
             </Text>
           </Card.Content>

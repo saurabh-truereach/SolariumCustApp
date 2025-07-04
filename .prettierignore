@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+android/
+ios/
+coverage/
+
+# Generated files
+*.config.js
+metro.config.js
+babel.config.js
+
+# Environment files
+.env*
+
+# Git
+.git/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

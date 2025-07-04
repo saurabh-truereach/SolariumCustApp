@@ -19,9 +19,8 @@ describe('Authentication Flow Integration', () => {
 
   describe('Login Flow', () => {
     it('should complete full login flow', async () => {
-      const {getByPlaceholderText, getByText, queryByText} = renderWithProviders(
-        <Login />
-      );
+      const {getByPlaceholderText, getByText, queryByText} =
+        renderWithProviders(<Login />);
 
       // Initial state - phone input visible
       expect(getByPlaceholderText('Enter 10-digit phone number')).toBeTruthy();
@@ -87,7 +86,9 @@ describe('Authentication Flow Integration', () => {
 
       // Should show validation error
       await waitFor(() => {
-        expect(getByText('Please enter a valid 10-digit phone number')).toBeTruthy();
+        expect(
+          getByText('Please enter a valid 10-digit phone number')
+        ).toBeTruthy();
       });
 
       // Send OTP button should be disabled
@@ -113,7 +114,9 @@ describe('Authentication Flow Integration', () => {
 
       // Should return to phone input screen
       await waitFor(() => {
-        expect(getByPlaceholderText('Enter 10-digit phone number')).toBeTruthy();
+        expect(
+          getByPlaceholderText('Enter 10-digit phone number')
+        ).toBeTruthy();
       });
     });
   });

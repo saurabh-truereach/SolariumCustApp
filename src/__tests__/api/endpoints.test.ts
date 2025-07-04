@@ -15,7 +15,7 @@ describe('API Endpoints', () => {
         servicesApi: servicesApi.reducer,
         leadsApi: leadsApi.reducer,
       },
-      middleware: (getDefaultMiddleware) =>
+      middleware: getDefaultMiddleware =>
         getDefaultMiddleware()
           .concat(authApi.middleware)
           .concat(servicesApi.middleware)
@@ -88,9 +88,11 @@ describe('API Endpoints', () => {
 
     it('should handle API actions', async () => {
       // Test that the store can handle API actions without errors
-      const promise = store.dispatch(authApi.endpoints.sendOtp.initiate({phone: '1234567890'}));
+      const promise = store.dispatch(
+        authApi.endpoints.sendOtp.initiate({phone: '1234567890'})
+      );
       expect(promise).toBeDefined();
-      
+
       // Clean up
       promise.abort();
     });

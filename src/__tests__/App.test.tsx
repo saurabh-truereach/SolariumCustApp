@@ -9,7 +9,11 @@ import App from '../App';
 import {AppConfig} from '../config/environments';
 import renderer from 'react-test-renderer';
 import {Alert} from 'react-native';
-import {renderWithProviders, createMockAuthState, waitForAsync} from '../utils/testUtils';
+import {
+  renderWithProviders,
+  createMockAuthState,
+  waitForAsync,
+} from '../utils/testUtils';
 
 // Mock all the dependencies
 jest.mock('react-native-encrypted-storage', () => ({
@@ -103,7 +107,7 @@ describe('App Component', () => {
   describe('Redux Integration', () => {
     it('provides Redux store to components', () => {
       const {store} = renderWithProviders(<App />);
-      
+
       expect(store).toBeDefined();
       expect(store.getState()).toBeDefined();
       expect(store.getState().auth).toBeDefined();
@@ -114,7 +118,7 @@ describe('App Component', () => {
     it('initializes with correct default state', () => {
       const {store} = renderWithProviders(<App />);
       const state = store.getState();
-      
+
       expect(state.auth.isLoggedIn).toBe(false);
       expect(state.auth.isLoading).toBe(false);
       expect(state.ui.isLoading).toBe(false);
@@ -140,7 +144,7 @@ describe('App Component', () => {
       const {toJSON} = renderWithProviders(<App />, {
         withNavigation: true,
       });
-      
+
       expect(toJSON()).toBeTruthy();
     });
 
@@ -149,7 +153,7 @@ describe('App Component', () => {
         withNavigation: true,
         withPersistence: true,
       });
-      
+
       await waitForAsync();
       expect(toJSON()).toBeTruthy();
     });
@@ -168,17 +172,19 @@ describe('App Component', () => {
     });
 
     it('provides error boundary fallback', () => {
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-      
+      const consoleSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
+
       const ThrowError = () => {
         throw new Error('Test error');
       };
 
       const {getByText} = renderWithProviders(<ThrowError />);
-      
+
       // Error boundary should show fallback UI
       expect(getByText(/Something went wrong/i)).toBeTruthy();
-      
+
       consoleSpy.mockRestore();
     });
   });
@@ -186,31 +192,31 @@ describe('App Component', () => {
   describe('Performance', () => {
     it('renders within acceptable time', async () => {
       const startTime = performance.now();
-      
+
       renderWithProviders(<App />);
       await waitForAsync();
-      
+
       const endTime = performance.now();
       const renderTime = endTime - startTime;
-      
+
       // Should render within 1 second
       expect(renderTime).toBeLessThan(1000);
     });
 
     it('handles multiple re-renders efficiently', async () => {
       const {rerender} = renderWithProviders(<App />);
-      
+
       const startTime = performance.now();
-      
+
       // Re-render multiple times
       for (let i = 0; i < 10; i++) {
         rerender(<App />);
         await waitForAsync();
       }
-      
+
       const endTime = performance.now();
       const totalTime = endTime - startTime;
-      
+
       // Should handle re-renders efficiently
       expect(totalTime).toBeLessThan(5000);
     });
@@ -219,7 +225,7 @@ describe('App Component', () => {
   describe('Memory Management', () => {
     it('cleans up resources properly', () => {
       const {unmount} = renderWithProviders(<App />);
-      
+
       // Should not throw errors on unmount
       expect(() => unmount()).not.toThrow();
     });

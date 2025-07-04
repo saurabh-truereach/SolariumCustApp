@@ -30,10 +30,7 @@ const cacheSlice = createSlice({
   name: 'cache',
   initialState,
   reducers: {
-    setCachedData: (
-      state,
-      action: PayloadAction<{key: string; data: any}>
-    ) => {
+    setCachedData: (state, action: PayloadAction<{key: string; data: any}>) => {
       state.cachedData[action.payload.key] = action.payload.data;
     },
     clearCache: state => {
@@ -55,6 +52,9 @@ export const {setCachedData, clearCache, setSyncTime, setSyncInProgress} =
 export default cacheSlice.reducer;
 
 // Selectors
-export const selectCachedData = (state: {cache: CacheState}) => state.cache.cachedData;
-export const selectLastSyncTime = (state: {cache: CacheState}) => state.cache.lastSyncTime;
-export const selectSyncInProgress = (state: {cache: CacheState}) => state.cache.syncInProgress;
+export const selectCachedData = (state: {cache: CacheState}) =>
+  state.cache.cachedData;
+export const selectLastSyncTime = (state: {cache: CacheState}) =>
+  state.cache.lastSyncTime;
+export const selectSyncInProgress = (state: {cache: CacheState}) =>
+  state.cache.syncInProgress;

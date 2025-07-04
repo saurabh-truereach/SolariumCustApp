@@ -30,7 +30,7 @@ const RootNavigator: React.FC = () => {
   const theme = useAppTheme();
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
   const navigationRef = useNavigationContainerRef();
-  
+
   const [isReady, setIsReady] = useState(false);
   const [initialState, setInitialState] = useState();
 
@@ -99,14 +99,16 @@ const RootNavigator: React.FC = () => {
           border: theme.colors.outline,
           notification: theme.colors.error,
         },
-      }}>
+      }}
+    >
       <Stack.Navigator
         screenOptions={{
           headerShown: false,
           cardStyle: {
             backgroundColor: theme.colors.background,
           },
-        }}>
+        }}
+      >
         {isLoggedIn ? (
           // Authenticated Stack
           <>

@@ -2,7 +2,13 @@
  * Environment configuration tests
  */
 
-import {getAppConfig, AppConfig, isDevelopment, isProduction, getApiBaseUrl} from './config/environments';
+import {
+  getAppConfig,
+  AppConfig,
+  isDevelopment,
+  isProduction,
+  getApiBaseUrl,
+} from './config/environments';
 
 describe('Environment Configuration', () => {
   it('should load configuration without errors', () => {

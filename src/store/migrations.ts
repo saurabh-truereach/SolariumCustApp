@@ -18,7 +18,7 @@ export interface MigrationManifest {
  */
 const migration0to1 = (state: PersistedState): PersistedState => {
   console.log('[Migration] Running migration 0 -> 1');
-  
+
   return {
     ...state,
     _persist: {
@@ -34,10 +34,10 @@ const migration0to1 = (state: PersistedState): PersistedState => {
  */
 const migration1to2 = (state: PersistedState): PersistedState => {
   console.log('[Migration] Running migration 1 -> 2');
-  
+
   // Example migration logic
   const typedState = state as any;
-  
+
   if (typedState.auth) {
     // Example: Move phone to user object if it exists separately
     if (typedState.auth.phone && !typedState.auth.user?.phone) {
@@ -48,7 +48,7 @@ const migration1to2 = (state: PersistedState): PersistedState => {
       delete typedState.auth.phone;
     }
   }
-  
+
   return {
     ...typedState,
     _persist: {
@@ -86,12 +86,12 @@ export const validatePersistedState = (state: any): boolean => {
     if (!state || typeof state !== 'object') {
       return false;
     }
-    
+
     // Check for required structure
     if (state.auth && typeof state.auth !== 'object') {
       return false;
     }
-    
+
     // Validate auth state structure
     if (state.auth?.user) {
       const user = state.auth.user;
@@ -100,7 +100,7 @@ export const validatePersistedState = (state: any): boolean => {
         return false;
       }
     }
-    
+
     return true;
   } catch (error) {
     console.error('[Persist] State validation error:', error);

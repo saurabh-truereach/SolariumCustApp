@@ -71,7 +71,7 @@ export const authApi = createApi({
   reducerPath: 'authApi',
   baseQuery,
   tagTypes: ['User', 'Auth'],
-  endpoints: (builder) => ({
+  endpoints: builder => ({
     /**
      * Send OTP to phone number
      */
@@ -87,7 +87,7 @@ export const authApi = createApi({
       queryFn: async (arg, queryApi, extraOptions, baseQuery) => {
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 1000));
-        
+
         // Demo: Always succeed for valid phone numbers
         if (!/^[0-9]{10}$/.test(arg.phone)) {
           return {
@@ -130,7 +130,7 @@ export const authApi = createApi({
       queryFn: async (arg, queryApi, extraOptions, baseQuery) => {
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 1500));
-        
+
         // Demo: Only accept OTP 123456
         if (arg.otp !== '123456') {
           return {
@@ -169,7 +169,7 @@ export const authApi = createApi({
      * Register new user
      */
     registerUser: builder.mutation<AuthResponse, RegisterUserRequest>({
-      query: (data) => ({
+      query: data => ({
         url: 'auth/register',
         method: 'POST',
         body: data,
@@ -182,8 +182,11 @@ export const authApi = createApi({
     /**
      * Refresh access token
      */
-    refreshToken: builder.mutation<RefreshTokenResponse, {refreshToken: string}>({
-      query: (data) => ({
+    refreshToken: builder.mutation<
+      RefreshTokenResponse,
+      {refreshToken: string}
+    >({
+      query: data => ({
         url: 'auth/refresh-token',
         method: 'POST',
         body: data,
@@ -206,7 +209,7 @@ export const authApi = createApi({
      * Update user profile
      */
     updateProfile: builder.mutation<User, UpdateProfileRequest>({
-      query: (data) => ({
+      query: data => ({
         url: 'auth/profile',
         method: 'PUT',
         body: data,
@@ -220,7 +223,7 @@ export const authApi = createApi({
      * Change password
      */
     changePassword: builder.mutation<{message: string}, ChangePasswordRequest>({
-      query: (data) => ({
+      query: data => ({
         url: 'auth/change-password',
         method: 'POST',
         body: data,
@@ -246,7 +249,7 @@ export const authApi = createApi({
      * Delete user account
      */
     deleteAccount: builder.mutation<{message: string}, {password: string}>({
-      query: (data) => ({
+      query: data => ({
         url: 'auth/delete-account',
         method: 'DELETE',
         body: data,

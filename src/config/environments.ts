@@ -80,7 +80,7 @@ const getCurrentEnvironment = (): Environment => {
   if (__DEV__) {
     return 'development';
   }
-  
+
   // In a real deployment, you might check other indicators
   // like bundle ID, build configuration, etc.
   return 'production';
@@ -92,13 +92,13 @@ const getCurrentEnvironment = (): Environment => {
 export const getAppConfig = (): AppConfig => {
   const currentEnv = getCurrentEnvironment();
   const config = environments[currentEnv];
-  
+
   // Log configuration for debugging (only in debug mode)
   if (config.DEBUG_MODE) {
     console.log(`[Environment] Current: ${currentEnv}`);
     console.log(`[Environment] Config:`, config);
   }
-  
+
   return config;
 };
 
@@ -130,9 +130,11 @@ export const getApiConfig = (): ApiConfig => AppConfig.API_CONFIG;
 /**
  * Check if API logging is enabled
  */
-export const isApiLoggingEnabled = (): boolean => AppConfig.API_CONFIG.enableLogging;
+export const isApiLoggingEnabled = (): boolean =>
+  AppConfig.API_CONFIG.enableLogging;
 
 /**
  * Check if offline cache is enabled
  */
-export const isOfflineCacheEnabled = (): boolean => AppConfig.API_CONFIG.enableOfflineCache;
+export const isOfflineCacheEnabled = (): boolean =>
+  AppConfig.API_CONFIG.enableOfflineCache;

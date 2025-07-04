@@ -29,10 +29,12 @@ describe('Store Configuration', () => {
     };
 
     // Dispatch login success
-    store.dispatch(loginSuccess({
-      token: 'test_token',
-      user: mockUser,
-    }));
+    store.dispatch(
+      loginSuccess({
+        token: 'test_token',
+        user: mockUser,
+      })
+    );
 
     let state = store.getState();
     expect(state.auth.isLoggedIn).toBe(true);

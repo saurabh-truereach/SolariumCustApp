@@ -51,13 +51,15 @@ const SafeAreaLayout: React.FC<SafeAreaLayoutProps> = ({
         <KeyboardAvoidingView
           style={styles.keyboardAvoidingView}
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+        >
           {scrollable ? (
             <ScrollView
               style={[styles.scrollView, {backgroundColor: bgColor}]}
               contentContainerStyle={[styles.scrollContent, style]}
               keyboardShouldPersistTaps="handled"
-              showsVerticalScrollIndicator={false}>
+              showsVerticalScrollIndicator={false}
+            >
               {children}
             </ScrollView>
           ) : (
@@ -75,7 +77,8 @@ const SafeAreaLayout: React.FC<SafeAreaLayoutProps> = ({
           style={[styles.scrollView, {backgroundColor: bgColor}]}
           contentContainerStyle={[styles.scrollContent, style]}
           keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}>
+          showsVerticalScrollIndicator={false}
+        >
           {children}
         </ScrollView>
       );
@@ -97,7 +100,8 @@ const SafeAreaLayout: React.FC<SafeAreaLayoutProps> = ({
       />
       <SafeAreaView
         style={[styles.container, {backgroundColor: bgColor}]}
-        edges={edges}>
+        edges={edges}
+      >
         {renderContent()}
       </SafeAreaView>
     </>

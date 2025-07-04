@@ -4,12 +4,7 @@
  */
 
 import React, {Component, ErrorInfo, ReactNode} from 'react';
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {colors, spacing, typography} from '../../theme/palette';
 
 /**
@@ -79,7 +74,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
    */
   resetError = () => {
     console.log('[ErrorBoundary] Resetting error state');
-    
+
     // Reset internal state
     this.setState({
       hasError: false,
@@ -119,7 +114,8 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
           {/* Main Error Message */}
           <Text style={styles.title}>Something went wrong</Text>
           <Text style={styles.description}>
-            We apologize for the inconvenience. The app encountered an unexpected issue and needs to recover.
+            We apologize for the inconvenience. The app encountered an
+            unexpected issue and needs to recover.
           </Text>
 
           {/* Error Details (development only) */}
@@ -140,14 +136,16 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
             <TouchableOpacity
               style={styles.primaryButton}
               onPress={this.resetError}
-              activeOpacity={0.8}>
+              activeOpacity={0.8}
+            >
               <Text style={styles.primaryButtonText}>🔄 Try Again</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.secondaryButton}
               onPress={this.reloadApp}
-              activeOpacity={0.8}>
+              activeOpacity={0.8}
+            >
               <Text style={styles.secondaryButtonText}>↻ Reload App</Text>
             </TouchableOpacity>
           </View>
@@ -157,9 +155,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
             <Text style={styles.supportText}>
               If this problem continues, please contact our support team.
             </Text>
-            <Text style={styles.supportEmail}>
-              support@solarium.in
-            </Text>
+            <Text style={styles.supportEmail}>support@solarium.in</Text>
           </View>
         </View>
       </View>

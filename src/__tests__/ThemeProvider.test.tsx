@@ -31,20 +31,22 @@ const TestComponent = () => {
 
 const TestComponentWithThemeUsage = () => {
   const theme = useAppTheme();
-  
+
   return (
     <View
       style={{
         backgroundColor: theme.colors.background,
         padding: theme.spacing.md,
       }}
-      testID="styled-component">
+      testID="styled-component"
+    >
       <Text
         style={{
           color: theme.colors.primary,
           fontSize: theme.typography.fontSize.lg,
         }}
-        testID="styled-text">
+        testID="styled-text"
+      >
         Themed Text
       </Text>
     </View>
@@ -68,22 +70,24 @@ describe('Enhanced ThemeProvider', () => {
           <TestComponent />
         </ThemeProvider>
       );
-      
+
       const testElement = getByTestId('theme-test');
       expect(testElement).toBeTruthy();
-      
+
       const primaryColor = getByTestId('primary-color');
       expect(primaryColor.children[0]).toBe(colors.primary);
     });
 
     it('throws error when useAppTheme is used outside provider', () => {
       // Suppress console.error for this test
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-      
+      const consoleSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
+
       expect(() => {
         renderWithProviders(<TestComponent />);
       }).toThrow('useAppTheme must be used within ThemeProvider');
-      
+
       consoleSpy.mockRestore();
     });
   });
@@ -95,7 +99,7 @@ describe('Enhanced ThemeProvider', () => {
           <TestComponent />
         </ThemeProvider>
       );
-      
+
       const primaryColor = getByTestId('primary-color');
       expect(primaryColor.children[0]).toBe('#2E7D32');
     });
@@ -106,7 +110,7 @@ describe('Enhanced ThemeProvider', () => {
           <TestComponent />
         </ThemeProvider>
       );
-      
+
       const spacingMd = getByTestId('spacing-md');
       expect(spacingMd.children[0]).toBe('16');
     });
@@ -117,7 +121,7 @@ describe('Enhanced ThemeProvider', () => {
           <TestComponent />
         </ThemeProvider>
       );
-      
+
       const fontSizeLg = getByTestId('font-size-lg');
       expect(fontSizeLg.children[0]).toBe('18');
     });
@@ -125,30 +129,30 @@ describe('Enhanced ThemeProvider', () => {
     it('includes all required theme properties', () => {
       const TestAllProperties = () => {
         const theme = useAppTheme();
-        
+
         // Test that all expected properties exist
         expect(theme.colors).toBeDefined();
         expect(theme.spacing).toBeDefined();
         expect(theme.typography).toBeDefined();
         expect(theme.shadows).toBeDefined();
         expect(theme.borderRadius).toBeDefined();
-        
+
         // Test specific color properties
         expect(theme.colors.primary).toBeDefined();
         expect(theme.colors.secondary).toBeDefined();
         expect(theme.colors.background).toBeDefined();
         expect(theme.colors.surface).toBeDefined();
         expect(theme.colors.error).toBeDefined();
-        
+
         return <Text testID="all-props-test">All props available</Text>;
       };
-      
+
       const {getByTestId} = renderWithProviders(
         <ThemeProvider>
           <TestAllProperties />
         </ThemeProvider>
       );
-      
+
       expect(getByTestId('all-props-test')).toBeTruthy();
     });
   });
@@ -160,10 +164,10 @@ describe('Enhanced ThemeProvider', () => {
           <TestComponentWithThemeUsage />
         </ThemeProvider>
       );
-      
+
       const styledComponent = getByTestId('styled-component');
       const styledText = getByTestId('styled-text');
-      
+
       expect(styledComponent).toBeTruthy();
       expect(styledText).toBeTruthy();
       expect(styledText.children[0]).toBe('Themed Text');
@@ -178,7 +182,7 @@ describe('Enhanced ThemeProvider', () => {
           </View>
         );
       };
-      
+
       const ParentComponent = () => {
         const theme = useAppTheme();
         return (
@@ -188,13 +192,13 @@ describe('Enhanced ThemeProvider', () => {
           </View>
         );
       };
-      
+
       const {getByTestId} = renderWithProviders(
         <ThemeProvider>
           <ParentComponent />
         </ThemeProvider>
       );
-      
+
       expect(getByTestId('parent-color').children[0]).toBe(colors.primary);
       expect(getByTestId('nested-color').children[0]).toBe(colors.secondary);
     });
@@ -203,53 +207,53 @@ describe('Enhanced ThemeProvider', () => {
   describe('Performance', () => {
     it('does not cause unnecessary re-renders', () => {
       let renderCount = 0;
-      
+
       const CountingComponent = () => {
         renderCount++;
         const theme = useAppTheme();
         return <Text testID="counting">{theme.colors.primary}</Text>;
       };
-      
+
       const {rerender} = renderWithProviders(
         <ThemeProvider>
           <CountingComponent />
         </ThemeProvider>
       );
-      
+
       const initialRenderCount = renderCount;
-      
+
       // Re-render with same props
       rerender(
         <ThemeProvider>
           <CountingComponent />
         </ThemeProvider>
       );
-      
+
       // Should only render twice (initial + rerender)
       expect(renderCount).toBe(initialRenderCount + 1);
     });
 
     it('memoizes theme object', () => {
       let themeObjects: any[] = [];
-      
+
       const ThemeCollector = () => {
         const theme = useAppTheme();
         themeObjects.push(theme);
         return <Text>Collecting</Text>;
       };
-      
+
       const {rerender} = renderWithProviders(
         <ThemeProvider>
           <ThemeCollector />
         </ThemeProvider>
       );
-      
+
       rerender(
         <ThemeProvider>
           <ThemeCollector />
         </ThemeProvider>
       );
-      
+
       // Theme objects should be the same reference
       expect(themeObjects[0]).toBe(themeObjects[1]);
     });
@@ -259,23 +263,21 @@ describe('Enhanced ThemeProvider', () => {
     it('handles invalid theme values gracefully', () => {
       const ComponentWithInvalidAccess = () => {
         const theme = useAppTheme();
-        
+
         // Try to access non-existent property
         const invalidValue = (theme as any).invalidProperty;
-        
+
         return (
-          <Text testID="invalid-access">
-            {invalidValue || 'fallback'}
-          </Text>
+          <Text testID="invalid-access">{invalidValue || 'fallback'}</Text>
         );
       };
-      
+
       const {getByTestId} = renderWithProviders(
         <ThemeProvider>
           <ComponentWithInvalidAccess />
         </ThemeProvider>
       );
-      
+
       expect(getByTestId('invalid-access').children[0]).toBe('fallback');
     });
   });
@@ -284,20 +286,20 @@ describe('Enhanced ThemeProvider', () => {
     it('integrates with Paper components', () => {
       const PaperIntegrationTest = () => {
         const theme = useAppTheme();
-        
+
         // Verify that Paper theme is available
         expect(theme.fonts).toBeDefined();
         expect(theme.colors.primary).toBe(colors.primary);
-        
+
         return <Text testID="paper-integration">Paper integration works</Text>;
       };
-      
+
       const {getByTestId} = renderWithProviders(
         <ThemeProvider>
           <PaperIntegrationTest />
         </ThemeProvider>
       );
-      
+
       expect(getByTestId('paper-integration')).toBeTruthy();
     });
   });

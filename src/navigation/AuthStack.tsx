@@ -30,7 +30,8 @@ const AuthStack: React.FC = () => {
         cardStyle: {
           backgroundColor: theme.colors.background,
         },
-      }}>
+      }}
+    >
       <Stack.Screen
         name="Login"
         component={LoginScreen}

@@ -50,11 +50,7 @@ export type {
   SendOtpResponse,
 } from './auth';
 
-export type {
-  Service,
-  ServiceCategory,
-  GetServicesRequest,
-} from './services';
+export type {Service, ServiceCategory, GetServicesRequest} from './services';
 
 export type {
   Lead,

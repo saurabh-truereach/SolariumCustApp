@@ -19,14 +19,14 @@ jest.mock('react-native-encrypted-storage', () => ({
 
 describe('baseQuery', () => {
   let store: any;
-  
+
   beforeEach(() => {
     store = configureStore({
       reducer: {
         auth: authReducer,
       },
     });
-    
+
     jest.clearAllMocks();
     (global.fetch as jest.Mock).mockClear();
   });
@@ -63,7 +63,7 @@ describe('baseQuery', () => {
       expect.stringContaining('test-endpoint'),
       expect.objectContaining({
         headers: expect.objectContaining({
-          'Authorization': 'Bearer test_token',
+          Authorization: 'Bearer test_token',
         }),
       })
     );

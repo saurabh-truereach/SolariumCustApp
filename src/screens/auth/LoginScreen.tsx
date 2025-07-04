@@ -4,15 +4,20 @@
  */
 
 import React, {useState, useCallback} from 'react';
-import {Alert, StyleSheet, View, KeyboardAvoidingView, Platform, TouchableOpacity} from 'react-native';
+import {
+  Alert,
+  StyleSheet,
+  View,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableOpacity,
+} from 'react-native';
 import {Text, TextInput} from 'react-native-paper';
 import type {AuthStackScreenProps} from '../../navigation/types';
 import {SafeAreaLayout, LoadingOverlay} from '../../components';
 import {useAppTheme} from '../../theme/ThemeProvider';
 import {useAppDispatch} from '../../hooks/useTypedRedux';
-import {
-  loginSuccess,
-} from '../../store/authSlice';
+import {loginSuccess} from '../../store/authSlice';
 import {useSendOtpMutation, useVerifyOtpMutation} from '../../api';
 import {
   createButtonA11yProps,
@@ -46,22 +51,28 @@ const LoginScreen: React.FC<Props> = ({navigation: _navigation}) => {
   /**
    * Handle phone number input change
    */
-  const handlePhoneChange = useCallback((value: string) => {
-    setPhone(value);
-    if (phoneError) {
-      setPhoneError('');
-    }
-  }, [phoneError]);
+  const handlePhoneChange = useCallback(
+    (value: string) => {
+      setPhone(value);
+      if (phoneError) {
+        setPhoneError('');
+      }
+    },
+    [phoneError]
+  );
 
   /**
    * Handle OTP input change
    */
-  const handleOtpChange = useCallback((value: string) => {
-    setOtp(value);
-    if (otpError) {
-      setOtpError('');
-    }
-  }, [otpError]);
+  const handleOtpChange = useCallback(
+    (value: string) => {
+      setOtp(value);
+      if (otpError) {
+        setOtpError('');
+      }
+    },
+    [otpError]
+  );
 
   /**
    * Validate phone number (10 digits)
@@ -95,7 +106,10 @@ const LoginScreen: React.FC<Props> = ({navigation: _navigation}) => {
     if (!validatePhone(phone)) {
       setPhoneError('Please enter a valid 10-digit phone number');
       announceFormErrors(['Please enter a valid 10-digit phone number']);
-      Alert.alert('Invalid Phone', 'Please enter a valid 10-digit phone number');
+      Alert.alert(
+        'Invalid Phone',
+        'Please enter a valid 10-digit phone number'
+      );
       return;
     }
 
@@ -108,12 +122,16 @@ const LoginScreen: React.FC<Props> = ({navigation: _navigation}) => {
       screenReaderUtils.announcePageChange('OTP Entry');
 
       Alert.alert(
-        'OTP Sent', 
+        'OTP Sent',
         result.message + '\n\nFor demo, use OTP: 123456',
         [{text: 'OK'}]
       );
     } catch (error: any) {
-      const errorMessage = error?.data?.error?.message || error?.data?.message || error?.message || 'Failed to send OTP';
+      const errorMessage =
+        error?.data?.error?.message ||
+        error?.data?.message ||
+        error?.message ||
+        'Failed to send OTP';
       setPhoneError(errorMessage);
       announceFormErrors([errorMessage]);
       Alert.alert('Error', errorMessage);
@@ -136,14 +154,16 @@ const LoginScreen: React.FC<Props> = ({navigation: _navigation}) => {
       screenReaderUtils.announceLoading(true, 'login');
 
       const result = await verifyOtp({phone, otp}).unwrap();
-      
+
       // Dispatch login success to Redux store
-      dispatch(loginSuccess({
-        token: result.token,
-        refreshToken: result.refreshToken,
-        user: result.user,
-      }));
-      
+      dispatch(
+        loginSuccess({
+          token: result.token,
+          refreshToken: result.refreshToken,
+          user: result.user,
+        })
+      );
+
       // Announce successful login
       screenReaderUtils.announceSuccess('Login successful');
       screenReaderUtils.announcePageChange('Home');
@@ -151,7 +171,11 @@ const LoginScreen: React.FC<Props> = ({navigation: _navigation}) => {
       // Navigation will happen automatically via RootNavigator
     } catch (error: any) {
       // Extract the correct error message from RTK Query structure
-      const errorMessage = error?.data?.error?.message || error?.data?.message || error?.message || 'Login failed';
+      const errorMessage =
+        error?.data?.error?.message ||
+        error?.data?.message ||
+        error?.message ||
+        'Login failed';
       setOtpError(errorMessage);
       announceFormErrors([errorMessage]);
       Alert.alert('Login Failed', errorMessage);
@@ -175,42 +199,53 @@ const LoginScreen: React.FC<Props> = ({navigation: _navigation}) => {
   return (
     <SafeAreaLayout
       keyboardAvoiding
-      {...createTextA11yProps('Login Form', 'text', a11yTestIds.loginForm)}>
+      {...createTextA11yProps('Login Form', 'text', a11yTestIds.loginForm)}
+    >
       <KeyboardAvoidingView
         style={[styles.container, {backgroundColor: theme.colors.background}]}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
         {/* Header */}
         <View style={styles.header}>
           <Text
             style={[styles.title, {color: theme.colors.primary}]}
-            {...createTextA11yProps('Solarium Login', 'header', a11yTestIds.headerTitle)}>
+            {...createTextA11yProps(
+              'Solarium Login',
+              'header',
+              a11yTestIds.headerTitle
+            )}
+          >
             Solarium Login
           </Text>
           <Text
             style={[styles.subtitle, {color: theme.colors.onSurface}]}
-            {...createTextA11yProps('Enter your phone number to continue')}>
+            {...createTextA11yProps('Enter your phone number to continue')}
+          >
             Enter your phone number to continue
           </Text>
         </View>
 
         {/* Form */}
-        <View 
+        <View
           style={styles.form}
-          {...createTextA11yProps('Login form', 'text')}>
+          {...createTextA11yProps('Login form', 'text')}
+        >
           {!otpSent ? (
             // Phone Input Section
             <>
-              <Text 
+              <Text
                 style={[styles.label, {color: theme.colors.onSurface}]}
-                {...createTextA11yProps('Phone Number (required)')}>
+                {...createTextA11yProps('Phone Number (required)')}
+              >
                 Phone Number *
               </Text>
               <TextInput
                 style={[
                   styles.input,
                   {
-                    borderColor: phoneError ? theme.colors.error : theme.colors.outline,
+                    borderColor: phoneError
+                      ? theme.colors.error
+                      : theme.colors.outline,
                     color: theme.colors.onSurface,
                   },
                 ]}
@@ -229,11 +264,15 @@ const LoginScreen: React.FC<Props> = ({navigation: _navigation}) => {
                   a11yTestIds.phoneInput
                 )}
               />
-              
+
               {phoneError ? (
-                <Text 
+                <Text
                   style={[styles.errorText, {color: theme.colors.error}]}
-                  {...createErrorA11yProps(phoneError, a11yTestIds.errorMessage)}>
+                  {...createErrorA11yProps(
+                    phoneError,
+                    a11yTestIds.errorMessage
+                  )}
+                >
                   {phoneError}
                 </Text>
               ) : null}
@@ -242,9 +281,10 @@ const LoginScreen: React.FC<Props> = ({navigation: _navigation}) => {
                 style={[
                   styles.button,
                   {
-                    backgroundColor: validatePhone(phone) && !isLoading
-                      ? theme.colors.primary 
-                      : theme.colors.surfaceVariant,
+                    backgroundColor:
+                      validatePhone(phone) && !isLoading
+                        ? theme.colors.primary
+                        : theme.colors.surfaceVariant,
                   },
                 ]}
                 onPress={handleSendOtp}
@@ -254,16 +294,19 @@ const LoginScreen: React.FC<Props> = ({navigation: _navigation}) => {
                   'Tap to send one-time password to your phone number',
                   !validatePhone(phone) || isLoading,
                   a11yTestIds.sendOtpButton
-                )}>
+                )}
+              >
                 <Text
                   style={[
                     styles.buttonText,
                     {
-                      color: validatePhone(phone) && !isLoading
-                        ? theme.colors.onPrimary 
-                        : theme.colors.onSurfaceVariant,
+                      color:
+                        validatePhone(phone) && !isLoading
+                          ? theme.colors.onPrimary
+                          : theme.colors.onSurfaceVariant,
                     },
-                  ]}>
+                  ]}
+                >
                   {isLoading ? 'Sending...' : 'Send OTP'}
                 </Text>
               </TouchableOpacity>
@@ -271,22 +314,26 @@ const LoginScreen: React.FC<Props> = ({navigation: _navigation}) => {
           ) : (
             // OTP Input Section
             <>
-              <Text 
+              <Text
                 style={[styles.label, {color: theme.colors.onSurface}]}
-                {...createTextA11yProps('One-time password (required)')}>
+                {...createTextA11yProps('One-time password (required)')}
+              >
                 Enter OTP *
               </Text>
-              <Text 
+              <Text
                 style={[styles.otpInfo, {color: theme.colors.onSurfaceVariant}]}
-                {...createTextA11yProps(`OTP sent to ${phone}`)}>
+                {...createTextA11yProps(`OTP sent to ${phone}`)}
+              >
                 OTP sent to {phone}
               </Text>
-              
+
               <TextInput
                 style={[
                   styles.input,
                   {
-                    borderColor: otpError ? theme.colors.error : theme.colors.outline,
+                    borderColor: otpError
+                      ? theme.colors.error
+                      : theme.colors.outline,
                     color: theme.colors.onSurface,
                   },
                 ]}
@@ -305,11 +352,12 @@ const LoginScreen: React.FC<Props> = ({navigation: _navigation}) => {
                   a11yTestIds.otpInput
                 )}
               />
-              
+
               {otpError ? (
-                <Text 
+                <Text
                   style={[styles.errorText, {color: theme.colors.error}]}
-                  {...createErrorA11yProps(otpError, a11yTestIds.errorMessage)}>
+                  {...createErrorA11yProps(otpError, a11yTestIds.errorMessage)}
+                >
                   {otpError}
                 </Text>
               ) : null}
@@ -318,9 +366,10 @@ const LoginScreen: React.FC<Props> = ({navigation: _navigation}) => {
                 style={[
                   styles.button,
                   {
-                    backgroundColor: validateOtp(otp) && !isLoading
-                      ? theme.colors.primary 
-                      : theme.colors.surfaceVariant,
+                    backgroundColor:
+                      validateOtp(otp) && !isLoading
+                        ? theme.colors.primary
+                        : theme.colors.surfaceVariant,
                   },
                 ]}
                 onPress={handleLogin}
@@ -330,16 +379,19 @@ const LoginScreen: React.FC<Props> = ({navigation: _navigation}) => {
                   'Tap to login with the entered one-time password',
                   !validateOtp(otp) || isLoading,
                   a11yTestIds.loginButton
-                )}>
+                )}
+              >
                 <Text
                   style={[
                     styles.buttonText,
                     {
-                      color: validateOtp(otp) && !isLoading
-                        ? theme.colors.onPrimary 
-                        : theme.colors.onSurfaceVariant,
+                      color:
+                        validateOtp(otp) && !isLoading
+                          ? theme.colors.onPrimary
+                          : theme.colors.onSurfaceVariant,
                     },
-                  ]}>
+                  ]}
+                >
                   {isLoading ? 'Logging in...' : 'Login'}
                 </Text>
               </TouchableOpacity>
@@ -353,7 +405,8 @@ const LoginScreen: React.FC<Props> = ({navigation: _navigation}) => {
                   'Tap to go back and enter a different phone number',
                   isLoading,
                   a11yTestIds.backButton
-                )}>
+                )}
+              >
                 <Text style={[styles.linkText, {color: theme.colors.primary}]}>
                   Change Phone Number
                 </Text>
@@ -363,20 +416,31 @@ const LoginScreen: React.FC<Props> = ({navigation: _navigation}) => {
 
           {/* Demo Instructions */}
           {__DEV__ && (
-            <View 
-              style={[styles.demoCard, {backgroundColor: theme.colors.secondaryContainer}]}
-              {...createTextA11yProps('Demo instructions')}>
-              <Text 
-                style={[styles.demoTitle, {color: theme.colors.onSecondaryContainer}]}
-                {...createTextA11yProps('Demo Instructions', 'header')}>
+            <View
+              style={[
+                styles.demoCard,
+                {backgroundColor: theme.colors.secondaryContainer},
+              ]}
+              {...createTextA11yProps('Demo instructions')}
+            >
+              <Text
+                style={[
+                  styles.demoTitle,
+                  {color: theme.colors.onSecondaryContainer},
+                ]}
+                {...createTextA11yProps('Demo Instructions', 'header')}
+              >
                 Demo Instructions
               </Text>
-              <Text 
-                style={[styles.demoText, {color: theme.colors.onSecondaryContainer}]}
-                {...createTextA11yProps('Demo usage instructions')}>
-                • Enter any 10-digit phone number{'\n'}
-                • Use OTP: 123456{'\n'}
-                • Other OTPs will show error message
+              <Text
+                style={[
+                  styles.demoText,
+                  {color: theme.colors.onSecondaryContainer},
+                ]}
+                {...createTextA11yProps('Demo usage instructions')}
+              >
+                • Enter any 10-digit phone number{'\n'}• Use OTP: 123456{'\n'}•
+                Other OTPs will show error message
               </Text>
             </View>
           )}
@@ -384,10 +448,7 @@ const LoginScreen: React.FC<Props> = ({navigation: _navigation}) => {
       </KeyboardAvoidingView>
 
       {/* Loading Overlay */}
-      <LoadingOverlay
-        visible={isLoading}
-        message="Authenticating..."
-      />
+      <LoadingOverlay visible={isLoading} message="Authenticating..." />
     </SafeAreaLayout>
   );
 };

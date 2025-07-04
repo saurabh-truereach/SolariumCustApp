@@ -19,14 +19,17 @@ describe('API Integration', () => {
       );
 
       expect(promise).toBeDefined();
-      
+
       // Clean up
       promise.abort();
     });
 
     it('should handle verifyOtp success', async () => {
       const result = await store.dispatch(
-        authApi.endpoints.verifyOtp.initiate({phone: '1234567890', otp: '123456'})
+        authApi.endpoints.verifyOtp.initiate({
+          phone: '1234567890',
+          otp: '123456',
+        })
       );
 
       expect(result.data).toBeDefined();
@@ -36,7 +39,10 @@ describe('API Integration', () => {
 
     it('should handle verifyOtp failure', async () => {
       const result = await store.dispatch(
-        authApi.endpoints.verifyOtp.initiate({phone: '1234567890', otp: '000000'})
+        authApi.endpoints.verifyOtp.initiate({
+          phone: '1234567890',
+          otp: '000000',
+        })
       );
 
       expect(result.error).toBeDefined();
@@ -108,10 +114,10 @@ describe('API Integration', () => {
     it('should handle cache invalidation', () => {
       // Invalidate auth cache
       store.dispatch(authApi.util.invalidateTags(['User']));
-      
+
       // Invalidate services cache
       store.dispatch(servicesApi.util.invalidateTags(['Service']));
-      
+
       // Invalidate leads cache
       store.dispatch(leadsApi.util.invalidateTags(['Lead']));
 
@@ -146,7 +152,10 @@ describe('API Integration', () => {
     it('should handle API errors with proper format', async () => {
       // This test relies on the demo implementation returning errors for invalid OTP
       const result = await store.dispatch(
-        authApi.endpoints.verifyOtp.initiate({phone: '1234567890', otp: 'invalid'})
+        authApi.endpoints.verifyOtp.initiate({
+          phone: '1234567890',
+          otp: 'invalid',
+        })
       );
 
       expect(result.error).toBeDefined();

@@ -17,18 +17,23 @@ const ServicesScreen: React.FC<Props> = () => {
 
   return (
     <SafeAreaLayout>
-      <View style={[styles.container, {backgroundColor: theme.colors.background}]}>
+      <View
+        style={[styles.container, {backgroundColor: theme.colors.background}]}
+      >
         <Card style={styles.card}>
           <Card.Content>
             <Text
               variant="headlineMedium"
-              style={[styles.title, {color: theme.colors.primary}]}>
+              style={[styles.title, {color: theme.colors.primary}]}
+            >
               Our Services
             </Text>
             <Text
               variant="bodyLarge"
-              style={[styles.description, {color: theme.colors.onSurface}]}>
-              Solar installation and maintenance services will be displayed here.
+              style={[styles.description, {color: theme.colors.onSurface}]}
+            >
+              Solar installation and maintenance services will be displayed
+              here.
             </Text>
           </Card.Content>
         </Card>

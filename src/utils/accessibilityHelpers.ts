@@ -17,25 +17,25 @@ export const a11yTestIds = {
   loginButton: 'login-button',
   backButton: 'back-button',
   errorMessage: 'error-message',
-  
+
   // Home screen
   welcomeMessage: 'welcome-message',
   userInfo: 'user-info',
   logoutButton: 'logout-button',
   statusCard: 'status-card',
-  
+
   // Common elements
   loadingIndicator: 'loading-indicator',
   errorBoundary: 'error-boundary',
   navigationTab: 'navigation-tab',
   backNavigation: 'back-navigation',
-  
+
   // Form elements
   textInput: 'text-input',
   submitButton: 'submit-button',
   cancelButton: 'cancel-button',
   confirmButton: 'confirm-button',
-  
+
   // Content elements
   contentCard: 'content-card',
   listItem: 'list-item',
@@ -123,7 +123,9 @@ export const createTextInputA11yProps = (
   // Note: TextInput components have built-in accessibility behavior, so we omit accessibilityRole
   accessibilityLabel: label + (required ? ' (required)' : ''),
   accessibilityHint: hint,
-  accessibilityState: error ? {...a11yStates.enabled, invalid: true} : a11yStates.enabled,
+  accessibilityState: error
+    ? {...a11yStates.enabled, invalid: true}
+    : a11yStates.enabled,
   testID: testID,
 });
 
@@ -230,32 +232,44 @@ export const setAccessibilityFocus = (reactTag: number) => {
 /**
  * Validate accessibility props
  */
-export const validateA11yProps = (props: any): {
+export const validateA11yProps = (
+  props: any
+): {
   isValid: boolean;
   warnings: string[];
 } => {
   const warnings: string[] = [];
-  
+
   // Check if accessible elements have labels
-  if (props.accessible && !props.accessibilityLabel && !props.accessibilityLabelledBy) {
+  if (
+    props.accessible &&
+    !props.accessibilityLabel &&
+    !props.accessibilityLabelledBy
+  ) {
     warnings.push('Accessible element missing accessibilityLabel');
   }
-  
+
   // Check if buttons have proper roles
   if (props.onPress && !props.accessibilityRole) {
     warnings.push('Pressable element missing accessibilityRole');
   }
-  
+
   // Check if text inputs have proper roles
   if (props.onChangeText && props.accessibilityRole !== 'textInput') {
     warnings.push('Text input missing proper accessibilityRole');
   }
-  
+
   // Check if images have alt text
-  if (props.source && !props.accessibilityLabel && !props.accessibilityElementsHidden) {
-    warnings.push('Image missing accessibilityLabel or accessibilityElementsHidden');
+  if (
+    props.source &&
+    !props.accessibilityLabel &&
+    !props.accessibilityElementsHidden
+  ) {
+    warnings.push(
+      'Image missing accessibilityLabel or accessibilityElementsHidden'
+    );
   }
-  
+
   return {
     isValid: warnings.length === 0,
     warnings,
@@ -277,39 +291,45 @@ export const checkColorContrast = (
   // Convert hex to RGB
   const hexToRgb = (hex: string) => {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-      r: parseInt(result[1], 16),
-      g: parseInt(result[2], 16),
-      b: parseInt(result[3], 16),
-    } : null;
+    return result
+      ? {
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16),
+        }
+      : null;
   };
-  
+
   // Calculate relative luminance
   const getRelativeLuminance = (rgb: {r: number; g: number; b: number}) => {
     const {r, g, b} = rgb;
     const [rs, gs, bs] = [r, g, b].map(c => {
       const color = c / 255;
-      return color <= 0.03928 ? color / 12.92 : Math.pow((color + 0.055) / 1.055, 2.4);
+      return color <= 0.03928
+        ? color / 12.92
+        : Math.pow((color + 0.055) / 1.055, 2.4);
     });
     return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
   };
-  
+
   const fgRgb = hexToRgb(foreground);
   const bgRgb = hexToRgb(background);
-  
+
   if (!fgRgb || !bgRgb) {
     return {ratio: 0, isAACompliant: false, isAAACompliant: false};
   }
-  
+
   const fgLuminance = getRelativeLuminance(fgRgb);
   const bgLuminance = getRelativeLuminance(bgRgb);
-  
-  const ratio = (Math.max(fgLuminance, bgLuminance) + 0.05) / (Math.min(fgLuminance, bgLuminance) + 0.05);
-  
+
+  const ratio =
+    (Math.max(fgLuminance, bgLuminance) + 0.05) /
+    (Math.min(fgLuminance, bgLuminance) + 0.05);
+
   // WCAG 2.1 standards
   const aaThreshold = isLargeText ? 3 : 4.5;
   const aaaThreshold = isLargeText ? 4.5 : 7;
-  
+
   return {
     ratio,
     isAACompliant: ratio >= aaThreshold,
@@ -328,21 +348,21 @@ export const focusHelpers = {
     // Implementation would depend on focus management library
     console.log('[A11y] Focus moved to next element');
   },
-  
+
   /**
    * Move focus to previous focusable element
    */
   focusPrevious: () => {
     console.log('[A11y] Focus moved to previous element');
   },
-  
+
   /**
    * Trap focus within container
    */
   trapFocus: (containerId: string) => {
     console.log(`[A11y] Focus trapped in container: ${containerId}`);
   },
-  
+
   /**
    * Release focus trap
    */
@@ -361,25 +381,27 @@ export const screenReaderUtils = {
   announcePageChange: (pageName: string) => {
     announceForAccessibility(`Navigated to ${pageName}`);
   },
-  
+
   /**
    * Announce form errors
    */
   announceFormError: (errors: string[]) => {
-    const message = `Form has ${errors.length} error${errors.length === 1 ? '' : 's'}: ${errors.join(', ')}`;
+    const message = `Form has ${errors.length} error${
+      errors.length === 1 ? '' : 's'
+    }: ${errors.join(', ')}`;
     announceForAccessibility(message);
   },
-  
+
   /**
    * Announce loading state
    */
   announceLoading: (isLoading: boolean, context?: string) => {
-    const message = isLoading 
-      ? `Loading${context ? ` ${context}` : ''}` 
+    const message = isLoading
+      ? `Loading${context ? ` ${context}` : ''}`
       : `Loading complete${context ? ` for ${context}` : ''}`;
     announceForAccessibility(message);
   },
-  
+
   /**
    * Announce success message
    */
@@ -397,12 +419,12 @@ export const a11yTestHelpers = {
    */
   findA11yIssues: (componentTree: any): string[] => {
     const issues: string[] = [];
-    
+
     // This would be implemented with a proper accessibility testing engine
     // For now, return empty array
     return issues;
   },
-  
+
   /**
    * Check if component meets accessibility standards
    */
@@ -410,13 +432,13 @@ export const a11yTestHelpers = {
     const issues = a11yTestHelpers.findA11yIssues(component);
     return issues.length === 0;
   },
-  
+
   /**
    * Generate accessibility report
    */
   generateA11yReport: (componentTree: any) => {
     const issues = a11yTestHelpers.findA11yIssues(componentTree);
-    
+
     return {
       totalIssues: issues.length,
       criticalIssues: issues.filter(issue => issue.includes('critical')).length,

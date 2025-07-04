@@ -26,7 +26,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   ui: uiReducer,
   cache: cacheReducer,
-  
+
   // API slices
   [authApi.reducerPath]: authApi.reducer,
   [servicesApi.reducerPath]: servicesApi.reducer,
@@ -61,7 +61,7 @@ const createPersistedReducer = () => {
           console.warn('[Store] Invalid persisted state, using original state');
           return originalState;
         }
-        
+
         // Custom reconciliation logic
         return {
           ...originalState,
@@ -125,17 +125,20 @@ export const store = configureStore({
         },
       },
     })
-    // Add RTK Query middleware
-    .concat(authApi.middleware)
-    .concat(servicesApi.middleware)
-    .concat(leadsApi.middleware),
+      // Add RTK Query middleware
+      .concat(authApi.middleware)
+      .concat(servicesApi.middleware)
+      .concat(leadsApi.middleware),
   devTools: __DEV__ && {
     name: 'Solarium Customer App',
     trace: true,
     traceLimit: 25,
     // Add RTK Query devtools support
-    actionSanitizer: (action) => {
-      if (action.type?.includes('executeQuery') || action.type?.includes('executeMutation')) {
+    actionSanitizer: action => {
+      if (
+        action.type?.includes('executeQuery') ||
+        action.type?.includes('executeMutation')
+      ) {
         return {
           ...action,
           // Sanitize large payloads for devtools
@@ -145,7 +148,7 @@ export const store = configureStore({
       return action;
     },
   },
-  enhancers: (getDefaultEnhancers) => {
+  enhancers: getDefaultEnhancers => {
     return getDefaultEnhancers({
       autoBatch: true,
     });
@@ -155,16 +158,20 @@ export const store = configureStore({
 /**
  * Create persistor with enhanced error handling
  */
-export const persistor = persistStore(store, {
-  manualPersist: false,
-}, () => {
-  console.log('[Store] Persistence initialization complete');
-  
-  // Debug info in development
-  if (__DEV__) {
-    console.log('[Store] Initial state:', store.getState());
+export const persistor = persistStore(
+  store,
+  {
+    manualPersist: false,
+  },
+  () => {
+    console.log('[Store] Persistence initialization complete');
+
+    // Debug info in development
+    if (__DEV__) {
+      console.log('[Store] Initial state:', store.getState());
+    }
   }
-});
+);
 
 /**
  * Setup RTK Query listeners for refetch on focus/reconnect
@@ -176,11 +183,11 @@ setupListeners(store.dispatch);
  */
 persistor.subscribe(() => {
   const state = persistor.getState();
-  
+
   if (state.bootstrapped) {
     console.log('[Store] Rehydration complete');
   }
-  
+
   if (state.registry.length > 0) {
     console.log('[Store] Registered persistors:', state.registry);
   }
@@ -200,22 +207,22 @@ export const storeUtils = {
    * Get current state
    */
   getState: () => store.getState(),
-  
+
   /**
    * Check if store is rehydrated
    */
   isRehydrated: () => persistor.getState().bootstrapped,
-  
+
   /**
    * Wait for rehydration to complete
    */
   waitForRehydration: (): Promise<void> => {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       if (persistor.getState().bootstrapped) {
         resolve();
         return;
       }
-      
+
       const unsubscribe = persistor.subscribe(() => {
         if (persistor.getState().bootstrapped) {
           unsubscribe();
@@ -224,37 +231,41 @@ export const storeUtils = {
       });
     });
   },
-  
+
   /**
    * Reset store to initial state
    */
   reset: async () => {
     await persistor.purge();
-    
+
     // Reset RTK Query cache
     store.dispatch(authApi.util.resetApiState());
     store.dispatch(servicesApi.util.resetApiState());
     store.dispatch(leadsApi.util.resetApiState());
-    
+
     persistor.persist();
   },
-  
+
   /**
    * Invalidate all API caches
    */
   invalidateAPIs: () => {
     store.dispatch(authApi.util.invalidateTags(['User', 'Auth']));
-    store.dispatch(servicesApi.util.invalidateTags(['Service', 'ServiceCategory']));
-    store.dispatch(leadsApi.util.invalidateTags(['Lead', 'Quotation', 'Document']));
+    store.dispatch(
+      servicesApi.util.invalidateTags(['Service', 'ServiceCategory'])
+    );
+    store.dispatch(
+      leadsApi.util.invalidateTags(['Lead', 'Quotation', 'Document'])
+    );
   },
-  
+
   /**
    * Purge all persisted state
    */
   purge: async () => {
     await persistor.purge();
   },
-  
+
   /**
    * Flush pending persistence operations
    */

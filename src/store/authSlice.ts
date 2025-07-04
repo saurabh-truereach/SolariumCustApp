@@ -4,7 +4,11 @@
  */
 
 import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
-import {setStorageItem, removeStorageItem, STORAGE_KEYS} from '../utils/storageHelpers';
+import {
+  setStorageItem,
+  removeStorageItem,
+  STORAGE_KEYS,
+} from '../utils/storageHelpers';
 import {authApi} from '../api/endpoints/auth';
 
 /**
@@ -61,10 +65,10 @@ export const sendOtpThunk = createAsyncThunk(
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
       // In real app, this would call your OTP API
       // const response = await otpService.sendOtp(phone);
-      
+
       // For demo, always succeed
       console.log(`[Auth] OTP sent to ${phone}`);
       return {phone};
@@ -80,14 +84,11 @@ export const sendOtpThunk = createAsyncThunk(
  */
 export const loginWithOtp = createAsyncThunk(
   'auth/loginWithOtp',
-  async (
-    {phone, otp}: {phone: string; otp: string},
-    {rejectWithValue}
-  ) => {
+  async ({phone, otp}: {phone: string; otp: string}, {rejectWithValue}) => {
     try {
       // Simulate API call - replace with real API in later tasks
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
       // Demo: Accept OTP 123456, reject others
       if (otp !== '123456') {
         throw new Error('Invalid OTP. Please try again.');
@@ -101,7 +102,7 @@ export const loginWithOtp = createAsyncThunk(
       };
 
       const token = `demo_token_${Date.now()}`;
-      
+
       // Store in encrypted storage
       await setStorageItem(STORAGE_KEYS.AUTH_TOKEN, token);
       await setStorageItem(STORAGE_KEYS.USER_DATA, user);
@@ -116,26 +117,23 @@ export const loginWithOtp = createAsyncThunk(
 /**
  * Logout and clear storage
  */
-export const logoutUser = createAsyncThunk(
-  'auth/logout',
-  async (_, {}) => {
-    try {
-      // Clear encrypted storage
-      await removeStorageItem(STORAGE_KEYS.AUTH_TOKEN);
-      await removeStorageItem(STORAGE_KEYS.USER_DATA);
-      
-      // In real app, call logout API to invalidate token
-      // await authService.logout();
-      
-      console.log('[Auth] Logout successful');
-      return true;
-    } catch (error) {
-      console.error('[Auth] Logout error:', error);
-      // Still dispatch logout even if storage clear fails
-      return true;
-    }
+export const logoutUser = createAsyncThunk('auth/logout', async (_, {}) => {
+  try {
+    // Clear encrypted storage
+    await removeStorageItem(STORAGE_KEYS.AUTH_TOKEN);
+    await removeStorageItem(STORAGE_KEYS.USER_DATA);
+
+    // In real app, call logout API to invalidate token
+    // await authService.logout();
+
+    console.log('[Auth] Logout successful');
+    return true;
+  } catch (error) {
+    console.error('[Auth] Logout error:', error);
+    // Still dispatch logout even if storage clear fails
+    return true;
   }
-);
+});
 /**
  * Refresh Token Async Thunk
  */
@@ -145,25 +143,25 @@ export const refreshTokenThunk = createAsyncThunk(
     try {
       const state = getState() as {auth: AuthState};
       const {refreshToken} = state.auth;
-      
+
       if (!refreshToken) {
         return rejectWithValue('No refresh token available');
       }
-      
+
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       // In real app, call refresh token API
       // const response = await authService.refreshToken(refreshToken);
-      
+
       const newTokens = {
         token: 'refreshed_token_' + Date.now(),
         refreshToken: 'refreshed_refresh_' + Date.now(),
       };
-      
+
       // Store new token
       await setStorageItem(STORAGE_KEYS.AUTH_TOKEN, newTokens.token);
-      
+
       console.log('[Auth] Token refreshed successfully');
       return newTokens;
     } catch (error: any) {
@@ -207,16 +205,19 @@ export const logoutUserEnhanced = createAsyncThunk(
         await dispatch(authApi.endpoints.logoutUser.initiate()).unwrap();
       } catch (error) {
         // Continue with logout even if API call fails
-        console.warn('[Auth] Logout API call failed, continuing with local logout:', error);
+        console.warn(
+          '[Auth] Logout API call failed, continuing with local logout:',
+          error
+        );
       }
 
       // Clear local storage
       await removeStorageItem(STORAGE_KEYS.AUTH_TOKEN);
       await removeStorageItem(STORAGE_KEYS.USER_DATA);
-      
+
       // Reset API cache
       dispatch(authApi.util.resetApiState());
-      
+
       return true;
     } catch (error) {
       console.error('[Auth] Logout error:', error);
@@ -225,7 +226,6 @@ export const logoutUserEnhanced = createAsyncThunk(
     }
   }
 );
-
 
 // ===============================
 // SLICE
@@ -242,7 +242,7 @@ const authSlice = createSlice({
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
-    
+
     // Clear error
     clearError: state => {
       state.error = undefined;
@@ -309,7 +309,7 @@ const authSlice = createSlice({
         state.isSendingOtp = false;
         state.error = action.payload as string;
       })
-      
+
       // Login
       .addCase(loginWithOtp.pending, state => {
         state.isLoading = true;
@@ -332,7 +332,7 @@ const authSlice = createSlice({
         state.user = undefined;
         state.error = action.payload as string;
       })
-      
+
       // Logout
       .addCase(logoutUser.pending, state => {
         state.isLoading = true;
@@ -350,7 +350,7 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload as string;
       })
-      
+
       // Refresh Token
       .addCase(refreshTokenThunk.pending, state => {
         state.isLoading = true;
@@ -403,7 +403,7 @@ const authSlice = createSlice({
         state.user = undefined;
         state.lastLoginTime = undefined;
         state.error = undefined;
-      })            
+      });
   },
 });
 
@@ -424,9 +424,12 @@ export default authSlice.reducer;
 // SELECTORS
 // ===============================
 
-export const selectIsLoggedIn = (state: {auth: AuthState}) => state.auth.isLoggedIn;
-export const selectIsLoading = (state: {auth: AuthState}) => state.auth.isLoading;
-export const selectIsSendingOtp = (state: {auth: AuthState}) => state.auth.isSendingOtp;
+export const selectIsLoggedIn = (state: {auth: AuthState}) =>
+  state.auth.isLoggedIn;
+export const selectIsLoading = (state: {auth: AuthState}) =>
+  state.auth.isLoading;
+export const selectIsSendingOtp = (state: {auth: AuthState}) =>
+  state.auth.isSendingOtp;
 export const selectUser = (state: {auth: AuthState}) => state.auth.user;
 export const selectToken = (state: {auth: AuthState}) => state.auth.token;
 export const selectAuthError = (state: {auth: AuthState}) => state.auth.error;

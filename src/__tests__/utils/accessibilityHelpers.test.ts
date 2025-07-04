@@ -89,7 +89,7 @@ describe('Accessibility Helpers', () => {
     describe('createTextA11yProps', () => {
       it('should create text props', () => {
         const props = createTextA11yProps('Hello World', 'text', 'hello-text');
-        
+
         expect(props).toEqual({
           accessible: true,
           accessibilityRole: 'text',
@@ -100,7 +100,7 @@ describe('Accessibility Helpers', () => {
 
       it('should create header props', () => {
         const props = createTextA11yProps('Page Title', 'header');
-        
+
         expect(props.accessibilityRole).toBe('header');
         expect(props.accessibilityLabel).toBe('Page Title');
       });
@@ -108,8 +108,12 @@ describe('Accessibility Helpers', () => {
 
     describe('createImageA11yProps', () => {
       it('should create image props', () => {
-        const props = createImageA11yProps('Solar panel image', false, 'solar-img');
-        
+        const props = createImageA11yProps(
+          'Solar panel image',
+          false,
+          'solar-img'
+        );
+
         expect(props).toEqual({
           accessible: true,
           accessibilityRole: 'image',
@@ -121,7 +125,7 @@ describe('Accessibility Helpers', () => {
 
       it('should handle decorative images', () => {
         const props = createImageA11yProps('Decoration', true);
-        
+
         expect(props.accessible).toBe(false);
         expect(props.accessibilityLabel).toBeUndefined();
         expect(props.accessibilityElementsHidden).toBe(true);
@@ -130,8 +134,11 @@ describe('Accessibility Helpers', () => {
 
     describe('createLoadingA11yProps', () => {
       it('should create loading props', () => {
-        const props = createLoadingA11yProps('Loading data', 'loading-indicator');
-        
+        const props = createLoadingA11yProps(
+          'Loading data',
+          'loading-indicator'
+        );
+
         expect(props).toEqual({
           accessible: true,
           accessibilityRole: 'progressbar',
@@ -150,7 +157,7 @@ describe('Accessibility Helpers', () => {
     describe('createErrorA11yProps', () => {
       it('should create error props', () => {
         const props = createErrorA11yProps('Invalid input', 'error-msg');
-        
+
         expect(props).toEqual({
           accessible: true,
           accessibilityRole: 'alert',
@@ -171,7 +178,7 @@ describe('Accessibility Helpers', () => {
           accessibilityRole: 'button',
           onPress: () => {},
         };
-        
+
         const result = validateA11yProps(validProps);
         expect(result.isValid).toBe(true);
         expect(result.warnings).toHaveLength(0);
@@ -182,10 +189,12 @@ describe('Accessibility Helpers', () => {
           accessible: true,
           // Missing accessibilityLabel
         };
-        
+
         const result = validateA11yProps(invalidProps);
         expect(result.isValid).toBe(false);
-        expect(result.warnings).toContain('Accessible element missing accessibilityLabel');
+        expect(result.warnings).toContain(
+          'Accessible element missing accessibilityLabel'
+        );
       });
 
       it('should identify missing role for pressable', () => {
@@ -193,10 +202,12 @@ describe('Accessibility Helpers', () => {
           onPress: () => {},
           // Missing accessibilityRole
         };
-        
+
         const result = validateA11yProps(invalidProps);
         expect(result.isValid).toBe(false);
-        expect(result.warnings).toContain('Pressable element missing accessibilityRole');
+        expect(result.warnings).toContain(
+          'Pressable element missing accessibilityRole'
+        );
       });
 
       it('should identify missing role for text input', () => {
@@ -204,10 +215,12 @@ describe('Accessibility Helpers', () => {
           onChangeText: () => {},
           // Missing or wrong accessibilityRole
         };
-        
+
         const result = validateA11yProps(invalidProps);
         expect(result.isValid).toBe(false);
-        expect(result.warnings).toContain('Text input missing proper accessibilityRole');
+        expect(result.warnings).toContain(
+          'Text input missing proper accessibilityRole'
+        );
       });
 
       it('should identify missing image alt text', () => {
@@ -215,10 +228,12 @@ describe('Accessibility Helpers', () => {
           source: {uri: 'image.jpg'},
           // Missing accessibilityLabel and accessibilityElementsHidden
         };
-        
+
         const result = validateA11yProps(invalidProps);
         expect(result.isValid).toBe(false);
-        expect(result.warnings).toContain('Image missing accessibilityLabel or accessibilityElementsHidden');
+        expect(result.warnings).toContain(
+          'Image missing accessibilityLabel or accessibilityElementsHidden'
+        );
       });
     });
   });
@@ -227,7 +242,7 @@ describe('Accessibility Helpers', () => {
     describe('checkColorContrast', () => {
       it('should calculate perfect contrast', () => {
         const result = checkColorContrast('#000000', '#FFFFFF');
-        
+
         expect(result.ratio).toBeCloseTo(21, 1);
         expect(result.isAACompliant).toBe(true);
         expect(result.isAAACompliant).toBe(true);
@@ -235,7 +250,7 @@ describe('Accessibility Helpers', () => {
 
       it('should calculate poor contrast', () => {
         const result = checkColorContrast('#FFFFFF', '#EEEEEE');
-        
+
         expect(result.ratio).toBeLessThan(2);
         expect(result.isAACompliant).toBe(false);
         expect(result.isAAACompliant).toBe(false);
@@ -243,7 +258,7 @@ describe('Accessibility Helpers', () => {
 
       it('should handle medium contrast', () => {
         const result = checkColorContrast('#666666', '#FFFFFF');
-        
+
         expect(result.ratio).toBeGreaterThan(3);
         expect(result.ratio).toBeLessThan(7);
       });
@@ -251,7 +266,7 @@ describe('Accessibility Helpers', () => {
       it('should handle large text thresholds', () => {
         const normalText = checkColorContrast('#999999', '#FFFFFF', false);
         const largeText = checkColorContrast('#999999', '#FFFFFF', true);
-        
+
         expect(normalText.ratio).toEqual(largeText.ratio);
         // Large text has lower threshold requirements
         if (largeText.ratio >= 3 && largeText.ratio < 4.5) {
@@ -262,7 +277,7 @@ describe('Accessibility Helpers', () => {
 
       it('should handle invalid colors', () => {
         const result = checkColorContrast('invalid', '#FFFFFF');
-        
+
         expect(result.ratio).toBe(0);
         expect(result.isAACompliant).toBe(false);
         expect(result.isAAACompliant).toBe(false);
@@ -270,7 +285,7 @@ describe('Accessibility Helpers', () => {
 
       it('should handle colors without hash', () => {
         const result = checkColorContrast('000000', 'FFFFFF');
-        
+
         expect(result.ratio).toBeCloseTo(21, 1);
         expect(result.isAACompliant).toBe(true);
       });
@@ -296,7 +311,7 @@ describe('Accessibility Helpers', () => {
           'errorMessage',
           'loadingIndicator',
         ];
-        
+
         requiredIds.forEach(id => {
           expect(a11yTestIds).toHaveProperty(id);
         });
@@ -338,8 +353,9 @@ describe('Accessibility Helpers', () => {
     describe('announceForAccessibility', () => {
       it('should announce messages', () => {
         const mockAnnounce = jest.fn();
-        require('react-native').AccessibilityInfo.announceForAccessibility = mockAnnounce;
-        
+        require('react-native').AccessibilityInfo.announceForAccessibility =
+          mockAnnounce;
+
         announceForAccessibility('Test message');
         expect(mockAnnounce).toHaveBeenCalledWith('Test message');
       });
@@ -348,17 +364,21 @@ describe('Accessibility Helpers', () => {
     describe('isScreenReaderEnabled', () => {
       it('should check screen reader status', async () => {
         const mockCheck = jest.fn(() => Promise.resolve(true));
-        require('react-native').AccessibilityInfo.isScreenReaderEnabled = mockCheck;
-        
+        require('react-native').AccessibilityInfo.isScreenReaderEnabled =
+          mockCheck;
+
         const result = await isScreenReaderEnabled();
         expect(result).toBe(true);
         expect(mockCheck).toHaveBeenCalled();
       });
 
       it('should handle errors gracefully', async () => {
-        const mockCheck = jest.fn(() => Promise.reject(new Error('Access denied')));
-        require('react-native').AccessibilityInfo.isScreenReaderEnabled = mockCheck;
-        
+        const mockCheck = jest.fn(() =>
+          Promise.reject(new Error('Access denied'))
+        );
+        require('react-native').AccessibilityInfo.isScreenReaderEnabled =
+          mockCheck;
+
         const result = await isScreenReaderEnabled();
         expect(result).toBe(false);
       });

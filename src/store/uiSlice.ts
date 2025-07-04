@@ -45,10 +45,7 @@ const uiSlice = createSlice({
     hideModal: state => {
       state.activeModal = undefined;
     },
-    setNetworkStatus: (
-      state,
-      action: PayloadAction<'online' | 'offline'>
-    ) => {
+    setNetworkStatus: (state, action: PayloadAction<'online' | 'offline'>) => {
       state.networkStatus = action.payload;
     },
   },
@@ -61,6 +58,8 @@ export default uiSlice.reducer;
 
 // Selectors
 export const selectIsLoading = (state: {ui: UIState}) => state.ui.isLoading;
-export const selectLoadingMessage = (state: {ui: UIState}) => state.ui.loadingMessage;
+export const selectLoadingMessage = (state: {ui: UIState}) =>
+  state.ui.loadingMessage;
 export const selectActiveModal = (state: {ui: UIState}) => state.ui.activeModal;
-export const selectNetworkStatus = (state: {ui: UIState}) => state.ui.networkStatus;
+export const selectNetworkStatus = (state: {ui: UIState}) =>
+  state.ui.networkStatus;

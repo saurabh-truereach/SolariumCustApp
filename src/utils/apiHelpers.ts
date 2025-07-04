@@ -74,7 +74,9 @@ export const buildApiUrl = (endpoint: string): string => {
  */
 export const buildQueryParams = (params: Record<string, any>): string => {
   const cleanParams = Object.entries(params)
-    .filter(([_, value]) => value !== undefined && value !== null && value !== '')
+    .filter(
+      ([_, value]) => value !== undefined && value !== null && value !== ''
+    )
     .map(([key, value]) => [key, String(value)]);
 
   if (cleanParams.length === 0) {
@@ -94,7 +96,7 @@ export const getRequestHeaders = (
 ): Record<string, string> => {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    'Accept': 'application/json',
+    Accept: 'application/json',
     'X-App-Version': '1.0.0',
     'X-Platform': 'mobile',
     ...additionalHeaders,
@@ -192,11 +194,11 @@ export const calculateRetryDelay = (
  */
 export const formatFileSize = (bytes: number): string => {
   if (bytes === 0) return '0 Bytes';
-  
+
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  
+
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
 
@@ -234,7 +236,9 @@ export const validateFileUpload = (
   }
 
   // Check file extension
-  const extension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
+  const extension = file.name
+    .toLowerCase()
+    .substring(file.name.lastIndexOf('.'));
   if (!allowedExtensions.includes(extension)) {
     return {
       valid: false,
@@ -258,18 +262,18 @@ export const debugApiCall = (
   if (!__DEV__) return;
 
   console.group(`[API] ${method} ${url}`);
-  
+
   if (request) {
     console.log('Request:', request);
   }
-  
+
   if (response) {
     console.log('Response:', response);
   }
-  
+
   if (error) {
     console.error('Error:', error);
   }
-  
+
   console.groupEnd();
 };

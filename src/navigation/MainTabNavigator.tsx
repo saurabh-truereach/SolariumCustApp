@@ -40,7 +40,8 @@ const MainTabNavigator: React.FC = () => {
         headerTitleStyle: {
           fontWeight: 'bold',
         },
-      }}>
+      }}
+    >
       <Tab.Screen
         name="Home"
         component={HomeScreen}

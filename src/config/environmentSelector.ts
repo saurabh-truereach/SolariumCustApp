@@ -17,7 +17,9 @@ export const setEnvironment = (env: Environment): void => {
     selectedEnvironment = env;
     console.log(`[Environment] Manually set to: ${env}`);
   } else {
-    console.warn('[Environment] Manual environment setting disabled in production');
+    console.warn(
+      '[Environment] Manual environment setting disabled in production'
+    );
   }
 };
 
@@ -43,7 +45,7 @@ export const getEffectiveEnvironment = (): Environment => {
   if (__DEV__ && selectedEnvironment) {
     return selectedEnvironment;
   }
-  
+
   // Fallback to automatic detection
   return __DEV__ ? 'development' : 'production';
 };

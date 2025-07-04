@@ -83,7 +83,11 @@ describe('PersistenceLoadingOverlay', () => {
 
   it('displays progress bar when progress is provided', () => {
     const {getByText} = renderWithProviders(
-      <PersistenceLoadingOverlay visible={true} stage="rehydrating" progress={50} />
+      <PersistenceLoadingOverlay
+        visible={true}
+        stage="rehydrating"
+        progress={50}
+      />
     );
 
     expect(getByText('50%')).toBeTruthy();

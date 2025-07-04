@@ -25,7 +25,10 @@ export const API_CACHE_KEYS = {
 /**
  * Set item in encrypted storage
  */
-export const setStorageItem = async (key: string, value: any): Promise<void> => {
+export const setStorageItem = async (
+  key: string,
+  value: any
+): Promise<void> => {
   try {
     const jsonValue = JSON.stringify(value);
     await EncryptedStorage.setItem(key, jsonValue);
@@ -39,7 +42,9 @@ export const setStorageItem = async (key: string, value: any): Promise<void> => 
 /**
  * Get item from encrypted storage
  */
-export const getStorageItem = async <T = any>(key: string): Promise<T | null> => {
+export const getStorageItem = async <T = any>(
+  key: string
+): Promise<T | null> => {
   try {
     const jsonValue = await EncryptedStorage.getItem(key);
     if (jsonValue === null) {
@@ -97,26 +102,30 @@ export const hasStorageItem = async (key: string): Promise<boolean> => {
 /**
  * Get multiple storage items at once
  */
-export const getMultipleStorageItems = async <T = any>(keys: string[]): Promise<Record<string, T | null>> => {
+export const getMultipleStorageItems = async <T = any>(
+  keys: string[]
+): Promise<Record<string, T | null>> => {
   const result: Record<string, T | null> = {};
-  
+
   await Promise.all(
-    keys.map(async (key) => {
+    keys.map(async key => {
       result[key] = await getStorageItem<T>(key);
     })
   );
-  
+
   return result;
 };
 
 /**
  * Set multiple storage items at once
  */
-export const setMultipleStorageItems = async (items: Record<string, any>): Promise<void> => {
-  const promises = Object.entries(items).map(([key, value]) => 
+export const setMultipleStorageItems = async (
+  items: Record<string, any>
+): Promise<void> => {
+  const promises = Object.entries(items).map(([key, value]) =>
     setStorageItem(key, value)
   );
-  
+
   await Promise.all(promises);
 };
 
@@ -136,11 +145,11 @@ export const getStorageInfo = async (): Promise<{
     // Test if storage is available
     const testKey = 'storage_test';
     const testValue = 'test';
-    
+
     await setStorageItem(testKey, testValue);
     const retrieved = await getStorageItem(testKey);
     await removeStorageItem(testKey);
-    
+
     return {
       available: retrieved === testValue,
       // Note: React Native doesn't provide quota info
@@ -159,17 +168,17 @@ export const getStorageInfo = async (): Promise<{
 export const backupStorage = async (): Promise<Record<string, any>> => {
   try {
     const backup: Record<string, any> = {};
-    
+
     // Get all known keys
     const keys = Object.values(STORAGE_KEYS);
-    
+
     for (const key of keys) {
       const value = await getStorageItem(key);
       if (value !== null) {
         backup[key] = value;
       }
     }
-    
+
     return backup;
   } catch (error) {
     console.error('[Storage] Backup failed:', error);
@@ -180,7 +189,9 @@ export const backupStorage = async (): Promise<Record<string, any>> => {
 /**
  * Restore storage from backup
  */
-export const restoreStorage = async (backup: Record<string, any>): Promise<void> => {
+export const restoreStorage = async (
+  backup: Record<string, any>
+): Promise<void> => {
   try {
     for (const [key, value] of Object.entries(backup)) {
       if (value !== null) {
@@ -202,20 +213,22 @@ export const migrateStorage = async (
   migrationFn: (data: any) => any
 ): Promise<void> => {
   try {
-    console.log(`[Storage] Migrating from version ${fromVersion} to ${toVersion}`);
-    
+    console.log(
+      `[Storage] Migrating from version ${fromVersion} to ${toVersion}`
+    );
+
     // Backup current data
     const backup = await backupStorage();
-    
+
     // Apply migration
     const migratedData = migrationFn(backup);
-    
+
     // Clear current storage
     await clearStorage();
-    
+
     // Restore migrated data
     await restoreStorage(migratedData);
-    
+
     console.log('[Storage] Migration completed successfully');
   } catch (error) {
     console.error('[Storage] Migration failed:', error);
@@ -226,14 +239,18 @@ export const migrateStorage = async (
 /**
  * Store API cache data
  */
-export const setApiCache = async (key: string, data: any, ttl?: number): Promise<void> => {
+export const setApiCache = async (
+  key: string,
+  data: any,
+  ttl?: number
+): Promise<void> => {
   try {
     const cacheItem = {
       data,
       timestamp: Date.now(),
       ttl: ttl || 5 * 60 * 1000, // Default 5 minutes
     };
-    
+
     await setStorageItem(key, cacheItem);
   } catch (error) {
     console.error(`[Storage] Error setting API cache ${key}:`, error);
@@ -250,11 +267,11 @@ export const getApiCache = async <T = any>(key: string): Promise<T | null> => {
       timestamp: number;
       ttl: number;
     }>(key);
-    
+
     if (!cacheItem) {
       return null;
     }
-    
+
     // Check if cache is expired
     const now = Date.now();
     if (now - cacheItem.timestamp > cacheItem.ttl) {
@@ -262,7 +279,7 @@ export const getApiCache = async <T = any>(key: string): Promise<T | null> => {
       await removeStorageItem(key);
       return null;
     }
-    
+
     return cacheItem.data;
   } catch (error) {
     console.error(`[Storage] Error getting API cache ${key}:`, error);
@@ -277,13 +294,13 @@ export const clearExpiredApiCache = async (): Promise<void> => {
   try {
     const cacheKeys = Object.values(API_CACHE_KEYS);
     const now = Date.now();
-    
+
     for (const key of cacheKeys) {
       const cacheItem = await getStorageItem<{
         timestamp: number;
         ttl: number;
       }>(key);
-      
+
       if (cacheItem && now - cacheItem.timestamp > cacheItem.ttl) {
         await removeStorageItem(key);
         console.log(`[Storage] Cleared expired cache: ${key}`);
@@ -317,7 +334,10 @@ export const storeOfflineRequest = async (request: {
   timestamp: number;
 }): Promise<void> => {
   try {
-    const queue = await getStorageItem<typeof request[]>(API_CACHE_KEYS.OFFLINE_QUEUE) || [];
+    const queue =
+      (await getStorageItem<(typeof request)[]>(
+        API_CACHE_KEYS.OFFLINE_QUEUE
+      )) || [];
     queue.push(request);
     await setStorageItem(API_CACHE_KEYS.OFFLINE_QUEUE, queue);
   } catch (error) {
@@ -330,7 +350,7 @@ export const storeOfflineRequest = async (request: {
  */
 export const getOfflineRequestsQueue = async (): Promise<any[]> => {
   try {
-    return await getStorageItem<any[]>(API_CACHE_KEYS.OFFLINE_QUEUE) || [];
+    return (await getStorageItem<any[]>(API_CACHE_KEYS.OFFLINE_QUEUE)) || [];
   } catch (error) {
     console.error('[Storage] Error getting offline queue:', error);
     return [];

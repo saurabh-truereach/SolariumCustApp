@@ -1,23 +1,18 @@
 /**
  * Splash Screen Component
- * 
+ *
  * Initial screen shown while the app is loading.
  * This is a temporary placeholder that will be replaced
  * with proper navigation and authentication flow.
  */
 
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  StatusBar,
-} from 'react-native';
+import {View, Text, StyleSheet, StatusBar} from 'react-native';
 import Config from 'react-native-config';
 
 /**
  * SplashScreen Component
- * 
+ *
  * Displays app name and environment information during initial load
  */
 const SplashScreen: React.FC = () => {
@@ -26,12 +21,8 @@ const SplashScreen: React.FC = () => {
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
       <Text style={styles.title}>Solarium Customer App</Text>
       <Text style={styles.subtitle}>Solar Energy Solutions</Text>
-      <Text style={styles.environment}>
-        Environment: {Config.BASE_API_URL}
-      </Text>
-      <Text style={styles.version}>
-        Version: {Config.VERSION}
-      </Text>
+      <Text style={styles.environment}>Environment: {Config.BASE_API_URL}</Text>
+      <Text style={styles.version}>Version: {Config.VERSION}</Text>
     </View>
   );
 };

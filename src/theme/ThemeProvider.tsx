@@ -4,11 +4,7 @@
  */
 
 import React, {createContext, useContext} from 'react';
-import {
-  MD3LightTheme,
-  PaperProvider,
-  configureFonts,
-} from 'react-native-paper';
+import {MD3LightTheme, PaperProvider, configureFonts} from 'react-native-paper';
 import type {MD3Theme} from 'react-native-paper';
 import {colors, spacing, typography, shadows, borderRadius} from './palette';
 

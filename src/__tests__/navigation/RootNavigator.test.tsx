@@ -47,13 +47,12 @@ const createTestStore = (initialState = {}) =>
     preloadedState: initialState,
   });
 
-const renderWithProviders = (component: React.ReactElement, initialState = {}) => {
+const renderWithProviders = (
+  component: React.ReactElement,
+  initialState = {}
+) => {
   const store = createTestStore(initialState);
-  return renderer.create(
-    <Provider store={store}>
-      {component}
-    </Provider>
-  );
+  return renderer.create(<Provider store={store}>{component}</Provider>);
 };
 
 describe('RootNavigator', () => {

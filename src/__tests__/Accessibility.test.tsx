@@ -32,7 +32,7 @@ describe('Accessibility Tests', () => {
           false,
           'submit-button'
         );
-        
+
         expect(props).toEqual({
           accessible: true,
           accessibilityRole: 'button',
@@ -45,7 +45,7 @@ describe('Accessibility Tests', () => {
 
       it('should handle disabled state correctly', () => {
         const props = createButtonA11yProps('Disabled Button', undefined, true);
-        
+
         expect(props.accessibilityState).toEqual({disabled: true});
       });
     });
@@ -59,7 +59,7 @@ describe('Accessibility Tests', () => {
           false,
           'email-input'
         );
-        
+
         expect(props).toEqual({
           accessible: true,
           accessibilityRole: 'textbox',
@@ -77,7 +77,7 @@ describe('Accessibility Tests', () => {
           false,
           true
         );
-        
+
         expect(props.accessibilityState).toEqual({
           disabled: false,
           invalid: true,
@@ -93,9 +93,9 @@ describe('Accessibility Tests', () => {
           accessibilityRole: 'button',
           onPress: () => {},
         };
-        
+
         const result = validateA11yProps(validProps);
-        
+
         expect(result.isValid).toBe(true);
         expect(result.warnings).toHaveLength(0);
       });
@@ -106,11 +106,13 @@ describe('Accessibility Tests', () => {
           // Missing accessibilityLabel
           onPress: () => {},
         };
-        
+
         const result = validateA11yProps(invalidProps);
-        
+
         expect(result.isValid).toBe(false);
-        expect(result.warnings).toContain('Accessible element missing accessibilityLabel');
+        expect(result.warnings).toContain(
+          'Accessible element missing accessibilityLabel'
+        );
       });
 
       it('should identify missing accessibility roles', () => {
@@ -118,11 +120,13 @@ describe('Accessibility Tests', () => {
           onPress: () => {},
           // Missing accessibilityRole
         };
-        
+
         const result = validateA11yProps(invalidProps);
-        
+
         expect(result.isValid).toBe(false);
-        expect(result.warnings).toContain('Pressable element missing accessibilityRole');
+        expect(result.warnings).toContain(
+          'Pressable element missing accessibilityRole'
+        );
       });
     });
 
@@ -130,7 +134,7 @@ describe('Accessibility Tests', () => {
       it('should check color contrast correctly', () => {
         // Black text on white background - should pass AA and AAA
         const result = checkColorContrast('#000000', '#FFFFFF');
-        
+
         expect(result.ratio).toBeCloseTo(21, 1);
         expect(result.isAACompliant).toBe(true);
         expect(result.isAAACompliant).toBe(true);
@@ -139,7 +143,7 @@ describe('Accessibility Tests', () => {
       it('should fail for poor contrast', () => {
         // Light gray on white - should fail
         const result = checkColorContrast('#CCCCCC', '#FFFFFF');
-        
+
         expect(result.ratio).toBeLessThan(4.5);
         expect(result.isAACompliant).toBe(false);
         expect(result.isAAACompliant).toBe(false);
@@ -149,10 +153,12 @@ describe('Accessibility Tests', () => {
         // Medium gray on white
         const normalText = checkColorContrast('#777777', '#FFFFFF', false);
         const largeText = checkColorContrast('#777777', '#FFFFFF', true);
-        
+
         // Same ratio but different compliance based on text size
         expect(normalText.ratio).toEqual(largeText.ratio);
-        expect(largeText.isAACompliant).toBe(normalText.isAACompliant || largeText.ratio >= 3);
+        expect(largeText.isAACompliant).toBe(
+          normalText.isAACompliant || largeText.ratio >= 3
+        );
       });
     });
   });
@@ -161,7 +167,7 @@ describe('Accessibility Tests', () => {
     describe('Login Screen Accessibility', () => {
       it('should have proper accessibility structure', () => {
         const {getByRole, getByLabelText} = renderWithProviders(<Login />);
-        
+
         // Check if main form elements are accessible
         expect(getByLabelText('Phone number input')).toBeTruthy();
         expect(getByLabelText('Send OTP button')).toBeTruthy();
@@ -169,10 +175,10 @@ describe('Accessibility Tests', () => {
 
       it('should have proper focus order', () => {
         const {getByLabelText} = renderWithProviders(<Login />);
-        
+
         const phoneInput = getByLabelText('Phone number input');
         const sendButton = getByLabelText('Send OTP button');
-        
+
         // Phone input should be focusable
         expect(phoneInput.props.accessible).toBe(true);
         expect(sendButton.props.accessible).toBe(true);
@@ -180,32 +186,34 @@ describe('Accessibility Tests', () => {
 
       it('should announce form errors', () => {
         const {getByLabelText, getByText} = renderWithProviders(<Login />);
-        
+
         const phoneInput = getByLabelText('Phone number input');
-        
+
         // Enter invalid phone number
         fireEvent.changeText(phoneInput, '123');
-        
+
         // Should show error message
-        expect(getByText('Please enter a valid 10-digit phone number')).toBeTruthy();
+        expect(
+          getByText('Please enter a valid 10-digit phone number')
+        ).toBeTruthy();
       });
 
       it('should have proper button states', () => {
         const {getByLabelText} = renderWithProviders(<Login />);
-        
+
         const sendButton = getByLabelText('Send OTP button');
-        
+
         // Should be disabled initially
         expect(sendButton.props.accessibilityState?.disabled).toBe(true);
       });
 
       it('should provide context in OTP screen', async () => {
         const {getByLabelText, getByText} = renderWithProviders(<Login />);
-        
+
         const phoneInput = getByLabelText('Phone number input');
         fireEvent.changeText(phoneInput, '1234567890');
         fireEvent.press(getByText('Send OTP'));
-        
+
         // Should show context about OTP
         expect(getByText('OTP sent to 1234567890')).toBeTruthy();
       });
@@ -214,14 +222,14 @@ describe('Accessibility Tests', () => {
     describe('Home Screen Accessibility', () => {
       it('should have proper heading structure', () => {
         const {getByLabelText} = renderWithProviders(<HomePlaceholder />);
-        
+
         // Should have welcome message as accessible element
         expect(getByLabelText('Welcome message')).toBeTruthy();
       });
 
       it('should have proper logout button accessibility', () => {
         const {queryByLabelText} = renderWithProviders(<HomePlaceholder />);
-        
+
         if (__DEV__) {
           const logoutButton = queryByLabelText('Logout button');
           expect(logoutButton).toBeTruthy();
@@ -237,18 +245,15 @@ describe('Accessibility Tests', () => {
             <Text>Content</Text>
           </SafeAreaLayout>
         );
-        
+
         expect(getByTestId('safe-area')).toBeTruthy();
       });
 
       it('should make LoadingOverlay accessible', () => {
         const {getByLabelText} = render(
-          <LoadingOverlay 
-            visible={true} 
-            message="Loading data..." 
-          />
+          <LoadingOverlay visible={true} message="Loading data..." />
         );
-        
+
         // Loading indicator should be announced
         expect(getByLabelText('Loading data...')).toBeTruthy();
       });
@@ -257,13 +262,13 @@ describe('Accessibility Tests', () => {
         const ThrowError = () => {
           throw new Error('Test error');
         };
-        
+
         const {getByText} = render(
           <ErrorBoundary>
             <ThrowError />
           </ErrorBoundary>
         );
-        
+
         // Error message should be accessible
         expect(getByText(/Something went wrong/)).toBeTruthy();
       });
@@ -286,7 +291,7 @@ describe('Accessibility Tests', () => {
         disabled,
         'custom-button'
       );
-      
+
       return (
         <TouchableOpacity onPress={onPress} {...a11yProps}>
           <Text>{title}</Text>
@@ -314,7 +319,7 @@ describe('Accessibility Tests', () => {
         error,
         'custom-input'
       );
-      
+
       return (
         <TextInput
           value={value}
@@ -330,11 +335,11 @@ describe('Accessibility Tests', () => {
       const {getByLabelText} = render(
         <AccessibleButton title="Submit" onPress={mockPress} />
       );
-      
+
       const button = getByLabelText('Submit');
       expect(button.props.accessibilityRole).toBe('button');
       expect(button.props.accessibilityHint).toBe('Tap to submit');
-      
+
       fireEvent.press(button);
       expect(mockPress).toHaveBeenCalled();
     });
@@ -349,11 +354,11 @@ describe('Accessibility Tests', () => {
           required={true}
         />
       );
-      
+
       const input = getByLabelText('Email (required)');
       expect(input.props.accessibilityRole).toBe('textbox');
       expect(input.props.accessibilityHint).toBe('Enter your email');
-      
+
       fireEvent.changeText(input, 'test@example.com');
       expect(mockChange).toHaveBeenCalledWith('test@example.com');
     });
@@ -362,7 +367,7 @@ describe('Accessibility Tests', () => {
       const {getByLabelText} = render(
         <AccessibleButton title="Disabled" onPress={() => {}} disabled={true} />
       );
-      
+
       const button = getByLabelText('Disabled');
       expect(button.props.accessibilityState.disabled).toBe(true);
     });
@@ -376,7 +381,7 @@ describe('Accessibility Tests', () => {
           error={true}
         />
       );
-      
+
       const input = getByLabelText('Email');
       expect(input.props.accessibilityState.invalid).toBe(true);
     });
@@ -391,8 +396,9 @@ describe('Accessibility Tests', () => {
     it('should announce messages', () => {
       // Mock the announcement function
       const mockAnnounce = jest.fn();
-      require('react-native').AccessibilityInfo.announceForAccessibility = mockAnnounce;
-      
+      require('react-native').AccessibilityInfo.announceForAccessibility =
+        mockAnnounce;
+
       announceForAccessibility('Test announcement');
       expect(mockAnnounce).toHaveBeenCalledWith('Test announcement');
     });
@@ -401,10 +407,10 @@ describe('Accessibility Tests', () => {
   describe('Focus Management', () => {
     it('should manage focus correctly in forms', () => {
       const {getByLabelText} = renderWithProviders(<Login />);
-      
+
       const phoneInput = getByLabelText('Phone number input');
       const sendButton = getByLabelText('Send OTP button');
-      
+
       // Both elements should be focusable
       expect(phoneInput.props.accessible).toBe(true);
       expect(sendButton.props.accessible).toBe(true);
@@ -414,7 +420,7 @@ describe('Accessibility Tests', () => {
       const {getByTestId} = render(
         <LoadingOverlay visible={true} message="Loading..." />
       );
-      
+
       // Loading overlay should be focusable
       const overlay = getByTestId('loading-overlay');
       expect(overlay).toBeTruthy();
@@ -425,9 +431,9 @@ describe('Accessibility Tests', () => {
     it('should validate app color palette', () => {
       const primaryColor = '#2E7D32';
       const backgroundColor = '#FFFFFF';
-      
+
       const contrast = checkColorContrast(primaryColor, backgroundColor);
-      
+
       expect(contrast.isAACompliant).toBe(true);
       expect(contrast.ratio).toBeGreaterThan(4.5);
     });
@@ -435,9 +441,9 @@ describe('Accessibility Tests', () => {
     it('should validate text colors', () => {
       const textColor = '#212121';
       const backgroundColor = '#FFFFFF';
-      
+
       const contrast = checkColorContrast(textColor, backgroundColor);
-      
+
       expect(contrast.isAACompliant).toBe(true);
       expect(contrast.isAAACompliant).toBe(true);
     });
@@ -445,9 +451,9 @@ describe('Accessibility Tests', () => {
     it('should validate error colors', () => {
       const errorColor = '#F44336';
       const backgroundColor = '#FFFFFF';
-      
+
       const contrast = checkColorContrast(errorColor, backgroundColor);
-      
+
       expect(contrast.isAACompliant).toBe(true);
     });
   });
@@ -461,7 +467,7 @@ describe('Accessibility Tests', () => {
 
     it('should use test IDs in components', () => {
       const {getByTestId} = renderWithProviders(<Login />);
-      
+
       // Login screen should use consistent test IDs
       expect(getByTestId).toBeDefined();
     });
@@ -470,8 +476,11 @@ describe('Accessibility Tests', () => {
   describe('Accessibility Reporting', () => {
     it('should generate accessibility report', () => {
       const mockComponent = <Text>Test</Text>;
-      const report = require('../utils/accessibilityHelpers').a11yTestHelpers.generateA11yReport(mockComponent);
-      
+      const report =
+        require('../utils/accessibilityHelpers').a11yTestHelpers.generateA11yReport(
+          mockComponent
+        );
+
       expect(report).toHaveProperty('totalIssues');
       expect(report).toHaveProperty('criticalIssues');
       expect(report).toHaveProperty('warnings');

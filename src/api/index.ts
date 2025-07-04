@@ -27,11 +27,11 @@ export {
   useGetCurrentUserQuery,
   useUpdateProfileMutation,
   useLogoutUserMutation,
-  
+
   // Services hooks
   useGetServicesQuery,
   useGetServiceCategoriesQuery,
-  
+
   // Leads hooks
   useGetLeadsQuery,
   useCreateLeadMutation,

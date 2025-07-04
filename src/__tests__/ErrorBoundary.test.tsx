@@ -35,13 +35,13 @@ describe('ErrorBoundary', () => {
 
   it('calls onError callback when error occurs', () => {
     const onError = jest.fn();
-    
+
     renderer.create(
       <ErrorBoundary onError={onError}>
         <ThrowError shouldThrow={true} />
       </ErrorBoundary>
     );
-    
+
     expect(onError).toHaveBeenCalled();
   });
 });

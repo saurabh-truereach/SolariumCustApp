@@ -31,7 +31,9 @@ const RoleBasedGuard: React.FC<RoleBasedGuardProps> = ({
 
   // Show loading overlay during authentication check
   if (isLoading) {
-    return <LoadingOverlay visible={true} message="Checking authentication..." />;
+    return (
+      <LoadingOverlay visible={true} message="Checking authentication..." />
+    );
   }
 
   // If authentication is required but user is not logged in

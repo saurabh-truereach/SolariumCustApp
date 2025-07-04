@@ -5,7 +5,11 @@
 import React from 'react';
 import {Alert} from 'react-native';
 import {fireEvent, waitFor, act} from '@testing-library/react-native';
-import {renderWithProviders, waitForAsync, asyncTest} from '../../utils/testUtils';
+import {
+  renderWithProviders,
+  waitForAsync,
+  asyncTest,
+} from '../../utils/testUtils';
 import Login from '../../screens/auth/LoginScreen';
 
 // Mock Alert
@@ -15,7 +19,7 @@ jest.spyOn(Alert, 'alert').mockImplementation(() => {});
 jest.mock('../../api', () => ({
   ...jest.requireActual('../../api'),
   useSendOtpMutation: () => [
-    jest.fn().mockImplementation((data) => ({
+    jest.fn().mockImplementation(data => ({
       unwrap: () => {
         if (data.phone === '1234567890') {
           return Promise.resolve({
@@ -36,7 +40,7 @@ jest.mock('../../api', () => ({
     {isLoading: false},
   ],
   useVerifyOtpMutation: () => [
-    jest.fn().mockImplementation((data) => ({
+    jest.fn().mockImplementation(data => ({
       unwrap: () => {
         if (data.otp === '123456') {
           return Promise.resolve({
@@ -76,7 +80,7 @@ describe('Enhanced Login Screen', () => {
 
     it('shows phone input initially', () => {
       const {getByPlaceholderText, getByText} = renderWithProviders(<Login />);
-      
+
       expect(getByPlaceholderText('Enter 10-digit phone number')).toBeTruthy();
       expect(getByText('Send OTP')).toBeTruthy();
       expect(getByText('Solarium Login')).toBeTruthy();
@@ -84,14 +88,16 @@ describe('Enhanced Login Screen', () => {
 
     it('has proper accessibility labels', () => {
       const {getByLabelText} = renderWithProviders(<Login />);
-      
+
       expect(getByLabelText('Phone number input')).toBeTruthy();
       expect(getByLabelText('Send OTP button')).toBeTruthy();
     });
 
     it('displays correct initial UI state', () => {
-      const {getByText, queryByPlaceholderText} = renderWithProviders(<Login />);
-      
+      const {getByText, queryByPlaceholderText} = renderWithProviders(
+        <Login />
+      );
+
       expect(getByText('Enter your phone number to continue')).toBeTruthy();
       expect(getByText('Phone Number *')).toBeTruthy();
       expect(queryByPlaceholderText('Enter 6-digit OTP')).toBeNull();
@@ -100,19 +106,24 @@ describe('Enhanced Login Screen', () => {
 
   describe('Phone Number Validation', () => {
     it('validates phone number correctly', async () => {
-      const {getByPlaceholderText, getByText, queryByText} = renderWithProviders(<Login />);
+      const {getByPlaceholderText, getByText, queryByText} =
+        renderWithProviders(<Login />);
       const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
-      
+
       // Test invalid phone number
       fireEvent.changeText(phoneInput, '123');
       await waitFor(() => {
-        expect(getByText('Please enter a valid 10-digit phone number')).toBeTruthy();
+        expect(
+          getByText('Please enter a valid 10-digit phone number')
+        ).toBeTruthy();
       });
-      
+
       // Test valid phone number
       fireEvent.changeText(phoneInput, '1234567890');
       await waitFor(() => {
-        expect(queryByText('Please enter a valid 10-digit phone number')).toBeNull();
+        expect(
+          queryByText('Please enter a valid 10-digit phone number')
+        ).toBeNull();
       });
     });
 
@@ -120,16 +131,16 @@ describe('Enhanced Login Screen', () => {
       const {getByPlaceholderText, getByText} = renderWithProviders(<Login />);
       const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
       const sendOtpButton = getByText('Send OTP');
-      
+
       // Initially disabled for empty input
       expect(sendOtpButton.props.accessibilityState?.disabled).toBe(true);
-      
+
       // Still disabled for invalid input
       fireEvent.changeText(phoneInput, '123');
       await waitFor(() => {
         expect(sendOtpButton.props.accessibilityState?.disabled).toBe(true);
       });
-      
+
       // Enabled for valid input
       fireEvent.changeText(phoneInput, '1234567890');
       await waitFor(() => {
@@ -138,9 +149,10 @@ describe('Enhanced Login Screen', () => {
     });
 
     it('handles various phone number formats', async () => {
-      const {getByPlaceholderText, getByText, queryByText} = renderWithProviders(<Login />);
+      const {getByPlaceholderText, getByText, queryByText} =
+        renderWithProviders(<Login />);
       const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
-      
+
       const testCases = [
         {input: '', shouldBeValid: false},
         {input: '123', shouldBeValid: false},
@@ -151,11 +163,12 @@ describe('Enhanced Login Screen', () => {
         {input: 'abcd567890', shouldBeValid: false}, // Contains letters
         {input: '123-456-7890', shouldBeValid: false}, // Contains dashes
       ];
-      
+
       for (const testCase of testCases) {
         fireEvent.changeText(phoneInput, testCase.input);
         await waitFor(() => {
-          const errorExists = queryByText('Please enter a valid 10-digit phone number') !== null;
+          const errorExists =
+            queryByText('Please enter a valid 10-digit phone number') !== null;
           if (testCase.shouldBeValid) {
             expect(errorExists).toBe(false);
           } else if (testCase.input.length > 0) {
@@ -170,25 +183,27 @@ describe('Enhanced Login Screen', () => {
     const setupOtpFlow = async () => {
       const {getByPlaceholderText, getByText} = renderWithProviders(<Login />);
       const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
-      
+
       fireEvent.changeText(phoneInput, '1234567890');
       fireEvent.press(getByText('Send OTP'));
-      
+
       await waitFor(() => {
         expect(getByPlaceholderText('Enter 6-digit OTP')).toBeTruthy();
       });
-      
+
       return {getByPlaceholderText, getByText};
     };
 
     it('transitions to OTP screen after sending OTP', async () => {
       await asyncTest(async () => {
-        const {getByPlaceholderText, getByText} = renderWithProviders(<Login />);
+        const {getByPlaceholderText, getByText} = renderWithProviders(
+          <Login />
+        );
         const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
-        
+
         fireEvent.changeText(phoneInput, '1234567890');
         fireEvent.press(getByText('Send OTP'));
-        
+
         await waitFor(() => {
           expect(getByPlaceholderText('Enter 6-digit OTP')).toBeTruthy();
           expect(getByText('OTP sent to 1234567890')).toBeTruthy();
@@ -199,12 +214,14 @@ describe('Enhanced Login Screen', () => {
 
     it('shows alert when OTP is sent', async () => {
       await asyncTest(async () => {
-        const {getByPlaceholderText, getByText} = renderWithProviders(<Login />);
+        const {getByPlaceholderText, getByText} = renderWithProviders(
+          <Login />
+        );
         const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
-        
+
         fireEvent.changeText(phoneInput, '1234567890');
         fireEvent.press(getByText('Send OTP'));
-        
+
         await waitFor(() => {
           expect(Alert.alert).toHaveBeenCalledWith(
             'OTP Sent',
@@ -217,15 +234,16 @@ describe('Enhanced Login Screen', () => {
 
     it('validates OTP correctly', async () => {
       await asyncTest(async () => {
-        const {getByPlaceholderText, getByText, queryByText} = await setupOtpFlow();
+        const {getByPlaceholderText, getByText, queryByText} =
+          await setupOtpFlow();
         const otpInput = getByPlaceholderText('Enter 6-digit OTP');
-        
+
         // Test invalid OTP
         fireEvent.changeText(otpInput, '123');
         await waitFor(() => {
           expect(getByText('Please enter a valid 6-digit OTP')).toBeTruthy();
         });
-        
+
         // Test valid OTP
         fireEvent.changeText(otpInput, '123456');
         await waitFor(() => {
@@ -239,16 +257,16 @@ describe('Enhanced Login Screen', () => {
         const {getByPlaceholderText, getByText} = await setupOtpFlow();
         const otpInput = getByPlaceholderText('Enter 6-digit OTP');
         const loginButton = getByText('Login');
-        
+
         // Initially disabled
         expect(loginButton.props.accessibilityState?.disabled).toBe(true);
-        
+
         // Still disabled for invalid OTP
         fireEvent.changeText(otpInput, '123');
         await waitFor(() => {
           expect(loginButton.props.accessibilityState?.disabled).toBe(true);
         });
-        
+
         // Enabled for valid OTP
         fireEvent.changeText(otpInput, '123456');
         await waitFor(() => {
@@ -260,11 +278,13 @@ describe('Enhanced Login Screen', () => {
     it('allows changing phone number from OTP screen', async () => {
       await asyncTest(async () => {
         const {getByPlaceholderText, getByText} = await setupOtpFlow();
-        
+
         fireEvent.press(getByText('Change Phone Number'));
-        
+
         await waitFor(() => {
-          expect(getByPlaceholderText('Enter 10-digit phone number')).toBeTruthy();
+          expect(
+            getByPlaceholderText('Enter 10-digit phone number')
+          ).toBeTruthy();
           expect(getByText('Send OTP')).toBeTruthy();
         });
       })();
@@ -274,18 +294,18 @@ describe('Enhanced Login Screen', () => {
       await asyncTest(async () => {
         const {getByPlaceholderText, getByText} = await setupOtpFlow();
         const otpInput = getByPlaceholderText('Enter 6-digit OTP');
-        
+
         // Enter some OTP
         fireEvent.changeText(otpInput, '123');
-        
+
         // Change phone number
         fireEvent.press(getByText('Change Phone Number'));
-        
+
         // Go back to OTP screen
         const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
         fireEvent.changeText(phoneInput, '1234567890');
         fireEvent.press(getByText('Send OTP'));
-        
+
         await waitFor(() => {
           const newOtpInput = getByPlaceholderText('Enter 6-digit OTP');
           expect(newOtpInput.props.value).toBe('');
@@ -297,22 +317,24 @@ describe('Enhanced Login Screen', () => {
   describe('Login Process', () => {
     it('handles successful login', async () => {
       await asyncTest(async () => {
-        const {getByPlaceholderText, getByText, store} = renderWithProviders(<Login />);
-        
+        const {getByPlaceholderText, getByText, store} = renderWithProviders(
+          <Login />
+        );
+
         // Navigate to OTP screen
         const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
         fireEvent.changeText(phoneInput, '1234567890');
         fireEvent.press(getByText('Send OTP'));
-        
+
         await waitFor(() => {
           expect(getByPlaceholderText('Enter 6-digit OTP')).toBeTruthy();
         });
-        
+
         // Enter correct OTP and login
         const otpInput = getByPlaceholderText('Enter 6-digit OTP');
         fireEvent.changeText(otpInput, '123456');
         fireEvent.press(getByText('Login'));
-        
+
         await waitFor(() => {
           const state = store.getState();
           expect(state.auth.isLoggedIn).toBe(true);
@@ -323,22 +345,24 @@ describe('Enhanced Login Screen', () => {
 
     it('handles login failure', async () => {
       await asyncTest(async () => {
-        const {getByPlaceholderText, getByText} = renderWithProviders(<Login />);
-        
+        const {getByPlaceholderText, getByText} = renderWithProviders(
+          <Login />
+        );
+
         // Navigate to OTP screen
         const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
         fireEvent.changeText(phoneInput, '1234567890');
         fireEvent.press(getByText('Send OTP'));
-        
+
         await waitFor(() => {
           expect(getByPlaceholderText('Enter 6-digit OTP')).toBeTruthy();
         });
-        
+
         // Enter incorrect OTP
         const otpInput = getByPlaceholderText('Enter 6-digit OTP');
         fireEvent.changeText(otpInput, '000000');
         fireEvent.press(getByText('Login'));
-        
+
         await waitFor(() => {
           expect(getByText('Invalid OTP')).toBeTruthy();
         });
@@ -347,25 +371,27 @@ describe('Enhanced Login Screen', () => {
 
     it('shows loading state during login', async () => {
       await asyncTest(async () => {
-        const {getByPlaceholderText, getByText} = renderWithProviders(<Login />);
-        
+        const {getByPlaceholderText, getByText} = renderWithProviders(
+          <Login />
+        );
+
         // Navigate to OTP screen
         const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
         fireEvent.changeText(phoneInput, '1234567890');
         fireEvent.press(getByText('Send OTP'));
-        
+
         await waitFor(() => {
           expect(getByPlaceholderText('Enter 6-digit OTP')).toBeTruthy();
         });
-        
+
         // Mock loading state
         const otpInput = getByPlaceholderText('Enter 6-digit OTP');
         fireEvent.changeText(otpInput, '123456');
-        
+
         act(() => {
           fireEvent.press(getByText('Login'));
         });
-        
+
         // Should show loading text (briefly)
         // Note: This test might be flaky due to async nature
       })();
@@ -375,13 +401,15 @@ describe('Enhanced Login Screen', () => {
   describe('Error Handling', () => {
     it('displays API errors correctly', async () => {
       await asyncTest(async () => {
-        const {getByPlaceholderText, getByText} = renderWithProviders(<Login />);
-        
+        const {getByPlaceholderText, getByText} = renderWithProviders(
+          <Login />
+        );
+
         // Test with phone that will cause API error
         const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
         fireEvent.changeText(phoneInput, '0000000000');
         fireEvent.press(getByText('Send OTP'));
-        
+
         await waitFor(() => {
           expect(getByText(/Failed to send OTP/)).toBeTruthy();
         });
@@ -390,21 +418,26 @@ describe('Enhanced Login Screen', () => {
 
     it('clears errors when user types', async () => {
       await asyncTest(async () => {
-        const {getByPlaceholderText, getByText, queryByText} = renderWithProviders(<Login />);
-        
+        const {getByPlaceholderText, getByText, queryByText} =
+          renderWithProviders(<Login />);
+
         // Cause an error first
         const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
         fireEvent.changeText(phoneInput, '123');
-        
+
         await waitFor(() => {
-          expect(getByText('Please enter a valid 10-digit phone number')).toBeTruthy();
+          expect(
+            getByText('Please enter a valid 10-digit phone number')
+          ).toBeTruthy();
         });
-        
+
         // Clear the error by typing valid input
         fireEvent.changeText(phoneInput, '1234567890');
-        
+
         await waitFor(() => {
-          expect(queryByText('Please enter a valid 10-digit phone number')).toBeNull();
+          expect(
+            queryByText('Please enter a valid 10-digit phone number')
+          ).toBeNull();
         });
       })();
     });
@@ -418,12 +451,12 @@ describe('Enhanced Login Screen', () => {
   describe('Accessibility', () => {
     it('has proper accessibility labels and hints', () => {
       const {getByLabelText} = renderWithProviders(<Login />);
-      
+
       const phoneInput = getByLabelText('Phone number input');
       expect(phoneInput.props.accessibilityHint).toBe(
         'Enter your 10-digit phone number to receive OTP'
       );
-      
+
       const sendButton = getByLabelText('Send OTP button');
       expect(sendButton.props.accessibilityHint).toBe(
         'Tap to send OTP to your phone number'
@@ -432,19 +465,20 @@ describe('Enhanced Login Screen', () => {
 
     it('maintains accessibility in OTP screen', async () => {
       await asyncTest(async () => {
-        const {getByPlaceholderText, getByText, getByLabelText} = renderWithProviders(<Login />);
-        
+        const {getByPlaceholderText, getByText, getByLabelText} =
+          renderWithProviders(<Login />);
+
         // Navigate to OTP screen
         const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
         fireEvent.changeText(phoneInput, '1234567890');
         fireEvent.press(getByText('Send OTP'));
-        
+
         await waitFor(() => {
           const otpInput = getByLabelText('OTP input');
           expect(otpInput.props.accessibilityHint).toBe(
             'Enter the 6-digit OTP sent to your phone'
           );
-          
+
           const loginButton = getByLabelText('Login button');
           expect(loginButton.props.accessibilityHint).toBe(
             'Tap to login with the entered OTP'
@@ -462,13 +496,13 @@ describe('Enhanced Login Screen', () => {
   describe('Performance', () => {
     it('renders efficiently', async () => {
       const startTime = performance.now();
-      
+
       renderWithProviders(<Login />);
       await waitForAsync();
-      
+
       const endTime = performance.now();
       const renderTime = endTime - startTime;
-      
+
       // Should render within reasonable time
       expect(renderTime).toBeLessThan(500);
     });
@@ -477,18 +511,18 @@ describe('Enhanced Login Screen', () => {
       await asyncTest(async () => {
         const {getByPlaceholderText} = renderWithProviders(<Login />);
         const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
-        
+
         const startTime = performance.now();
-        
+
         // Simulate rapid typing
         for (let i = 0; i < 10; i++) {
           fireEvent.changeText(phoneInput, `123456789${i}`);
           await waitForAsync();
         }
-        
+
         const endTime = performance.now();
         const totalTime = endTime - startTime;
-        
+
         // Should handle rapid input efficiently
         expect(totalTime).toBeLessThan(2000);
       })();
@@ -498,7 +532,7 @@ describe('Enhanced Login Screen', () => {
   describe('Demo Features', () => {
     it('shows demo instructions in development mode', () => {
       const {getByText} = renderWithProviders(<Login />);
-      
+
       if (__DEV__) {
         expect(getByText('Demo Instructions')).toBeTruthy();
         expect(getByText(/Enter any 10-digit phone number/)).toBeTruthy();
@@ -508,7 +542,7 @@ describe('Enhanced Login Screen', () => {
 
     it('displays demo card with correct information', () => {
       const {getByText} = renderWithProviders(<Login />);
-      
+
       if (__DEV__) {
         expect(getByText('Demo Instructions')).toBeTruthy();
         expect(getByText(/Other OTPs will show error message/)).toBeTruthy();
@@ -518,33 +552,37 @@ describe('Enhanced Login Screen', () => {
 
   describe('Edge Cases', () => {
     it('handles component unmount during API calls', async () => {
-      const {getByPlaceholderText, getByText, unmount} = renderWithProviders(<Login />);
-      
+      const {getByPlaceholderText, getByText, unmount} = renderWithProviders(
+        <Login />
+      );
+
       const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
       fireEvent.changeText(phoneInput, '1234567890');
       fireEvent.press(getByText('Send OTP'));
-      
+
       // Unmount during API call
       unmount();
-      
+
       // Should not throw errors
       await waitForAsync();
     });
 
     it('handles multiple rapid button presses', async () => {
       await asyncTest(async () => {
-        const {getByPlaceholderText, getByText} = renderWithProviders(<Login />);
-        
+        const {getByPlaceholderText, getByText} = renderWithProviders(
+          <Login />
+        );
+
         const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
         fireEvent.changeText(phoneInput, '1234567890');
-        
+
         const sendButton = getByText('Send OTP');
-        
+
         // Rapidly press the button
         fireEvent.press(sendButton);
         fireEvent.press(sendButton);
         fireEvent.press(sendButton);
-        
+
         // Should handle gracefully without multiple API calls
         await waitFor(() => {
           expect(getByPlaceholderText('Enter 6-digit OTP')).toBeTruthy();
@@ -554,22 +592,26 @@ describe('Enhanced Login Screen', () => {
 
     it('preserves form state during screen transitions', async () => {
       await asyncTest(async () => {
-        const {getByPlaceholderText, getByText} = renderWithProviders(<Login />);
-        
+        const {getByPlaceholderText, getByText} = renderWithProviders(
+          <Login />
+        );
+
         // Enter phone number
         const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
         fireEvent.changeText(phoneInput, '1234567890');
         fireEvent.press(getByText('Send OTP'));
-        
+
         await waitFor(() => {
           expect(getByText('OTP sent to 1234567890')).toBeTruthy();
         });
-        
+
         // Go back and check phone is preserved
         fireEvent.press(getByText('Change Phone Number'));
-        
+
         await waitFor(() => {
-          const newPhoneInput = getByPlaceholderText('Enter 10-digit phone number');
+          const newPhoneInput = getByPlaceholderText(
+            'Enter 10-digit phone number'
+          );
           expect(newPhoneInput.props.value).toBe('1234567890');
         });
       })();

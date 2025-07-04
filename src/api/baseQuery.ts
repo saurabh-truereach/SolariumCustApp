@@ -53,7 +53,7 @@ class LogoutManager {
     this.isLoggingOut = true;
     console.log('[API] Initiating idempotent logout');
 
-    this.logoutPromise = new Promise<void>((resolve) => {
+    this.logoutPromise = new Promise<void>(resolve => {
       setTimeout(() => {
         dispatch(logout());
         console.log('[API] Logout dispatched');
@@ -142,19 +142,23 @@ const baseQueryWithRetry: BaseQueryFn<
       if (isAuthError(result.error) && !logoutManager.isInProgress()) {
         console.warn('[API] Authentication error detected:', result.error);
         await logoutManager.handleLogout(dispatch);
-        
+
         if (!isBackgroundRequest) {
           dispatch(setLoading({isLoading: false}));
         }
-        
+
         return result; // Return the auth error without retry
       }
 
       // Handle retryable errors
       if (isRetryableError(result.error) && attempt < maxRetries) {
         const delay = calculateRetryDelay(attempt);
-        console.log(`[API] Retrying request in ${delay}ms (attempt ${attempt + 1}/${maxRetries})`);
-        
+        console.log(
+          `[API] Retrying request in ${delay}ms (attempt ${
+            attempt + 1
+          }/${maxRetries})`
+        );
+
         await new Promise(resolve => setTimeout(resolve, delay));
         attempt++;
         continue;
@@ -164,16 +168,15 @@ const baseQueryWithRetry: BaseQueryFn<
       if (!isBackgroundRequest) {
         dispatch(setLoading({isLoading: false}));
       }
-      
-      return result;
 
+      return result;
     } catch (error) {
       console.error('[API] Unexpected error in baseQuery:', error);
-      
+
       if (!isBackgroundRequest) {
         dispatch(setLoading({isLoading: false}));
       }
-      
+
       return {
         error: {
           status: 'FETCH_ERROR',
@@ -187,7 +190,7 @@ const baseQueryWithRetry: BaseQueryFn<
   if (!isBackgroundRequest) {
     dispatch(setLoading({isLoading: false}));
   }
-  
+
   return {
     error: {
       status: 'FETCH_ERROR',
@@ -261,10 +264,7 @@ export const provideTags = <T extends {id: string | number}>(
     return [{type, id: 'LIST'}];
   }
 
-  return [
-    ...result.map(item => createTag(type, item.id)),
-    {type, id: 'LIST'},
-  ];
+  return [...result.map(item => createTag(type, item.id)), {type, id: 'LIST'}];
 };
 
 /**
@@ -275,10 +275,7 @@ export const invalidateTags = (type: string, ids?: (string | number)[]) => {
     return [{type, id: 'LIST'}];
   }
 
-  return [
-    ...ids.map(id => createTag(type, id)),
-    {type, id: 'LIST'},
-  ];
+  return [...ids.map(id => createTag(type, id)), {type, id: 'LIST'}];
 };
 
 export default baseQuery;

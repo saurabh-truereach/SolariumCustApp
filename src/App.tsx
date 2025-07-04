@@ -1,7 +1,7 @@
 /**
  * Solarium Customer App
  * Main application entry point with react-native-config integration
- * 
+ *
  * Environment Handling:
  * - Production: Uses build-time configuration from react-native-config
  * - Development: Allows runtime environment simulation for testing
@@ -20,7 +20,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {StyleSheet, AppState, AppStateStatus} from 'react-native';
 import {store, persistor, storeUtils} from './store';
 import {ErrorBoundary, LoadingOverlay} from './components';
-import { PersistenceLoadingOverlay } from './components/feedback/LoadingOverlay';
+import {PersistenceLoadingOverlay} from './components/feedback/LoadingOverlay';
 import {RootNavigator} from './navigation';
 import ThemeProvider from './theme/ThemeProvider';
 import {persistenceHelpers, debugPersistence} from './utils/persistenceHelpers';
@@ -30,8 +30,12 @@ import {persistenceHelpers, debugPersistence} from './utils/persistenceHelpers';
  * Handles app lifecycle and persistence
  */
 const AppStateManager: React.FC<{children: React.ReactNode}> = ({children}) => {
-  const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState);
-  const [persistenceStage, setPersistenceStage] = useState<'initializing' | 'rehydrating' | 'migrating' | 'complete'>('initializing');
+  const [appState, setAppState] = useState<AppStateStatus>(
+    AppState.currentState
+  );
+  const [persistenceStage, setPersistenceStage] = useState<
+    'initializing' | 'rehydrating' | 'migrating' | 'complete'
+  >('initializing');
 
   /**
    * Handle app state changes
@@ -39,11 +43,11 @@ const AppStateManager: React.FC<{children: React.ReactNode}> = ({children}) => {
   useEffect(() => {
     const handleAppStateChange = async (nextAppState: AppStateStatus) => {
       console.log('[App] App state changed:', appState, '->', nextAppState);
-      
+
       if (appState.match(/inactive|background/) && nextAppState === 'active') {
         // App came to foreground
         console.log('[App] App came to foreground');
-        
+
         // Check persistence health
         const isHealthy = await persistenceHelpers.healthCheck();
         if (!isHealthy) {
@@ -52,7 +56,7 @@ const AppStateManager: React.FC<{children: React.ReactNode}> = ({children}) => {
       } else if (nextAppState.match(/inactive|background/)) {
         // App went to background
         console.log('[App] App went to background');
-        
+
         // Flush any pending persistence operations
         try {
           await persistenceHelpers.flush();
@@ -60,11 +64,14 @@ const AppStateManager: React.FC<{children: React.ReactNode}> = ({children}) => {
           console.error('[App] Failed to flush persistence:', error);
         }
       }
-      
+
       setAppState(nextAppState);
     };
 
-    const subscription = AppState.addEventListener('change', handleAppStateChange);
+    const subscription = AppState.addEventListener(
+      'change',
+      handleAppStateChange
+    );
     return () => subscription?.remove();
   }, [appState]);
 
@@ -74,7 +81,7 @@ const AppStateManager: React.FC<{children: React.ReactNode}> = ({children}) => {
   useEffect(() => {
     const handlePersistorState = () => {
       const persistorState = persistor.getState();
-      
+
       if (persistorState.bootstrapped) {
         setPersistenceStage('complete');
         if (__DEV__) {
@@ -90,7 +97,7 @@ const AppStateManager: React.FC<{children: React.ReactNode}> = ({children}) => {
 
     // Subscribe to persistor changes
     const unsubscribe = persistor.subscribe(handlePersistorState);
-    
+
     return unsubscribe;
   }, []);
 
@@ -99,10 +106,7 @@ const AppStateManager: React.FC<{children: React.ReactNode}> = ({children}) => {
       {children}
       {/* Development persistence info */}
       {__DEV__ && persistenceStage !== 'complete' && (
-        <PersistenceLoadingOverlay
-          visible={true}
-          stage={persistenceStage}
-        />
+        <PersistenceLoadingOverlay visible={true} stage={persistenceStage} />
       )}
     </>
   );
@@ -120,10 +124,10 @@ const PersistenceLoader: React.FC = () => {
       try {
         // Wait for rehydration
         await storeUtils.waitForRehydration();
-        
+
         // Small delay to ensure everything is ready
         await new Promise(resolve => setTimeout(resolve, 500));
-        
+
         setIsReady(true);
       } catch (err) {
         console.error('[App] Persistence initialization failed:', err);
@@ -135,21 +139,11 @@ const PersistenceLoader: React.FC = () => {
   }, []);
 
   if (error) {
-    return (
-      <LoadingOverlay
-        visible={true}
-        message={error}
-      />
-    );
+    return <LoadingOverlay visible={true} message={error} />;
   }
 
   if (!isReady) {
-    return (
-      <PersistenceLoadingOverlay
-        visible={true}
-        stage="rehydrating"
-      />
-    );
+    return <PersistenceLoadingOverlay visible={true} stage="rehydrating" />;
   }
 
   return null;
@@ -165,7 +159,8 @@ const App: React.FC = () => {
       onError={(error, errorInfo) => {
         console.error('[App] Error caught by boundary:', error);
         console.error('[App] Error info:', errorInfo);
-      }}>
+      }}
+    >
       <GestureHandlerRootView style={styles.container}>
         <Provider store={store}>
           <PersistGate
@@ -173,7 +168,8 @@ const App: React.FC = () => {
             persistor={persistor}
             onBeforeLift={() => {
               console.log('[App] PersistGate: Before lift');
-            }}>
+            }}
+          >
             <ThemeProvider>
               <AppStateManager>
                 <RootNavigator />
@@ -241,7 +237,7 @@ const styles = StyleSheet.create({
 //       DEBUG_MODE: false,
 //     },
 //   };
-  
+
 //   return configs[env];
 // };
 
@@ -250,10 +246,10 @@ const styles = StyleSheet.create({
  */
 // const AppContent: React.FC = () => {
 //   const theme = useAppTheme();
-  
+
 //   // Get the actual build-time configuration
 //   const buildTimeConfig = getBuildTimeConfig();
-  
+
 //   // For development: allow environment simulation
 //   const [simulatedEnvironment, setSimulatedEnvironment] = useState<Environment | null>(null);
 //   const [showEnvSelector, setShowEnvSelector] = useState(false);
@@ -293,7 +289,7 @@ const styles = StyleSheet.create({
 //     if (__DEV__) {
 //       setIsLoading(true);
 //       console.log(`[App] Simulating environment: ${env}`);
-      
+
 //       setTimeout(() => {
 //         setSimulatedEnvironment(env);
 //         setShowEnvSelector(false);
@@ -308,7 +304,7 @@ const styles = StyleSheet.create({
 //     if (__DEV__) {
 //       setIsLoading(true);
 //       console.log('[App] Resetting to build-time configuration');
-      
+
 //       setTimeout(() => {
 //         setSimulatedEnvironment(null);
 //         setShowEnvSelector(false);
@@ -347,7 +343,7 @@ const styles = StyleSheet.create({
 //       backgroundColor={theme.colors.background}
 //       statusBarStyle="dark-content">
 //       <View style={[styles.container, {backgroundColor: theme.colors.background}]}>
-        
+
 //         {/* Header */}
 //         <Text style={[styles.title, {
 //           color: theme.colors.primary,
@@ -382,7 +378,7 @@ const styles = StyleSheet.create({
 //             }]}>
 //               {isSimulating ? 'Simulated Configuration' : 'Active Configuration'}
 //             </Text>
-            
+
 //             <View style={styles.configGrid}>
 //               <View style={styles.configRow}>
 //                 <Text style={[styles.configLabel, {color: theme.colors.onSurfaceVariant}]}>
@@ -441,7 +437,7 @@ const styles = StyleSheet.create({
 //               }]}>
 //                 Environment Simulation (Dev Only)
 //               </Text>
-              
+
 //               <View style={styles.envControls}>
 //                 <Button
 //                   mode="contained"
@@ -505,7 +501,7 @@ const styles = StyleSheet.create({
 //               }]}>
 //                 Component Testing
 //               </Text>
-              
+
 //               <View style={styles.testButtons}>
 //                 <Button
 //                   mode="outlined"
@@ -513,7 +509,7 @@ const styles = StyleSheet.create({
 //                   style={styles.testButton}>
 //                   Test Loading
 //                 </Button>
-                
+
 //                 <Button
 //                   mode="outlined"
 //                   onPress={testError}
@@ -548,7 +544,7 @@ const styles = StyleSheet.create({
 //             }]}>
 //               System Status
 //             </Text>
-            
+
 //             <View style={styles.statusGrid}>
 //               <Text style={[styles.statusItem, {color: theme.colors.primary}]}>
 //                 ✅ React Native {__DEV__ ? 'Development' : 'Production'} Build
@@ -577,8 +573,8 @@ const styles = StyleSheet.create({
 //       <LoadingOverlay
 //         visible={isLoading}
 //         message={
-//           simulatedEnvironment 
-//             ? `Switching to ${simulatedEnvironment}...` 
+//           simulatedEnvironment
+//             ? `Switching to ${simulatedEnvironment}...`
 //             : 'Loading...'
 //         }
 //       />
@@ -603,7 +599,7 @@ const styles = StyleSheet.create({
 //       onError={(error, errorInfo) => {
 //         console.error('[ErrorBoundary] Application error:', error.message);
 //         console.error('[ErrorBoundary] Component stack:', errorInfo.componentStack);
-        
+
 //         // In production, send to crash reporting service
 //         // Example: crashlytics().recordError(error);
 //       }}>
