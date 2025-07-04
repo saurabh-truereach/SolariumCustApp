@@ -1,4 +1,4 @@
-.esl/**
+/**
  * Accessibility-specific ESLint Configuration
  * Used for dedicated accessibility linting
  */
@@ -28,7 +28,7 @@ module.exports = {
     'jsx-a11y/role-has-required-aria-props': 'error',
     'jsx-a11y/role-supports-aria-props': 'error',
     'jsx-a11y/tabindex-no-positive': 'error',
-    
+
     // Disable non-accessibility rules to focus only on a11y
     'no-console': 'off',
     'no-unused-vars': 'off',
