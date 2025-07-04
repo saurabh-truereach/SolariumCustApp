@@ -25,6 +25,136 @@ interface LoadingOverlayProps {
 }
 
 /**
+ * Persistence Loading Overlay Props
+ */
+interface PersistenceLoadingProps {
+  visible: boolean;
+  stage: 'initializing' | 'rehydrating' | 'migrating' | 'complete';
+  progress?: number;
+}
+
+/**
+ * Persistence Loading Overlay Component
+ * Specialized loading overlay for Redux persistence operations
+ */
+export const PersistenceLoadingOverlay: React.FC<PersistenceLoadingProps> = ({
+  visible,
+  stage,
+  progress,
+}) => {
+  const theme = useAppTheme();
+
+  const getStageMessage = () => {
+    switch (stage) {
+      case 'initializing':
+        return 'Initializing app...';
+      case 'rehydrating':
+        return 'Restoring your data...';
+      case 'migrating':
+        return 'Updating app data...';
+      case 'complete':
+        return 'Ready!';
+      default:
+        return 'Loading...';
+    }
+  };
+
+  const getStageIcon = () => {
+    switch (stage) {
+      case 'initializing':
+        return '🚀';
+      case 'rehydrating':
+        return '💾';
+      case 'migrating':
+        return '🔄';
+      case 'complete':
+        return '✅';
+      default:
+        return '⏳';
+    }
+  };
+
+  if (!visible) {
+    return null;
+  }
+
+  return (
+    <Modal
+      transparent
+      animationType="fade"
+      visible={visible}
+      statusBarTranslucent>
+      <View
+        style={[
+          styles.overlay,
+          {backgroundColor: theme.colors.background + 'F0'}, // 94% opacity
+        ]}>
+        <View
+          style={[
+            styles.container,
+            {
+              backgroundColor: theme.colors.surface,
+              ...theme.shadows.large,
+            },
+          ]}>
+          {/* Stage Icon */}
+          <Text style={styles.stageIcon}>{getStageIcon()}</Text>
+          
+          {/* Loading Spinner */}
+          <ActivityIndicator
+            size="large"
+            color={theme.colors.primary}
+            style={styles.spinner}
+          />
+          
+          {/* Stage Message */}
+          <Text
+            style={[
+              styles.message,
+              {
+                color: theme.colors.onSurface,
+                fontSize: theme.typography.fontSize.md,
+                fontFamily: theme.typography.fontFamily.medium,
+              },
+            ]}>
+            {getStageMessage()}
+          </Text>
+          
+          {/* Progress Bar */}
+          {progress !== undefined && (
+            <View style={[styles.progressContainer, {backgroundColor: theme.colors.outline}]}>
+              <View
+                style={[
+                  styles.progressBar,
+                  {
+                    backgroundColor: theme.colors.primary,
+                    width: `${Math.max(0, Math.min(100, progress))}%`,
+                  },
+                ]}
+              />
+            </View>
+          )}
+          
+          {/* Progress Text */}
+          {progress !== undefined && (
+            <Text
+              style={[
+                styles.progressText,
+                {
+                  color: theme.colors.onSurfaceVariant,
+                  fontSize: theme.typography.fontSize.sm,
+                },
+              ]}>
+              {Math.round(progress)}%
+            </Text>
+          )}
+        </View>
+      </View>
+    </Modal>
+  );
+};
+
+/**
  * Loading Overlay Component
  * Shows a loading spinner with optional message over the current screen
  */
@@ -89,7 +219,7 @@ const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const stylesLoadingOverlayOriginal = StyleSheet.create({
   overlay: {
     flex: 1,
     justifyContent: 'center',
@@ -109,5 +239,36 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
 });
+
+const persistenceStyles = StyleSheet.create({
+  stageIcon: {
+    fontSize: 32,
+    marginBottom: 16,
+  },
+  progressContainer: {
+    width: '100%',
+    height: 4,
+    borderRadius: 2,
+    marginTop: 16,
+    overflow: 'hidden',
+  },
+  progressBar: {
+    height: '100%',
+    borderRadius: 2,
+  },
+  progressText: {
+    marginTop: 8,
+    textAlign: 'center',
+  },
+});
+
+// Merge styles
+const allStyles = StyleSheet.create({
+  ...stylesLoadingOverlayOriginal,
+  ...persistenceStyles,
+});
+
+// Update the styles reference
+const styles = allStyles;
 
 export default LoadingOverlay;

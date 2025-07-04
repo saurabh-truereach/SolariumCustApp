@@ -10,17 +10,150 @@
 /**
  * Solarium Customer App
  * Main application entry point with navigation, theming, and Redux
+ * Enhanced with comprehensive persistence handling
  */
 
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {StyleSheet} from 'react-native';
-import {store, persistor} from './store';
+import {StyleSheet, AppState, AppStateStatus} from 'react-native';
+import {store, persistor, storeUtils} from './store';
 import {ErrorBoundary, LoadingOverlay} from './components';
+import { PersistenceLoadingOverlay } from './components/feedback/LoadingOverlay';
 import {RootNavigator} from './navigation';
 import ThemeProvider from './theme/ThemeProvider';
+import {persistenceHelpers, debugPersistence} from './utils/persistenceHelpers';
+
+/**
+ * App State Management Component
+ * Handles app lifecycle and persistence
+ */
+const AppStateManager: React.FC<{children: React.ReactNode}> = ({children}) => {
+  const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState);
+  const [persistenceStage, setPersistenceStage] = useState<'initializing' | 'rehydrating' | 'migrating' | 'complete'>('initializing');
+
+  /**
+   * Handle app state changes
+   */
+  useEffect(() => {
+    const handleAppStateChange = async (nextAppState: AppStateStatus) => {
+      console.log('[App] App state changed:', appState, '->', nextAppState);
+      
+      if (appState.match(/inactive|background/) && nextAppState === 'active') {
+        // App came to foreground
+        console.log('[App] App came to foreground');
+        
+        // Check persistence health
+        const isHealthy = await persistenceHelpers.healthCheck();
+        if (!isHealthy) {
+          console.warn('[App] Persistence health check failed');
+        }
+      } else if (nextAppState.match(/inactive|background/)) {
+        // App went to background
+        console.log('[App] App went to background');
+        
+        // Flush any pending persistence operations
+        try {
+          await persistenceHelpers.flush();
+        } catch (error) {
+          console.error('[App] Failed to flush persistence:', error);
+        }
+      }
+      
+      setAppState(nextAppState);
+    };
+
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+    return () => subscription?.remove();
+  }, [appState]);
+
+  /**
+   * Handle persistence stages
+   */
+  useEffect(() => {
+    const handlePersistorState = () => {
+      const persistorState = persistor.getState();
+      
+      if (persistorState.bootstrapped) {
+        setPersistenceStage('complete');
+        if (__DEV__) {
+          debugPersistence();
+        }
+      } else {
+        setPersistenceStage('rehydrating');
+      }
+    };
+
+    // Initial check
+    handlePersistorState();
+
+    // Subscribe to persistor changes
+    const unsubscribe = persistor.subscribe(handlePersistorState);
+    
+    return unsubscribe;
+  }, []);
+
+  return (
+    <>
+      {children}
+      {/* Development persistence info */}
+      {__DEV__ && persistenceStage !== 'complete' && (
+        <PersistenceLoadingOverlay
+          visible={true}
+          stage={persistenceStage}
+        />
+      )}
+    </>
+  );
+};
+
+/**
+ * Enhanced Persistence Loading Component
+ */
+const PersistenceLoader: React.FC = () => {
+  const [isReady, setIsReady] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const initializePersistence = async () => {
+      try {
+        // Wait for rehydration
+        await storeUtils.waitForRehydration();
+        
+        // Small delay to ensure everything is ready
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        setIsReady(true);
+      } catch (err) {
+        console.error('[App] Persistence initialization failed:', err);
+        setError('Failed to initialize app data');
+      }
+    };
+
+    initializePersistence();
+  }, []);
+
+  if (error) {
+    return (
+      <LoadingOverlay
+        visible={true}
+        message={error}
+      />
+    );
+  }
+
+  if (!isReady) {
+    return (
+      <PersistenceLoadingOverlay
+        visible={true}
+        stage="rehydrating"
+      />
+    );
+  }
+
+  return null;
+};
 
 /**
  * Root App Component
@@ -36,10 +169,15 @@ const App: React.FC = () => {
       <GestureHandlerRootView style={styles.container}>
         <Provider store={store}>
           <PersistGate
-            loading={<LoadingOverlay visible={true} message="Loading..." />}
-            persistor={persistor}>
+            loading={<PersistenceLoader />}
+            persistor={persistor}
+            onBeforeLift={() => {
+              console.log('[App] PersistGate: Before lift');
+            }}>
             <ThemeProvider>
-              <RootNavigator />
+              <AppStateManager>
+                <RootNavigator />
+              </AppStateManager>
             </ThemeProvider>
           </PersistGate>
         </Provider>

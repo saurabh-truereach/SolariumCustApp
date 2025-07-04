@@ -16,7 +16,9 @@ import {
   selectIsLoading,
   selectIsSendingOtp,
   selectAuthError,
+  loginSuccess,
 } from '../../store/authSlice';
+import {useSendOtpMutation, useVerifyOtpMutation} from '../../api';
 
 type Props = AuthStackScreenProps<'Login'>;
 
@@ -26,8 +28,8 @@ type Props = AuthStackScreenProps<'Login'>;
 const LoginScreen: React.FC<Props> = ({navigation: _navigation}) => {
   const theme = useAppTheme();
   const dispatch = useAppDispatch();
-  const isLoading = useAppSelector(selectIsLoading);
-  const isSendingOtp = useAppSelector(selectIsSendingOtp);
+  // const isLoading = useAppSelector(selectIsLoading);
+  // const isSendingOtp = useAppSelector(selectIsSendingOtp);
   const error = useAppSelector(selectAuthError);
 
   const [phone, setPhone] = useState('');
@@ -35,6 +37,14 @@ const LoginScreen: React.FC<Props> = ({navigation: _navigation}) => {
   const [otpSent, setOtpSent] = useState(false);
   const [phoneBlurred, setPhoneBlurred] = useState(false);
   const [otpBlurred, setOtpBlurred] = useState(false);
+  const [phoneError, setPhoneError] = useState('');
+  const [otpError, setOtpError] = useState('');
+
+  // RTK Query hooks
+  const [sendOtp, {isLoading: isSendingOtp}] = useSendOtpMutation();
+  const [verifyOtp, {isLoading: isVerifying}] = useVerifyOtpMutation();
+
+  // const authError = useAppSelector(selectAuthError);
 
   /**
    * Validate phone number (10 digits)
@@ -62,11 +72,17 @@ const LoginScreen: React.FC<Props> = ({navigation: _navigation}) => {
     }
 
     try {
-      await dispatch(sendOtpThunk(phone)).unwrap();
+      // await dispatch(sendOtpThunk(phone)).unwrap();
+      const result = await sendOtp({phone}).unwrap();
       setOtpSent(true);
-      Alert.alert('OTP Sent', `OTP sent to ${phone}. Use 123456 for demo.`);
-    } catch (error) {
+      Alert.alert(
+        'OTP Sent', 
+        result.message + '\n\nFor demo, use OTP: 123456',
+        [{text: 'OK'}]
+      );
+    } catch (error: any) {
       Alert.alert('Error', 'Failed to send OTP. Please try again.');
+      setPhoneError(error?.data?.message || error?.message || 'Failed to send OTP');
     }
   }, [phone, validatePhone, dispatch]);
 
@@ -74,17 +90,32 @@ const LoginScreen: React.FC<Props> = ({navigation: _navigation}) => {
    * Handle login with OTP
    */
   const handleLogin = useCallback(async () => {
+    console.log('handleLogin', otp, phone);
     if (!validateOtp(otp)) {
       Alert.alert('Invalid OTP', 'Please enter a valid 6-digit OTP');
+      setOtpError('Please enter a valid 6-digit OTP');
       return;
     }
 
     try {
-      await dispatch(loginWithOtp({phone, otp})).unwrap();
+      // await dispatch(loginWithOtp({phone, otp})).unwrap();
       // Success is handled automatically by the thunk
-    } catch (error) {
-      // Error is handled automatically by the thunk, but we can show an alert
-      Alert.alert('Login Failed', error as string);
+
+      const result = await verifyOtp({phone, otp}).unwrap();
+      
+      // Dispatch login success to Redux store
+      dispatch(loginSuccess({
+        token: result.token,
+        refreshToken: result.refreshToken,
+        user: result.user,
+      }));
+      
+      // Navigation will happen automatically via RootNavigator
+    } catch (error: any) {
+      // Extract the correct error message from RTK Query structure
+      const errorMessage = error?.data?.error?.message || error?.data?.message || error?.message || 'Login failed';
+      Alert.alert('Login Failed', errorMessage);
+      setOtpError(errorMessage);
     }
   }, [otp, phone, dispatch, validateOtp]);
 
@@ -98,6 +129,9 @@ const LoginScreen: React.FC<Props> = ({navigation: _navigation}) => {
     setPhoneBlurred(false);
     setOtpBlurred(false);
   }, []);
+
+  // Combined loading state for RTK Query mutations
+  const isLoading = isSendingOtp || isVerifying;
 
   return (
     <SafeAreaLayout keyboardAvoiding>

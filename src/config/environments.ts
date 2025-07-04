@@ -5,11 +5,21 @@
 
 export type Environment = 'development' | 'staging' | 'production';
 
+export interface ApiConfig {
+  timeout: number;
+  retries: number;
+  retryDelay: number;
+  enableLogging: boolean;
+  enableOfflineCache: boolean;
+}
+
 export interface AppConfig {
   BASE_API_URL: string;
   APP_ENV: Environment;
   API_TIMEOUT: number;
   DEBUG_MODE: boolean;
+  // Add new API configuration
+  API_CONFIG: ApiConfig;
 }
 
 /**
@@ -23,18 +33,39 @@ const environments: Record<Environment, AppConfig> = {
     APP_ENV: 'development',
     API_TIMEOUT: 10000,
     DEBUG_MODE: true,
+    API_CONFIG: {
+      timeout: 10000,
+      retries: 3,
+      retryDelay: 1000,
+      enableLogging: true,
+      enableOfflineCache: true,
+    },
   },
   staging: {
     BASE_API_URL: 'https://api.staging.solarium.in',
     APP_ENV: 'staging',
     API_TIMEOUT: 10000,
     DEBUG_MODE: true,
+    API_CONFIG: {
+      timeout: 10000,
+      retries: 3,
+      retryDelay: 1000,
+      enableLogging: true,
+      enableOfflineCache: true,
+    },
   },
   production: {
     BASE_API_URL: 'https://api.solarium.in',
     APP_ENV: 'production',
     API_TIMEOUT: 8000,
     DEBUG_MODE: false,
+    API_CONFIG: {
+      timeout: 8000,
+      retries: 3,
+      retryDelay: 2000,
+      enableLogging: false,
+      enableOfflineCache: false,
+    },
   },
 };
 
@@ -90,3 +121,18 @@ export const isProduction = (): boolean => AppConfig.APP_ENV === 'production';
  * Utility function to get API base URL
  */
 export const getApiBaseUrl = (): string => AppConfig.BASE_API_URL;
+
+/**
+ * Get API configuration
+ */
+export const getApiConfig = (): ApiConfig => AppConfig.API_CONFIG;
+
+/**
+ * Check if API logging is enabled
+ */
+export const isApiLoggingEnabled = (): boolean => AppConfig.API_CONFIG.enableLogging;
+
+/**
+ * Check if offline cache is enabled
+ */
+export const isOfflineCacheEnabled = (): boolean => AppConfig.API_CONFIG.enableOfflineCache;

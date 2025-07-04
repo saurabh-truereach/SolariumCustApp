@@ -5,6 +5,7 @@
 
 import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
 import {setStorageItem, removeStorageItem, STORAGE_KEYS} from '../utils/storageHelpers';
+import {authApi} from '../api/endpoints/auth';
 
 /**
  * User interface
@@ -172,6 +173,58 @@ export const refreshTokenThunk = createAsyncThunk(
   }
 );
 
+/**
+ * Enhanced login with RTK Query integration
+ */
+export const loginWithOtpEnhanced = createAsyncThunk(
+  'auth/loginWithOtpEnhanced',
+  async (
+    {phone, otp}: {phone: string; otp: string},
+    {dispatch, rejectWithValue}
+  ) => {
+    try {
+      // Use RTK Query mutation
+      const result = await dispatch(
+        authApi.endpoints.verifyOtp.initiate({phone, otp})
+      ).unwrap();
+
+      return result;
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'Login failed');
+    }
+  }
+);
+
+/**
+ * Enhanced logout with API call
+ */
+export const logoutUserEnhanced = createAsyncThunk(
+  'auth/logoutUserEnhanced',
+  async (_, {dispatch}) => {
+    try {
+      // Call logout API (optional - for server-side session cleanup)
+      try {
+        await dispatch(authApi.endpoints.logoutUser.initiate()).unwrap();
+      } catch (error) {
+        // Continue with logout even if API call fails
+        console.warn('[Auth] Logout API call failed, continuing with local logout:', error);
+      }
+
+      // Clear local storage
+      await removeStorageItem(STORAGE_KEYS.AUTH_TOKEN);
+      await removeStorageItem(STORAGE_KEYS.USER_DATA);
+      
+      // Reset API cache
+      dispatch(authApi.util.resetApiState());
+      
+      return true;
+    } catch (error) {
+      console.error('[Auth] Logout error:', error);
+      // Still return success for local logout
+      return true;
+    }
+  }
+);
 
 
 // ===============================
@@ -321,8 +374,36 @@ const authSlice = createSlice({
         }
         state.error = action.payload as string;
       })
-      
-
+      .addCase(loginWithOtpEnhanced.pending, state => {
+        state.isLoading = true;
+        state.error = undefined;
+      })
+      .addCase(loginWithOtpEnhanced.fulfilled, (state, action) => {
+        state.isLoggedIn = true;
+        state.isLoading = false;
+        state.token = action.payload.token;
+        state.refreshToken = action.payload.refreshToken;
+        state.user = action.payload.user;
+        state.lastLoginTime = Date.now();
+        state.error = undefined;
+      })
+      .addCase(loginWithOtpEnhanced.rejected, (state, action) => {
+        state.isLoggedIn = false;
+        state.isLoading = false;
+        state.token = undefined;
+        state.refreshToken = undefined;
+        state.user = undefined;
+        state.error = action.payload as string;
+      })
+      .addCase(logoutUserEnhanced.fulfilled, state => {
+        state.isLoggedIn = false;
+        state.isLoading = false;
+        state.token = undefined;
+        state.refreshToken = undefined;
+        state.user = undefined;
+        state.lastLoginTime = undefined;
+        state.error = undefined;
+      })            
   },
 });
 
