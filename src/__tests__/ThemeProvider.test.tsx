@@ -4,9 +4,9 @@
 
 import React from 'react';
 import {Text, View} from 'react-native';
-import {renderWithProviders} from '../utils/testUtils';
+import {colors} from '../theme/palette';
 import ThemeProvider, {useAppTheme} from '../theme/ThemeProvider';
-import {colors, spacing, typography} from '../theme/palette';
+import {renderWithProviders} from '../utils/testUtils';
 
 // Mock react-native-paper
 jest.mock('react-native-paper', () => ({
@@ -234,7 +234,7 @@ describe('Enhanced ThemeProvider', () => {
     });
 
     it('memoizes theme object', () => {
-      let themeObjects: any[] = [];
+      const themeObjects: any[] = [];
 
       const ThemeCollector = () => {
         const theme = useAppTheme();

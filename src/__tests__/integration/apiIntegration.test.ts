@@ -2,8 +2,8 @@
  * API Integration Tests
  */
 
-import {setupTestStore} from '../../utils/testUtils';
 import {authApi, servicesApi, leadsApi} from '../../api';
+import {setupTestStore} from '../../utils/testUtils';
 
 describe('API Integration', () => {
   let store: ReturnType<typeof setupTestStore>;
@@ -131,9 +131,9 @@ describe('API Integration', () => {
       store.dispatch(leadsApi.util.resetApiState());
 
       const state = store.getState();
-      expect(state.authApi.queries).toEqual({});
-      expect(state.servicesApi.queries).toEqual({});
-      expect(state.leadsApi.queries).toEqual({});
+      expect(state.authApi.queries).toStrictEqual({});
+      expect(state.servicesApi.queries).toStrictEqual({});
+      expect(state.leadsApi.queries).toStrictEqual({});
     });
   });
 

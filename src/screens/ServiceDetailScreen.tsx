@@ -6,8 +6,8 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Button, Card, Text} from 'react-native-paper';
-import type {RootStackScreenProps} from '../navigation/types';
 import {SafeAreaLayout} from '../components';
+import type {RootStackScreenProps} from '../navigation/types';
 import {useAppTheme} from '../theme/ThemeProvider';
 
 type Props = RootStackScreenProps<'ServiceDetail'>;

@@ -3,12 +3,12 @@
  * Provides typed versions of useDispatch and useSelector with additional utilities
  */
 
-import {TypedUseSelectorHook, useDispatch, useSelector} from 'react-redux';
 import {useCallback, useEffect, useState} from 'react';
-import type {RootState, AppDispatch} from '../store';
+import {TypedUseSelectorHook, useDispatch, useSelector} from 'react-redux';
 import {authApi, servicesApi, leadsApi} from '../api';
-import {persistor, storeUtils} from '../store';
-import {persistenceHelpers} from '../utils/persistenceHelpers';
+import type {RootState, AppDispatch} from '../store';
+import {persistor} from '../store';
+// import {persistenceHelpers} from '../utils/persistenceHelpers';
 
 /**
  * Typed useDispatch hook
@@ -170,7 +170,9 @@ export const useRehydrated = () => {
   );
 
   useEffect(() => {
-    if (isRehydrated) return;
+    if (isRehydrated) {
+      return;
+    }
 
     const unsubscribe = persistor.subscribe(() => {
       if (persistor.getState().bootstrapped) {

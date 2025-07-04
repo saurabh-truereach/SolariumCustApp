@@ -3,27 +3,26 @@
  * Helper functions and components for testing
  */
 
-import React, {ReactElement} from 'react';
-import {render, RenderOptions} from '@testing-library/react-native';
-import {Provider} from 'react-redux';
-import {PersistGate} from 'redux-persist/integration/react';
 import {NavigationContainer} from '@react-navigation/native';
-import {configureStore, PreloadedState} from '@reduxjs/toolkit';
+import {configureStore} from '@reduxjs/toolkit';
+import {render, RenderOptions} from '@testing-library/react-native';
+import React, {ReactElement} from 'react';
+import {Provider} from 'react-redux';
 import {persistStore} from 'redux-persist';
-
-import ThemeProvider from '../theme/ThemeProvider';
-import {LoadingOverlay} from '../components';
-import authReducer from '../store/authSlice';
-import uiReducer from '../store/uiSlice';
-import cacheReducer from '../store/cacheSlice';
+import {PersistGate} from 'redux-persist/integration/react';
 import {authApi, servicesApi, leadsApi} from '../api';
+import {LoadingOverlay} from '../components';
 import type {RootState} from '../store';
+import authReducer from '../store/authSlice';
+import cacheReducer from '../store/cacheSlice';
+import uiReducer from '../store/uiSlice';
+import ThemeProvider from '../theme/ThemeProvider';
 
 /**
  * Test store configuration
  */
 interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {
-  preloadedState?: PreloadedState<RootState>;
+  preloadedState?: Partial<RootState>;
   store?: ReturnType<typeof setupTestStore>;
   withNavigation?: boolean;
   withPersistence?: boolean;
@@ -32,7 +31,7 @@ interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {
 /**
  * Create test store
  */
-export const setupTestStore = (preloadedState?: PreloadedState<RootState>) => {
+export const setupTestStore = (preloadedState?: Partial<RootState>) => {
   return configureStore({
     reducer: {
       auth: authReducer,
@@ -42,7 +41,7 @@ export const setupTestStore = (preloadedState?: PreloadedState<RootState>) => {
       [servicesApi.reducerPath]: servicesApi.reducer,
       [leadsApi.reducerPath]: leadsApi.reducer,
     },
-    middleware: (getDefaultMiddleware) =>
+    middleware: getDefaultMiddleware =>
       getDefaultMiddleware({
         serializableCheck: false, // Disable for testing
       })
@@ -72,9 +71,7 @@ const TestWrapper: React.FC<TestWrapperProps> = ({
   const persistor = withPersistence ? persistStore(store) : null;
 
   const content = withNavigation ? (
-    <NavigationContainer>
-      {children}
-    </NavigationContainer>
+    <NavigationContainer>{children}</NavigationContainer>
   ) : (
     children
   );
@@ -82,15 +79,14 @@ const TestWrapper: React.FC<TestWrapperProps> = ({
   return (
     <Provider store={store}>
       {withPersistence && persistor ? (
-        <PersistGate loading={<LoadingOverlay visible={true} />} persistor={persistor}>
-          <ThemeProvider>
-            {content}
-          </ThemeProvider>
+        <PersistGate
+          loading={<LoadingOverlay visible={true} />}
+          persistor={persistor}
+        >
+          <ThemeProvider>{content}</ThemeProvider>
         </PersistGate>
       ) : (
-        <ThemeProvider>
-          {content}
-        </ThemeProvider>
+        <ThemeProvider>{content}</ThemeProvider>
       )}
     </Provider>
   );
@@ -113,7 +109,8 @@ export const renderWithProviders = (
     <TestWrapper
       store={store}
       withNavigation={withNavigation}
-      withPersistence={withPersistence}>
+      withPersistence={withPersistence}
+    >
       {children}
     </TestWrapper>
   );
@@ -140,7 +137,9 @@ export const createMockUser = () => ({
 export const createMockAuthState = (overrides = {}) => ({
   isLoggedIn: true,
   isLoading: false,
+  isSendingOtp: false,
   token: 'mock-token-123',
+  refreshToken: 'mock-refresh-token-123',
   user: createMockUser(),
   lastLoginTime: Date.now(),
   error: undefined,
@@ -190,7 +189,10 @@ export const createMockService = (overrides = {}) => ({
 /**
  * Mock API responses
  */
-export const mockApiResponse = <T>(data: T, success = true) => ({
+export const mockApiResponse = <T extends unknown>(
+  data: T,
+  success = true
+) => ({
   success,
   data: success ? data : null,
   error: success ? null : {code: 400, message: 'Test error'},
@@ -199,7 +201,8 @@ export const mockApiResponse = <T>(data: T, success = true) => ({
 /**
  * Wait for async operations
  */
-export const waitForAsync = () => new Promise(resolve => setTimeout(resolve, 0));
+export const waitForAsync = () =>
+  new Promise<void>(resolve => setTimeout(resolve, 0));
 
 /**
  * Mock navigation object
@@ -237,7 +240,11 @@ export const asyncTest = (testFn: () => Promise<void>) => {
 /**
  * Fire event and wait
  */
-export const fireEventAndWait = async (element: any, event: string, ...args: any[]) => {
+export const fireEventAndWait = async (
+  element: any,
+  event: string,
+  ...args: any[]
+) => {
   const {fireEvent} = await import('@testing-library/react-native');
   fireEvent[event](element, ...args);
   await waitForAsync();
@@ -246,7 +253,11 @@ export const fireEventAndWait = async (element: any, event: string, ...args: any
 /**
  * Assert loading state
  */
-export const expectLoadingState = (getByTestId: any, testId: string, isLoading: boolean) => {
+export const expectLoadingState = (
+  getByTestId: any,
+  testId: string,
+  isLoading: boolean
+) => {
   if (isLoading) {
     expect(getByTestId(testId)).toBeTruthy();
   } else {
@@ -290,11 +301,11 @@ export const measurePerformance = async (testFn: () => Promise<void>) => {
  * Accessibility testing helper
  */
 export const testAccessibility = async (component: ReactElement) => {
-  const {getByRole, queryByRole} = renderWithProviders(component);
-  
+  const {queryByRole} = renderWithProviders(component);
+
   // Test basic accessibility
   expect(queryByRole).toBeDefined();
-  
+
   // Add more accessibility tests as needed
   return true;
 };

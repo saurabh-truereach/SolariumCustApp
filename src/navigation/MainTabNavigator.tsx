@@ -3,10 +3,9 @@
  * Bottom tab navigation for authenticated users
  */
 
-import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import React from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import type {MainTabParamList} from './types';
 import {
   HomeScreen,
   ServicesScreen,
@@ -15,8 +14,25 @@ import {
   HelpScreen,
 } from '../screens';
 import {useAppTheme} from '../theme/ThemeProvider';
+import type {MainTabParamList} from './types';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
+
+const HomeTabIcon = ({color, size}: {color: string; size: number}) => (
+  <MaterialIcons name="home" size={size} color={color} />
+);
+const ServicesTabIcon = ({color, size}: {color: string; size: number}) => (
+  <MaterialIcons name="solar-power" size={size} color={color} />
+);
+const MyRecordsTabIcon = ({color, size}: {color: string; size: number}) => (
+  <MaterialIcons name="folder" size={size} color={color} />
+);
+const DocumentsTabIcon = ({color, size}: {color: string; size: number}) => (
+  <MaterialIcons name="description" size={size} color={color} />
+);
+const HelpTabIcon = ({color, size}: {color: string; size: number}) => (
+  <MaterialIcons name="help" size={size} color={color} />
+);
 
 /**
  * Main Tab Navigator
@@ -47,9 +63,7 @@ const MainTabNavigator: React.FC = () => {
         component={HomeScreen}
         options={{
           title: 'Home',
-          tabBarIcon: ({color, size}) => (
-            <MaterialIcons name="home" size={size} color={color} />
-          ),
+          tabBarIcon: HomeTabIcon,
         }}
       />
       <Tab.Screen
@@ -57,9 +71,7 @@ const MainTabNavigator: React.FC = () => {
         component={ServicesScreen}
         options={{
           title: 'Services',
-          tabBarIcon: ({color, size}) => (
-            <MaterialIcons name="solar-power" size={size} color={color} />
-          ),
+          tabBarIcon: ServicesTabIcon,
         }}
       />
       <Tab.Screen
@@ -67,9 +79,7 @@ const MainTabNavigator: React.FC = () => {
         component={MyRecordsScreen}
         options={{
           title: 'My Records',
-          tabBarIcon: ({color, size}) => (
-            <MaterialIcons name="folder" size={size} color={color} />
-          ),
+          tabBarIcon: MyRecordsTabIcon,
         }}
       />
       <Tab.Screen
@@ -77,9 +87,7 @@ const MainTabNavigator: React.FC = () => {
         component={DocumentsScreen}
         options={{
           title: 'Documents',
-          tabBarIcon: ({color, size}) => (
-            <MaterialIcons name="description" size={size} color={color} />
-          ),
+          tabBarIcon: DocumentsTabIcon,
         }}
       />
       <Tab.Screen
@@ -87,9 +95,7 @@ const MainTabNavigator: React.FC = () => {
         component={HelpScreen}
         options={{
           title: 'Help',
-          tabBarIcon: ({color, size}) => (
-            <MaterialIcons name="help" size={size} color={color} />
-          ),
+          tabBarIcon: HelpTabIcon,
         }}
       />
     </Tab.Navigator>

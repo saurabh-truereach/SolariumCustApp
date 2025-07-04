@@ -2,16 +2,16 @@
  * Enhanced Home Placeholder Screen tests
  */
 
+import {fireEvent, waitFor} from '@testing-library/react-native';
 import React from 'react';
 import {Alert} from 'react-native';
-import {fireEvent, waitFor} from '@testing-library/react-native';
+import HomeScreen from '../../screens/main/HomeScreen';
 import {
   renderWithProviders,
   createMockAuthState,
   createMockUser,
   asyncTest,
 } from '../../utils/testUtils';
-import HomePlaceholder from '../../screens/HomePlaceholder';
 
 // Mock Alert
 jest.spyOn(Alert, 'alert').mockImplementation((title, message, buttons) => {
@@ -21,7 +21,7 @@ jest.spyOn(Alert, 'alert').mockImplementation((title, message, buttons) => {
   }
 });
 
-describe('Enhanced HomePlaceholder Screen', () => {
+describe('Enhanced HomeScreen Screen', () => {
   const mockAuthState = createMockAuthState();
   const mockUser = createMockUser();
 
@@ -33,7 +33,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
   describe('Basic Rendering', () => {
     it('renders correctly with authenticated user', () => {
       const preloadedState = {auth: mockAuthState};
-      const {toJSON} = renderWithProviders(<HomePlaceholder />, {
+      const {toJSON} = renderWithProviders(<HomeScreen />, {
         preloadedState: preloadedState as any,
       });
 
@@ -42,7 +42,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
 
     it('displays correct welcome message', () => {
       const preloadedState = {auth: mockAuthState};
-      const {getByText} = renderWithProviders(<HomePlaceholder />, {
+      const {getByText} = renderWithProviders(<HomeScreen />, {
         preloadedState: preloadedState as any,
       });
 
@@ -52,7 +52,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
 
     it('shows protected status', () => {
       const preloadedState = {auth: mockAuthState};
-      const {getByText} = renderWithProviders(<HomePlaceholder />, {
+      const {getByText} = renderWithProviders(<HomeScreen />, {
         preloadedState: preloadedState as any,
       });
 
@@ -70,7 +70,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
         auth: {...mockAuthState, user: customUser},
       };
 
-      const {getByText} = renderWithProviders(<HomePlaceholder />, {
+      const {getByText} = renderWithProviders(<HomeScreen />, {
         preloadedState: preloadedState as any,
       });
 
@@ -83,7 +83,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
         auth: {...mockAuthState, user: customUser},
       };
 
-      const {getByText} = renderWithProviders(<HomePlaceholder />, {
+      const {getByText} = renderWithProviders(<HomeScreen />, {
         preloadedState: preloadedState as any,
       });
 
@@ -95,7 +95,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
         auth: {...mockAuthState, user: {...mockUser, name: undefined}},
       };
 
-      const {getByText} = renderWithProviders(<HomePlaceholder />, {
+      const {getByText} = renderWithProviders(<HomeScreen />, {
         preloadedState: preloadedState as any,
       });
 
@@ -107,7 +107,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
         auth: {...mockAuthState, user: undefined},
       };
 
-      const {getByText} = renderWithProviders(<HomePlaceholder />, {
+      const {getByText} = renderWithProviders(<HomeScreen />, {
         preloadedState: preloadedState as any,
       });
 
@@ -118,7 +118,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
   describe('Redux Store Status Display', () => {
     it('shows correct Redux store status', () => {
       const preloadedState = {auth: mockAuthState};
-      const {getByText} = renderWithProviders(<HomePlaceholder />, {
+      const {getByText} = renderWithProviders(<HomeScreen />, {
         preloadedState: preloadedState as any,
       });
 
@@ -139,7 +139,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
         },
       };
 
-      const {getByText} = renderWithProviders(<HomePlaceholder />, {
+      const {getByText} = renderWithProviders(<HomeScreen />, {
         preloadedState: unauthenticatedState as any,
       });
 
@@ -149,7 +149,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
 
     it('displays all status indicators', () => {
       const preloadedState = {auth: mockAuthState};
-      const {getByText} = renderWithProviders(<HomePlaceholder />, {
+      const {getByText} = renderWithProviders(<HomeScreen />, {
         preloadedState: preloadedState as any,
       });
 
@@ -169,7 +169,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
   describe('Logout Functionality', () => {
     it('shows logout button in development mode', () => {
       const preloadedState = {auth: mockAuthState};
-      const {getByText} = renderWithProviders(<HomePlaceholder />, {
+      const {getByText} = renderWithProviders(<HomeScreen />, {
         preloadedState: preloadedState as any,
       });
 
@@ -181,7 +181,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
     it('shows confirmation dialog when logout is pressed', async () => {
       await asyncTest(async () => {
         const preloadedState = {auth: mockAuthState};
-        const {getByText} = renderWithProviders(<HomePlaceholder />, {
+        const {getByText} = renderWithProviders(<HomeScreen />, {
           preloadedState: preloadedState as any,
         });
 
@@ -204,7 +204,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
     it('handles logout confirmation', async () => {
       await asyncTest(async () => {
         const preloadedState = {auth: mockAuthState};
-        const {getByText, store} = renderWithProviders(<HomePlaceholder />, {
+        const {getByText, store} = renderWithProviders(<HomeScreen />, {
           preloadedState: preloadedState as any,
         });
 
@@ -226,7 +226,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
         auth: {...mockAuthState, isLoading: true},
       };
 
-      const {getByText} = renderWithProviders(<HomePlaceholder />, {
+      const {getByText} = renderWithProviders(<HomeScreen />, {
         preloadedState: loadingState as any,
       });
 
@@ -241,7 +241,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
         auth: {...mockAuthState, isLoading: true},
       };
 
-      const {getByText} = renderWithProviders(<HomePlaceholder />, {
+      const {getByText} = renderWithProviders(<HomeScreen />, {
         preloadedState: loadingState as any,
       });
 
@@ -254,7 +254,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
   describe('Accessibility', () => {
     it('has proper accessibility labels', () => {
       const preloadedState = {auth: mockAuthState};
-      const {getByLabelText} = renderWithProviders(<HomePlaceholder />, {
+      const {getByLabelText} = renderWithProviders(<HomeScreen />, {
         preloadedState: preloadedState as any,
       });
 
@@ -268,7 +268,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
 
     it('provides accessibility hints', () => {
       const preloadedState = {auth: mockAuthState};
-      const {getByLabelText} = renderWithProviders(<HomePlaceholder />, {
+      const {getByLabelText} = renderWithProviders(<HomeScreen />, {
         preloadedState: preloadedState as any,
       });
 
@@ -285,7 +285,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
         auth: {...mockAuthState, isLoading: true},
       };
 
-      const {getByLabelText} = renderWithProviders(<HomePlaceholder />, {
+      const {getByLabelText} = renderWithProviders(<HomeScreen />, {
         preloadedState: loadingState as any,
       });
 
@@ -299,7 +299,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
   describe('Theme Integration', () => {
     it('applies theme colors correctly', () => {
       const preloadedState = {auth: mockAuthState};
-      const {getByText} = renderWithProviders(<HomePlaceholder />, {
+      const {getByText} = renderWithProviders(<HomeScreen />, {
         preloadedState: preloadedState as any,
       });
 
@@ -314,7 +314,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
 
     it('uses theme spacing and typography', () => {
       const preloadedState = {auth: mockAuthState};
-      const {getByText} = renderWithProviders(<HomePlaceholder />, {
+      const {getByText} = renderWithProviders(<HomeScreen />, {
         preloadedState: preloadedState as any,
       });
 
@@ -331,7 +331,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
       const startTime = performance.now();
       const preloadedState = {auth: mockAuthState};
 
-      renderWithProviders(<HomePlaceholder />, {
+      renderWithProviders(<HomeScreen />, {
         preloadedState: preloadedState as any,
       });
 
@@ -344,7 +344,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
     it('handles state updates efficiently', async () => {
       await asyncTest(async () => {
         const preloadedState = {auth: mockAuthState};
-        const {store, rerender} = renderWithProviders(<HomePlaceholder />, {
+        const {store, rerender} = renderWithProviders(<HomeScreen />, {
           preloadedState: preloadedState as any,
         });
 
@@ -356,7 +356,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
             type: 'auth/updateUserProfile',
             payload: {name: `User ${i}`},
           });
-          rerender(<HomePlaceholder />);
+          rerender(<HomeScreen />);
         }
 
         const endTime = performance.now();
@@ -370,7 +370,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
   describe('Error Handling', () => {
     it('handles missing auth state gracefully', () => {
       // Don't provide auth state
-      const {getByText} = renderWithProviders(<HomePlaceholder />);
+      const {getByText} = renderWithProviders(<HomeScreen />);
 
       expect(getByText('Welcome, User!')).toBeTruthy();
       expect(getByText('Home (protected)')).toBeTruthy();
@@ -388,7 +388,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
         },
       };
 
-      const {getByText} = renderWithProviders(<HomePlaceholder />, {
+      const {getByText} = renderWithProviders(<HomeScreen />, {
         preloadedState: malformedState as any,
       });
 
@@ -398,14 +398,17 @@ describe('Enhanced HomePlaceholder Screen', () => {
     it('handles logout errors gracefully', async () => {
       await asyncTest(async () => {
         // Mock logout to fail
-        const mockLogout = jest
-          .fn()
-          .mockRejectedValue(new Error('Logout failed'));
+        // const mockLogout = jest
+        //   .fn()
+        //   .mockRejectedValue(new Error('Logout failed'));
 
         const preloadedState = {auth: mockAuthState};
-        const {getByText} = renderWithProviders(<HomePlaceholder />, {
-          preloadedState: preloadedState as any,
-        });
+        const {getByText} = renderWithProviders(
+          <HomeScreen navigation={{} as any} route={{} as any} />,
+          {
+            preloadedState: preloadedState as any,
+          }
+        );
 
         if (__DEV__) {
           const logoutButton = getByText('Logout');
@@ -423,7 +426,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
   describe('Development vs Production', () => {
     it('shows development features only in dev mode', () => {
       const preloadedState = {auth: mockAuthState};
-      const {queryByText} = renderWithProviders(<HomePlaceholder />, {
+      const {queryByText} = renderWithProviders(<HomeScreen />, {
         preloadedState: preloadedState as any,
       });
 
@@ -436,7 +439,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
 
     it('maintains core functionality in production mode', () => {
       const preloadedState = {auth: mockAuthState};
-      const {getByText} = renderWithProviders(<HomePlaceholder />, {
+      const {getByText} = renderWithProviders(<HomeScreen />, {
         preloadedState: preloadedState as any,
       });
 
@@ -452,7 +455,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
       const preloadedState = {auth: mockAuthState};
 
       expect(() => {
-        renderWithProviders(<HomePlaceholder />, {
+        renderWithProviders(<HomeScreen />, {
           preloadedState: preloadedState as any,
         });
       }).not.toThrow();
@@ -460,7 +463,7 @@ describe('Enhanced HomePlaceholder Screen', () => {
 
     it('handles component unmounting correctly', () => {
       const preloadedState = {auth: mockAuthState};
-      const {unmount} = renderWithProviders(<HomePlaceholder />, {
+      const {unmount} = renderWithProviders(<HomeScreen />, {
         preloadedState: preloadedState as any,
       });
 
@@ -469,14 +472,14 @@ describe('Enhanced HomePlaceholder Screen', () => {
 
     it('handles re-renders correctly', () => {
       const preloadedState = {auth: mockAuthState};
-      const {rerender} = renderWithProviders(<HomePlaceholder />, {
+      const {rerender} = renderWithProviders(<HomeScreen />, {
         preloadedState: preloadedState as any,
       });
 
       expect(() => {
-        rerender(<HomePlaceholder />);
-        rerender(<HomePlaceholder />);
-        rerender(<HomePlaceholder />);
+        rerender(<HomeScreen />);
+        rerender(<HomeScreen />);
+        rerender(<HomeScreen />);
       }).not.toThrow();
     });
   });

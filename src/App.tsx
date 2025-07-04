@@ -14,14 +14,14 @@
  */
 
 import React, {useState, useEffect} from 'react';
+import {StyleSheet, AppState, AppStateStatus} from 'react-native';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {StyleSheet, AppState, AppStateStatus} from 'react-native';
-import {store, persistor, storeUtils} from './store';
 import {ErrorBoundary, LoadingOverlay} from './components';
 import {PersistenceLoadingOverlay} from './components/feedback/LoadingOverlay';
 import {RootNavigator} from './navigation';
+import {store, persistor, storeUtils} from './store';
 import ThemeProvider from './theme/ThemeProvider';
 import {persistenceHelpers, debugPersistence} from './utils/persistenceHelpers';
 

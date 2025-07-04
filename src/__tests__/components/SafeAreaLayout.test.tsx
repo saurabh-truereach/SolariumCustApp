@@ -4,8 +4,8 @@
 
 import React from 'react';
 import {Text} from 'react-native';
-import {renderWithProviders} from '../../utils/testUtils';
 import {SafeAreaLayout} from '../../components';
+import {renderWithProviders} from '../../utils/testUtils';
 
 describe('SafeAreaLayout', () => {
   it('renders children correctly', () => {

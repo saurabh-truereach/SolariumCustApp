@@ -60,20 +60,20 @@ describe('API Helpers', () => {
       const headers = getRequestHeaders();
 
       expect(headers['Content-Type']).toBe('application/json');
-      expect(headers['Accept']).toBe('application/json');
+      expect(headers.Accept).toBe('application/json');
       expect(headers['X-App-Version']).toBeDefined();
       expect(headers['X-Platform']).toBe('mobile');
     });
 
     it('should add Authorization header when token provided', () => {
       const headers = getRequestHeaders('test-token');
-      expect(headers['Authorization']).toBe('Bearer test-token');
+      expect(headers.Authorization).toBe('Bearer test-token');
     });
 
     it('should merge additional headers', () => {
       const headers = getRequestHeaders('token', {'Custom-Header': 'value'});
       expect(headers['Custom-Header']).toBe('value');
-      expect(headers['Authorization']).toBe('Bearer token');
+      expect(headers.Authorization).toBe('Bearer token');
     });
   });
 
@@ -92,7 +92,7 @@ describe('API Helpers', () => {
       const parsed = parseApiError(error);
       expect(parsed.code).toBe(400);
       expect(parsed.message).toBe('Validation failed');
-      expect(parsed.details).toEqual({field: 'required'});
+      expect(parsed.details).toStrictEqual({field: 'required'});
     });
 
     it('should handle simple message format', () => {

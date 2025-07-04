@@ -96,7 +96,7 @@ export const getAppConfig = (): AppConfig => {
   // Log configuration for debugging (only in debug mode)
   if (config.DEBUG_MODE) {
     console.log(`[Environment] Current: ${currentEnv}`);
-    console.log(`[Environment] Config:`, config);
+    console.log('[Environment] Config:', config);
   }
 
   return config;

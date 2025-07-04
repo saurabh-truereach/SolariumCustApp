@@ -2,8 +2,8 @@
  * Base Query tests
  */
 
-import {baseQuery} from '../../api/baseQuery';
 import {configureStore} from '@reduxjs/toolkit';
+import {baseQuery} from '../../api/baseQuery';
 import authReducer from '../../store/authSlice';
 
 // Mock fetch
@@ -49,7 +49,7 @@ describe('baseQuery', () => {
       headers: new Headers(),
     });
 
-    const result = await baseQuery(
+    await baseQuery(
       'test-endpoint',
       {
         getState: () => store.getState(),

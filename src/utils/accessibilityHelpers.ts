@@ -105,7 +105,7 @@ export const createButtonA11yProps = (
   accessibilityLabel: label,
   accessibilityHint: hint,
   accessibilityState: disabled ? a11yStates.disabled : a11yStates.enabled,
-  testID: testID,
+  testID,
 });
 
 /**
@@ -126,7 +126,7 @@ export const createTextInputA11yProps = (
   accessibilityState: error
     ? {...a11yStates.enabled, invalid: true}
     : a11yStates.enabled,
-  testID: testID,
+  testID,
 });
 
 /**
@@ -140,7 +140,7 @@ export const createTextA11yProps = (
   accessible: true,
   accessibilityRole: role === 'header' ? a11yRoles.header : a11yRoles.text,
   accessibilityLabel: content,
-  testID: testID,
+  testID,
 });
 
 /**
@@ -155,7 +155,7 @@ export const createImageA11yProps = (
   accessibilityRole: a11yRoles.image,
   accessibilityLabel: isDecorative ? undefined : altText,
   accessibilityElementsHidden: isDecorative,
-  testID: testID,
+  testID,
 });
 
 /**
@@ -169,7 +169,7 @@ export const createLoadingA11yProps = (
   accessibilityRole: a11yRoles.progressBar,
   accessibilityLabel: loadingText || 'Loading',
   accessibilityState: a11yStates.busy,
-  testID: testID,
+  testID,
 });
 
 /**
@@ -183,7 +183,7 @@ export const createErrorA11yProps = (
   accessibilityRole: a11yRoles.alert,
   accessibilityLabel: `Error: ${errorMessage}`,
   accessibilityLiveRegion: 'assertive' as const,
-  testID: testID,
+  testID,
 });
 
 /**
@@ -200,7 +200,7 @@ export const createNavigationA11yProps = (
   accessibilityLabel: label,
   accessibilityHint: hint,
   accessibilityState: isActive ? a11yStates.selected : a11yStates.unselected,
-  testID: testID,
+  testID,
 });
 
 /**
@@ -417,7 +417,7 @@ export const a11yTestHelpers = {
   /**
    * Find all accessibility issues in component tree
    */
-  findA11yIssues: (componentTree: any): string[] => {
+  findA11yIssues: (_componentTree: any): string[] => {
     const issues: string[] = [];
 
     // This would be implemented with a proper accessibility testing engine

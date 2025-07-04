@@ -13,12 +13,12 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {Text, TextInput} from 'react-native-paper';
-import type {AuthStackScreenProps} from '../../navigation/types';
-import {SafeAreaLayout, LoadingOverlay} from '../../components';
-import {useAppTheme} from '../../theme/ThemeProvider';
-import {useAppDispatch} from '../../hooks/useTypedRedux';
-import {loginSuccess} from '../../store/authSlice';
 import {useSendOtpMutation, useVerifyOtpMutation} from '../../api';
+import {SafeAreaLayout, LoadingOverlay} from '../../components';
+import {useAppDispatch} from '../../hooks/useTypedRedux';
+import type {AuthStackScreenProps} from '../../navigation/types';
+import {loginSuccess} from '../../store/authSlice';
+import {useAppTheme} from '../../theme/ThemeProvider';
 import {
   createButtonA11yProps,
   createTextInputA11yProps,
@@ -123,7 +123,7 @@ const LoginScreen: React.FC<Props> = ({navigation: _navigation}) => {
 
       Alert.alert(
         'OTP Sent',
-        result.message + '\n\nFor demo, use OTP: 123456',
+        `${result.message}\n\nFor demo, use OTP: 123456`,
         [{text: 'OK'}]
       );
     } catch (error: any) {
@@ -473,9 +473,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
   },
-  card: {
-    marginBottom: 16,
-  },
+  // card: {
+  //   marginBottom: 16,
+  // },
   input: {
     marginBottom: 16,
     borderWidth: 1,

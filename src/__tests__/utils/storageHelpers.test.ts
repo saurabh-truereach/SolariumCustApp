@@ -2,6 +2,7 @@
  * Storage Helpers tests
  */
 
+import EncryptedStorage from 'react-native-encrypted-storage';
 import {
   setStorageItem,
   getStorageItem,
@@ -13,7 +14,6 @@ import {
   getApiCache,
   clearExpiredApiCache,
 } from '../../utils/storageHelpers';
-import EncryptedStorage from 'react-native-encrypted-storage';
 
 // Mock EncryptedStorage
 jest.mock('react-native-encrypted-storage', () => ({
@@ -62,7 +62,7 @@ describe('Storage Helpers', () => {
 
       const result = await getStorageItem('test-key');
 
-      expect(result).toEqual(data);
+      expect(result).toStrictEqual(data);
       expect(mockEncryptedStorage.getItem).toHaveBeenCalledWith('test-key');
     });
 
@@ -209,7 +209,7 @@ describe('Storage Helpers', () => {
 
         const result = await getApiCache('cache-key');
 
-        expect(result).toEqual({test: 'cache'});
+        expect(result).toStrictEqual({test: 'cache'});
       });
 
       it('should return null for expired cache', async () => {

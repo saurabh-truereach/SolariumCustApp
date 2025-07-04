@@ -4,9 +4,9 @@
  */
 
 import React from 'react';
+import {LoadingOverlay} from '../components';
 import {useAppSelector} from '../hooks/useTypedRedux';
 import {selectIsLoggedIn, selectIsLoading} from '../store/authSlice';
-import {LoadingOverlay} from '../components';
 
 /**
  * Role-Based Guard Props

@@ -4,13 +4,13 @@
  */
 
 import {createApi} from '@reduxjs/toolkit/query/react';
+import type {PaginatedRequest, PaginatedResponse} from '../../utils/apiHelpers';
 import {
   baseQuery,
   transformResponse,
   transformError,
   provideTags,
 } from '../baseQuery';
-import type {PaginatedRequest, PaginatedResponse} from '../../utils/apiHelpers';
 
 /**
  * Lead Types
@@ -179,7 +179,7 @@ export const leadsApi = createApi({
       transformErrorResponse: transformError,
       invalidatesTags: ['Lead'],
       // Demo implementation
-      queryFn: async (arg, queryApi, extraOptions, baseQuery) => {
+      queryFn: async arg => {
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         const demoLead: Lead = {

@@ -5,10 +5,10 @@
 
 import 'react-native';
 import React from 'react';
+import {Alert} from 'react-native';
 import App from '../App';
 import {AppConfig} from '../config/environments';
-import renderer from 'react-test-renderer';
-import {Alert} from 'react-native';
+// import renderer from 'react-test-renderer';
 import {
   renderWithProviders,
   createMockAuthState,
@@ -72,7 +72,7 @@ describe('App Component', () => {
     });
 
     it('renders with theme provider', () => {
-      const {getByTestId} = renderWithProviders(<App />);
+      // const {getByTestId} = renderWithProviders(<App />);
       // The app should render within theme context
       expect(() => renderWithProviders(<App />)).not.toThrow();
     });

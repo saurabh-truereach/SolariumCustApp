@@ -3,11 +3,11 @@
  * Handles login and registration screens
  */
 
-import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-import type {AuthStackParamList} from './types';
+import React from 'react';
 import {LoginScreen} from '../screens';
 import {useAppTheme} from '../theme/ThemeProvider';
+import type {AuthStackParamList} from './types';
 
 const Stack = createStackNavigator<AuthStackParamList>();
 

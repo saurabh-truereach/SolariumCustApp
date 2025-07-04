@@ -2,12 +2,12 @@
  * Authentication Flow Integration Tests
  */
 
+import {fireEvent, waitFor} from '@testing-library/react-native';
 import React from 'react';
 import {Alert} from 'react-native';
-import {fireEvent, waitFor} from '@testing-library/react-native';
-import {renderWithProviders, createMockAuthState} from '../../utils/testUtils';
 import Login from '../../screens/auth/LoginScreen';
 import HomePlaceholder from '../../screens/HomePlaceholder';
+import {renderWithProviders, createMockAuthState} from '../../utils/testUtils';
 
 // Mock Alert
 jest.spyOn(Alert, 'alert').mockImplementation(() => {});

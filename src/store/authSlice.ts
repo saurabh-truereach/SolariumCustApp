@@ -4,12 +4,12 @@
  */
 
 import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
+import {authApi} from '../api/endpoints/auth';
 import {
   setStorageItem,
   removeStorageItem,
   STORAGE_KEYS,
 } from '../utils/storageHelpers';
-import {authApi} from '../api/endpoints/auth';
 
 /**
  * User interface
@@ -155,8 +155,8 @@ export const refreshTokenThunk = createAsyncThunk(
       // const response = await authService.refreshToken(refreshToken);
 
       const newTokens = {
-        token: 'refreshed_token_' + Date.now(),
-        refreshToken: 'refreshed_refresh_' + Date.now(),
+        token: `refreshed_token_${Date.now()}`,
+        refreshToken: `refreshed_refresh_${Date.now()}`,
       };
 
       // Store new token

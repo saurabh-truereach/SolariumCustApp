@@ -29,7 +29,7 @@ describe('Accessibility Helpers', () => {
           'submit-btn'
         );
 
-        expect(props).toEqual({
+        expect(props).toStrictEqual({
           accessible: true,
           accessibilityRole: 'button',
           accessibilityLabel: 'Submit',
@@ -41,7 +41,7 @@ describe('Accessibility Helpers', () => {
 
       it('should handle disabled state', () => {
         const props = createButtonA11yProps('Disabled', undefined, true);
-        expect(props.accessibilityState).toEqual({disabled: true});
+        expect(props.accessibilityState).toStrictEqual({disabled: true});
       });
 
       it('should handle optional parameters', () => {
@@ -62,7 +62,7 @@ describe('Accessibility Helpers', () => {
           'email-input'
         );
 
-        expect(props).toEqual({
+        expect(props).toStrictEqual({
           accessible: true,
           accessibilityRole: 'textbox',
           accessibilityLabel: 'Email (required)',
@@ -74,7 +74,7 @@ describe('Accessibility Helpers', () => {
 
       it('should handle error state', () => {
         const props = createTextInputA11yProps('Email', '', false, true);
-        expect(props.accessibilityState).toEqual({
+        expect(props.accessibilityState).toStrictEqual({
           disabled: false,
           invalid: true,
         });
@@ -90,7 +90,7 @@ describe('Accessibility Helpers', () => {
       it('should create text props', () => {
         const props = createTextA11yProps('Hello World', 'text', 'hello-text');
 
-        expect(props).toEqual({
+        expect(props).toStrictEqual({
           accessible: true,
           accessibilityRole: 'text',
           accessibilityLabel: 'Hello World',
@@ -114,7 +114,7 @@ describe('Accessibility Helpers', () => {
           'solar-img'
         );
 
-        expect(props).toEqual({
+        expect(props).toStrictEqual({
           accessible: true,
           accessibilityRole: 'image',
           accessibilityLabel: 'Solar panel image',
@@ -139,7 +139,7 @@ describe('Accessibility Helpers', () => {
           'loading-indicator'
         );
 
-        expect(props).toEqual({
+        expect(props).toStrictEqual({
           accessible: true,
           accessibilityRole: 'progressbar',
           accessibilityLabel: 'Loading data',
@@ -158,7 +158,7 @@ describe('Accessibility Helpers', () => {
       it('should create error props', () => {
         const props = createErrorA11yProps('Invalid input', 'error-msg');
 
-        expect(props).toEqual({
+        expect(props).toStrictEqual({
           accessible: true,
           accessibilityRole: 'alert',
           accessibilityLabel: 'Error: Invalid input',
@@ -267,7 +267,7 @@ describe('Accessibility Helpers', () => {
         const normalText = checkColorContrast('#999999', '#FFFFFF', false);
         const largeText = checkColorContrast('#999999', '#FFFFFF', true);
 
-        expect(normalText.ratio).toEqual(largeText.ratio);
+        expect(normalText.ratio).toStrictEqual(largeText.ratio);
         // Large text has lower threshold requirements
         if (largeText.ratio >= 3 && largeText.ratio < 4.5) {
           expect(normalText.isAACompliant).toBe(false);
@@ -330,10 +330,10 @@ describe('Accessibility Helpers', () => {
 
     describe('a11yStates', () => {
       it('should have standard accessibility states', () => {
-        expect(a11yStates.disabled).toEqual({disabled: true});
-        expect(a11yStates.enabled).toEqual({disabled: false});
-        expect(a11yStates.selected).toEqual({selected: true});
-        expect(a11yStates.checked).toEqual({checked: true});
+        expect(a11yStates.disabled).toStrictEqual({disabled: true});
+        expect(a11yStates.enabled).toStrictEqual({disabled: false});
+        expect(a11yStates.selected).toStrictEqual({selected: true});
+        expect(a11yStates.checked).toStrictEqual({checked: true});
       });
     });
   });

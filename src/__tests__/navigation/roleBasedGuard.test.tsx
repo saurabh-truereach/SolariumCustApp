@@ -2,15 +2,15 @@
  * Role-Based Guard tests
  */
 
+import {configureStore} from '@reduxjs/toolkit';
 import React from 'react';
 import {Text} from 'react-native';
 import {Provider} from 'react-redux';
-import {configureStore} from '@reduxjs/toolkit';
 import renderer from 'react-test-renderer';
 import RoleBasedGuard from '../../navigation/roleBasedGuard';
 import authReducer from '../../store/authSlice';
-import uiReducer from '../../store/uiSlice';
 import cacheReducer from '../../store/cacheSlice';
+import uiReducer from '../../store/uiSlice';
 
 const createTestStore = (initialState = {}) =>
   configureStore({

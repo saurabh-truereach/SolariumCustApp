@@ -4,8 +4,8 @@
  */
 
 import {createApi} from '@reduxjs/toolkit/query/react';
-import {baseQuery, transformResponse, transformError} from '../baseQuery';
 import type {User} from '../../store/authSlice';
+import {baseQuery, transformResponse, transformError} from '../baseQuery';
 
 /**
  * Auth API Request Types
@@ -84,7 +84,7 @@ export const authApi = createApi({
       transformResponse: transformResponse<SendOtpResponse>,
       transformErrorResponse: transformError,
       // Demo implementation
-      queryFn: async (arg, queryApi, extraOptions, baseQuery) => {
+      queryFn: async arg => {
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 1000));
 
@@ -127,7 +127,7 @@ export const authApi = createApi({
       transformErrorResponse: transformError,
       invalidatesTags: ['User', 'Auth'],
       // Demo implementation
-      queryFn: async (arg, queryApi, extraOptions, baseQuery) => {
+      queryFn: async arg => {
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 1500));
 

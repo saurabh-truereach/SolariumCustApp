@@ -40,18 +40,9 @@
       "@/types/*": ["src/types/*"],
       "@/constants/*": ["src/constants/*"]
     },
-    "types": [
-      "jest",
-      "@testing-library/jest-native",
-      "react-native"
-    ]
+    "types": ["jest", "@testing-library/jest-native", "react-native"]
   },
-  "include": [
-    "src/**/*",
-    "**/*.d.ts",
-    "jest.setup.js",
-    "jest.config.js"
-  ],
+  "include": ["src/**/*", "**/*.d.ts", "jest.setup.js", "jest.config.js"],
   "exclude": [
     "node_modules",
     "babel.config.js",

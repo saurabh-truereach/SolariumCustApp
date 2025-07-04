@@ -2,8 +2,8 @@
  * API Endpoints tests
  */
 
-import {authApi, servicesApi, leadsApi} from '../../api/endpoints';
 import {configureStore} from '@reduxjs/toolkit';
+import {authApi, servicesApi, leadsApi} from '../../api/endpoints';
 
 describe('API Endpoints', () => {
   let store: any;

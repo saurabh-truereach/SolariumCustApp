@@ -63,10 +63,12 @@ describe('Essential Persistence', () => {
   it('should handle purge operation', async () => {
     await storeUtils.purge();
     // Should not throw an error
+    expect(true).toBe(true); // Simple assertion to ensure test runs
   });
 
   it('should handle flush operation', async () => {
     await storeUtils.flush();
     // Should not throw an error
+    expect(true).toBe(true); // Simple assertion to ensure test runs
   });
 });

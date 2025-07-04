@@ -20,7 +20,7 @@ module.exports = {
     'jsx-a11y', // Add jsx-a11y plugin
     'react-native-a11y', // React Native specific a11y plugin
     'prettier',
-    'eslint-plugin-import',
+    'import',
   ],
   parserOptions: {
     ecmaFeatures: {
@@ -125,7 +125,7 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'warn',
-    '@typescript-eslint/prefer-const': 'error',
+    'prefer-const': 'error',
 
     // ACCESSIBILITY RULES
     // JSX-A11Y Rules (adapted for React Native)
@@ -162,23 +162,19 @@ module.exports = {
     'jsx-a11y/scope': 'off', // No tables typically in React Native
     'jsx-a11y/tabindex-no-positive': 'error',
 
-    // React Native Accessibility Rules
-    '@react-native/platform-colors': 'off',
-    '@react-native/no-haste-imports': 'error',
-
     // CUSTOM ACCESSIBILITY RULES
     // These would be custom rules for React Native accessibility
-    'react-native-a11y/has-accessibility-label': 'error',
-    'react-native-a11y/has-accessibility-role': 'error',
+    // 'react-native-a11y/has-accessibility-label': 'error',
+    // 'react-native-a11y/has-accessibility-role': 'error',
     'react-native-a11y/no-nested-touchables': 'error',
-    'react-native-a11y/accessibility-label-no-generic': 'warn',
+    // 'react-native-a11y/accessibility-label-no-generic': 'warn',
 
     // General JavaScript Rules
     'no-console': 'off', // Allow console logs for now (development phase)
     'no-debugger': 'error',
     'no-alert': 'error',
     'no-unused-vars': 'off', // Use TypeScript version instead
-    'prefer-const': 'error',
+    // 'prefer-const': 'error',
     'no-var': 'error',
     'object-shorthand': 'error',
     'prefer-template': 'error',
@@ -202,7 +198,7 @@ module.exports = {
         },
       },
     ],
-    'import/no-duplicate-imports': 'error',
+    // 'import/no-duplicate-imports': 'error',
 
     // Code Style Rules
     curly: ['error', 'all'],

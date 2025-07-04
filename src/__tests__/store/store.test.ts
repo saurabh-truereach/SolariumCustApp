@@ -38,7 +38,7 @@ describe('Store Configuration', () => {
 
     let state = store.getState();
     expect(state.auth.isLoggedIn).toBe(true);
-    expect(state.auth.user).toEqual(mockUser);
+    expect(state.auth.user).toStrictEqual(mockUser);
 
     // Dispatch logout
     store.dispatch(logout());

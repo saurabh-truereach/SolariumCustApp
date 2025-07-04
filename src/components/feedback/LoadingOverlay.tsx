@@ -82,7 +82,7 @@ export const PersistenceLoadingOverlay: React.FC<PersistenceLoadingProps> = ({
       <View
         style={[
           styles.overlay,
-          {backgroundColor: theme.colors.background + 'F0'}, // 94% opacity
+          {backgroundColor: `${theme.colors.background}F0`}, // 94% opacity
         ]}
       >
         <View
@@ -188,8 +188,8 @@ const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
           styles.overlay,
           {
             backgroundColor: transparent
-              ? theme.colors.background + '80' // 50% opacity
-              : theme.colors.background + 'E6', // 90% opacity
+              ? `${theme.colors.background}80` // 50% opacity
+              : `${theme.colors.background}E6`, // 90% opacity
           },
         ]}
       >
@@ -228,46 +228,46 @@ const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
 };
 
 const stylesLoadingOverlayOriginal = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  container: {
-    padding: 24,
-    borderRadius: 12,
-    alignItems: 'center',
-    minWidth: 120,
-  },
-  spinner: {
-    marginBottom: 8,
-  },
-  message: {
-    textAlign: 'center',
-    marginTop: 8,
-  },
+  // overlay: {
+  //   flex: 1,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  // },
+  // container: {
+  //   padding: 24,
+  //   borderRadius: 12,
+  //   alignItems: 'center',
+  //   minWidth: 120,
+  // },
+  // spinner: {
+  //   marginBottom: 8,
+  // },
+  // message: {
+  //   textAlign: 'center',
+  //   marginTop: 8,
+  // },
 });
 
 const persistenceStyles = StyleSheet.create({
-  stageIcon: {
-    fontSize: 32,
-    marginBottom: 16,
-  },
-  progressContainer: {
-    width: '100%',
-    height: 4,
-    borderRadius: 2,
-    marginTop: 16,
-    overflow: 'hidden',
-  },
-  progressBar: {
-    height: '100%',
-    borderRadius: 2,
-  },
-  progressText: {
-    marginTop: 8,
-    textAlign: 'center',
-  },
+  // stageIcon: {
+  //   fontSize: 32,
+  //   marginBottom: 16,
+  // },
+  // progressContainer: {
+  //   width: '100%',
+  //   height: 4,
+  //   borderRadius: 2,
+  //   marginTop: 16,
+  //   overflow: 'hidden',
+  // },
+  // progressBar: {
+  //   height: '100%',
+  //   borderRadius: 2,
+  // },
+  // progressText: {
+  //   marginTop: 8,
+  //   textAlign: 'center',
+  // },
 });
 
 // Merge styles

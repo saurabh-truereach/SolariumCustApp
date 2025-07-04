@@ -9,6 +9,7 @@ import {
   FetchBaseQueryError,
   fetchBaseQuery,
 } from '@reduxjs/toolkit/query';
+import {AppConfig} from '../config/environments';
 import type {RootState} from '../store';
 import {logout} from '../store/authSlice';
 import {setLoading} from '../store/uiSlice';
@@ -21,7 +22,6 @@ import {
   calculateRetryDelay,
   debugApiCall,
 } from '../utils/apiHelpers';
-import {AppConfig} from '../config/environments';
 
 /**
  * Enhanced base query result
@@ -109,7 +109,7 @@ const baseQueryWithRetry: BaseQueryFn<
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
-  const {dispatch, getState} = api;
+  const {dispatch} = api;
   const maxRetries = 3;
   let attempt = 0;
 

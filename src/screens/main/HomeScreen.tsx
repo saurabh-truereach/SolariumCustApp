@@ -3,7 +3,7 @@
  * Main dashboard for authenticated users
  */
 
-import React, {useState} from 'react';
+import React, {useState, useMemo} from 'react';
 import {
   Alert,
   ScrollView,
@@ -12,11 +12,11 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {Card, Text} from 'react-native-paper';
-import type {MainTabScreenProps} from '../../navigation/types';
 import {SafeAreaLayout} from '../../components';
-import {useAppTheme} from '../../theme/ThemeProvider';
 import {useAppDispatch, useAppSelector} from '../../hooks/useTypedRedux';
+import type {MainTabScreenProps} from '../../navigation/types';
 import {logoutUser} from '../../store/authSlice';
+import {useAppTheme} from '../../theme/ThemeProvider';
 import {
   createButtonA11yProps,
   createTextA11yProps,
@@ -67,6 +67,17 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
       },
     ]);
   };
+
+  const logoutButtonStyle = useMemo(
+    () => [
+      styles.logoutButton,
+      {
+        backgroundColor: theme.colors.error,
+        opacity: isLoading ? 0.6 : 1,
+      },
+    ],
+    [theme.colors.error, isLoading]
+  );
 
   /**
    * Navigate to service detail (test deep linking)
@@ -224,13 +235,7 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
 
               <View style={styles.actionsSection}>
                 <TouchableOpacity
-                  style={[
-                    styles.logoutButton,
-                    {
-                      backgroundColor: theme.colors.error,
-                      opacity: isLoading ? 0.6 : 1,
-                    },
-                  ]}
+                  style={logoutButtonStyle}
                   onPress={handleLogout}
                   disabled={isLoading}
                   {...createButtonA11yProps(
@@ -303,12 +308,12 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 16,
   },
-  actionButtons: {
-    gap: 12,
-  },
-  actionButton: {
-    marginVertical: 4,
-  },
+  // actionButtons: {
+  //   gap: 12,
+  // },
+  // actionButton: {
+  //   marginVertical: 4,
+  // },
   userInfo: {
     gap: 8,
   },

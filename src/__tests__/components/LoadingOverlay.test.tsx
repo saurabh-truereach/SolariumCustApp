@@ -3,8 +3,8 @@
  */
 
 import React from 'react';
-import {renderWithProviders} from '../../utils/testUtils';
 import {LoadingOverlay, PersistenceLoadingOverlay} from '../../components';
+import {renderWithProviders} from '../../utils/testUtils';
 
 describe('LoadingOverlay', () => {
   it('renders when visible is true', () => {

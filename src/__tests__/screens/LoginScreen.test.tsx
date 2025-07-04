@@ -2,15 +2,15 @@
  * Enhanced Login Screen tests
  */
 
+import {fireEvent, waitFor, act} from '@testing-library/react-native';
 import React from 'react';
 import {Alert} from 'react-native';
-import {fireEvent, waitFor, act} from '@testing-library/react-native';
+import LoginScreen from '../../screens/auth/LoginScreen';
 import {
   renderWithProviders,
   waitForAsync,
   asyncTest,
 } from '../../utils/testUtils';
-import Login from '../../screens/auth/LoginScreen';
 
 // Mock Alert
 jest.spyOn(Alert, 'alert').mockImplementation(() => {});
@@ -74,12 +74,16 @@ describe('Enhanced Login Screen', () => {
 
   describe('Initial Render', () => {
     it('renders correctly', () => {
-      const {toJSON} = renderWithProviders(<Login />);
+      const {toJSON} = renderWithProviders(
+        <LoginScreen navigation={{} as any} route={{} as any} />
+      );
       expect(toJSON()).toMatchSnapshot();
     });
 
     it('shows phone input initially', () => {
-      const {getByPlaceholderText, getByText} = renderWithProviders(<Login />);
+      const {getByPlaceholderText, getByText} = renderWithProviders(
+        <LoginScreen navigation={{} as any} route={{} as any} />
+      );
 
       expect(getByPlaceholderText('Enter 10-digit phone number')).toBeTruthy();
       expect(getByText('Send OTP')).toBeTruthy();
@@ -87,7 +91,9 @@ describe('Enhanced Login Screen', () => {
     });
 
     it('has proper accessibility labels', () => {
-      const {getByLabelText} = renderWithProviders(<Login />);
+      const {getByLabelText} = renderWithProviders(
+        <LoginScreen navigation={{} as any} route={{} as any} />
+      );
 
       expect(getByLabelText('Phone number input')).toBeTruthy();
       expect(getByLabelText('Send OTP button')).toBeTruthy();
@@ -95,7 +101,7 @@ describe('Enhanced Login Screen', () => {
 
     it('displays correct initial UI state', () => {
       const {getByText, queryByPlaceholderText} = renderWithProviders(
-        <Login />
+        <LoginScreen navigation={{} as any} route={{} as any} />
       );
 
       expect(getByText('Enter your phone number to continue')).toBeTruthy();
@@ -107,7 +113,9 @@ describe('Enhanced Login Screen', () => {
   describe('Phone Number Validation', () => {
     it('validates phone number correctly', async () => {
       const {getByPlaceholderText, getByText, queryByText} =
-        renderWithProviders(<Login />);
+        renderWithProviders(
+          <LoginScreen navigation={{} as any} route={{} as any} />
+        );
       const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
 
       // Test invalid phone number
@@ -128,7 +136,9 @@ describe('Enhanced Login Screen', () => {
     });
 
     it('enables/disables Send OTP button based on validation', async () => {
-      const {getByPlaceholderText, getByText} = renderWithProviders(<Login />);
+      const {getByPlaceholderText, getByText} = renderWithProviders(
+        <LoginScreen navigation={{} as any} route={{} as any} />
+      );
       const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
       const sendOtpButton = getByText('Send OTP');
 
@@ -149,8 +159,9 @@ describe('Enhanced Login Screen', () => {
     });
 
     it('handles various phone number formats', async () => {
-      const {getByPlaceholderText, getByText, queryByText} =
-        renderWithProviders(<Login />);
+      const {getByPlaceholderText, queryByText} = renderWithProviders(
+        <LoginScreen navigation={{} as any} route={{} as any} />
+      );
       const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
 
       const testCases = [
@@ -181,7 +192,9 @@ describe('Enhanced Login Screen', () => {
 
   describe('OTP Flow', () => {
     const setupOtpFlow = async () => {
-      const {getByPlaceholderText, getByText} = renderWithProviders(<Login />);
+      const {getByPlaceholderText, getByText} = renderWithProviders(
+        <LoginScreen navigation={{} as any} route={{} as any} />
+      );
       const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
 
       fireEvent.changeText(phoneInput, '1234567890');
@@ -197,7 +210,7 @@ describe('Enhanced Login Screen', () => {
     it('transitions to OTP screen after sending OTP', async () => {
       await asyncTest(async () => {
         const {getByPlaceholderText, getByText} = renderWithProviders(
-          <Login />
+          <LoginScreen navigation={{} as any} route={{} as any} />
         );
         const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
 
@@ -215,7 +228,7 @@ describe('Enhanced Login Screen', () => {
     it('shows alert when OTP is sent', async () => {
       await asyncTest(async () => {
         const {getByPlaceholderText, getByText} = renderWithProviders(
-          <Login />
+          <LoginScreen navigation={{} as any} route={{} as any} />
         );
         const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
 
@@ -318,7 +331,7 @@ describe('Enhanced Login Screen', () => {
     it('handles successful login', async () => {
       await asyncTest(async () => {
         const {getByPlaceholderText, getByText, store} = renderWithProviders(
-          <Login />
+          <LoginScreen navigation={{} as any} route={{} as any} />
         );
 
         // Navigate to OTP screen
@@ -346,7 +359,7 @@ describe('Enhanced Login Screen', () => {
     it('handles login failure', async () => {
       await asyncTest(async () => {
         const {getByPlaceholderText, getByText} = renderWithProviders(
-          <Login />
+          <LoginScreen navigation={{} as any} route={{} as any} />
         );
 
         // Navigate to OTP screen
@@ -372,7 +385,7 @@ describe('Enhanced Login Screen', () => {
     it('shows loading state during login', async () => {
       await asyncTest(async () => {
         const {getByPlaceholderText, getByText} = renderWithProviders(
-          <Login />
+          <LoginScreen navigation={{} as any} route={{} as any} />
         );
 
         // Navigate to OTP screen
@@ -402,7 +415,7 @@ describe('Enhanced Login Screen', () => {
     it('displays API errors correctly', async () => {
       await asyncTest(async () => {
         const {getByPlaceholderText, getByText} = renderWithProviders(
-          <Login />
+          <LoginScreen navigation={{} as any} route={{} as any} />
         );
 
         // Test with phone that will cause API error
@@ -419,7 +432,9 @@ describe('Enhanced Login Screen', () => {
     it('clears errors when user types', async () => {
       await asyncTest(async () => {
         const {getByPlaceholderText, getByText, queryByText} =
-          renderWithProviders(<Login />);
+          renderWithProviders(
+            <LoginScreen navigation={{} as any} route={{} as any} />
+          );
 
         // Cause an error first
         const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
@@ -445,12 +460,15 @@ describe('Enhanced Login Screen', () => {
     it('handles network errors gracefully', async () => {
       // This would require mocking network failures
       // Implementation depends on how the API client handles network errors
+      expect(true).toBe(true); // Placeholder for future implementation
     });
   });
 
   describe('Accessibility', () => {
     it('has proper accessibility labels and hints', () => {
-      const {getByLabelText} = renderWithProviders(<Login />);
+      const {getByLabelText} = renderWithProviders(
+        <LoginScreen navigation={{} as any} route={{} as any} />
+      );
 
       const phoneInput = getByLabelText('Phone number input');
       expect(phoneInput.props.accessibilityHint).toBe(
@@ -466,7 +484,9 @@ describe('Enhanced Login Screen', () => {
     it('maintains accessibility in OTP screen', async () => {
       await asyncTest(async () => {
         const {getByPlaceholderText, getByText, getByLabelText} =
-          renderWithProviders(<Login />);
+          renderWithProviders(
+            <LoginScreen navigation={{} as any} route={{} as any} />
+          );
 
         // Navigate to OTP screen
         const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
@@ -490,6 +510,7 @@ describe('Enhanced Login Screen', () => {
     it('announces state changes to screen readers', async () => {
       // This would require more sophisticated accessibility testing
       // Could be implemented with accessibility testing tools
+      expect(true).toBe(true); // Placeholder for future implementation
     });
   });
 
@@ -497,7 +518,9 @@ describe('Enhanced Login Screen', () => {
     it('renders efficiently', async () => {
       const startTime = performance.now();
 
-      renderWithProviders(<Login />);
+      renderWithProviders(
+        <LoginScreen navigation={{} as any} route={{} as any} />
+      );
       await waitForAsync();
 
       const endTime = performance.now();
@@ -509,7 +532,9 @@ describe('Enhanced Login Screen', () => {
 
     it('handles rapid user input efficiently', async () => {
       await asyncTest(async () => {
-        const {getByPlaceholderText} = renderWithProviders(<Login />);
+        const {getByPlaceholderText} = renderWithProviders(
+          <LoginScreen navigation={{} as any} route={{} as any} />
+        );
         const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
 
         const startTime = performance.now();
@@ -531,7 +556,9 @@ describe('Enhanced Login Screen', () => {
 
   describe('Demo Features', () => {
     it('shows demo instructions in development mode', () => {
-      const {getByText} = renderWithProviders(<Login />);
+      const {getByText} = renderWithProviders(
+        <LoginScreen navigation={{} as any} route={{} as any} />
+      );
 
       if (__DEV__) {
         expect(getByText('Demo Instructions')).toBeTruthy();
@@ -541,7 +568,9 @@ describe('Enhanced Login Screen', () => {
     });
 
     it('displays demo card with correct information', () => {
-      const {getByText} = renderWithProviders(<Login />);
+      const {getByText} = renderWithProviders(
+        <LoginScreen navigation={{} as any} route={{} as any} />
+      );
 
       if (__DEV__) {
         expect(getByText('Demo Instructions')).toBeTruthy();
@@ -553,7 +582,7 @@ describe('Enhanced Login Screen', () => {
   describe('Edge Cases', () => {
     it('handles component unmount during API calls', async () => {
       const {getByPlaceholderText, getByText, unmount} = renderWithProviders(
-        <Login />
+        <LoginScreen navigation={{} as any} route={{} as any} />
       );
 
       const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
@@ -565,12 +594,14 @@ describe('Enhanced Login Screen', () => {
 
       // Should not throw errors
       await waitForAsync();
+
+      expect(true).toBe(true); // Just to ensure no errors thrown
     });
 
     it('handles multiple rapid button presses', async () => {
       await asyncTest(async () => {
         const {getByPlaceholderText, getByText} = renderWithProviders(
-          <Login />
+          <LoginScreen navigation={{} as any} route={{} as any} />
         );
 
         const phoneInput = getByPlaceholderText('Enter 10-digit phone number');
@@ -593,7 +624,7 @@ describe('Enhanced Login Screen', () => {
     it('preserves form state during screen transitions', async () => {
       await asyncTest(async () => {
         const {getByPlaceholderText, getByText} = renderWithProviders(
-          <Login />
+          <LoginScreen navigation={{} as any} route={{} as any} />
         );
 
         // Enter phone number

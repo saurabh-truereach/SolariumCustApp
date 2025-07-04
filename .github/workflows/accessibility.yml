@@ -2,165 +2,165 @@ name: Accessibility Checks
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
 
 jobs:
   accessibility-tests:
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
         node-version: [18.x]
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-        
-    - name: Install dependencies
-      run: npm ci
-      
-    - name: Run ESLint accessibility checks
-      run: npm run lint:a11y
-      
-    - name: Run accessibility unit tests
-      run: npm run test:a11y
-      
-    - name: Run React Native Accessibility Engine
-      run: npm run a11y:check
-      
-    - name: Generate accessibility report
-      run: npm run a11y:report
-      
-    - name: Upload accessibility report
-      uses: actions/upload-artifact@v3
-      if: always()
-      with:
-        name: accessibility-report
-        path: |
-          accessibility-report.html
-          accessibility-report.json
-        retention-days: 30
-        
-    - name: Comment accessibility results on PR
-      if: github.event_name == 'pull_request'
-      uses: actions/github-script@v6
-      with:
-        script: |
-          const fs = require('fs');
-          
-          try {
-            const reportData = fs.readFileSync('accessibility-report.json', 'utf8');
-            const report = JSON.parse(reportData);
-            
-            const comment = `## Accessibility Test Results 🌐
-            
-            **Overall Score: ${report.overallScore || 'N/A'}**
-            
-            | Metric | Count | Status |
-            |--------|-------|--------|
-            | Critical Issues | ${report.criticalIssues || 0} | ${report.criticalIssues > 0 ? '❌' : '✅'} |
-            | Warnings | ${report.warnings || 0} | ${report.warnings > 0 ? '⚠️' : '✅'} |
-            | Best Practices | ${report.bestPractices || 0} | ${report.bestPractices < 10 ? '⚠️' : '✅'} |
-            | Color Contrast | ${report.contrastIssues || 0} issues | ${report.contrastIssues > 0 ? '❌' : '✅'} |
-            
-            ${report.criticalIssues > 0 ? '❌ **Critical accessibility issues found - please fix before merging**' : '✅ **No critical accessibility issues found**'}
-            
-            <details>
-            <summary>View detailed report</summary>
-            
-            \`\`\`json
-            ${JSON.stringify(report, null, 2)}
-            \`\`\`
-            </details>
-            `;
-            
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            });
-          } catch (error) {
-            console.log('No accessibility report found or error reading report:', error.message);
-          }
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint accessibility checks
+        run: npm run lint:a11y
+
+      - name: Run accessibility unit tests
+        run: npm run test:a11y
+
+      - name: Run React Native Accessibility Engine
+        run: npm run a11y:check
+
+      - name: Generate accessibility report
+        run: npm run a11y:report
+
+      - name: Upload accessibility report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: accessibility-report
+          path: |
+            accessibility-report.html
+            accessibility-report.json
+          retention-days: 30
+
+      - name: Comment accessibility results on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+
+            try {
+              const reportData = fs.readFileSync('accessibility-report.json', 'utf8');
+              const report = JSON.parse(reportData);
+              
+              const comment = `## Accessibility Test Results 🌐
+              
+              **Overall Score: ${report.overallScore || 'N/A'}**
+              
+              | Metric | Count | Status |
+              |--------|-------|--------|
+              | Critical Issues | ${report.criticalIssues || 0} | ${report.criticalIssues > 0 ? '❌' : '✅'} |
+              | Warnings | ${report.warnings || 0} | ${report.warnings > 0 ? '⚠️' : '✅'} |
+              | Best Practices | ${report.bestPractices || 0} | ${report.bestPractices < 10 ? '⚠️' : '✅'} |
+              | Color Contrast | ${report.contrastIssues || 0} issues | ${report.contrastIssues > 0 ? '❌' : '✅'} |
+              
+              ${report.criticalIssues > 0 ? '❌ **Critical accessibility issues found - please fix before merging**' : '✅ **No critical accessibility issues found**'}
+              
+              <details>
+              <summary>View detailed report</summary>
+              
+              \`\`\`json
+              ${JSON.stringify(report, null, 2)}
+              \`\`\`
+              </details>
+              `;
+              
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            } catch (error) {
+              console.log('No accessibility report found or error reading report:', error.message);
+            }
 
   lighthouse-accessibility:
     runs-on: ubuntu-latest
     needs: accessibility-tests
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 18.x
-        cache: 'npm'
-        
-    - name: Install dependencies
-      run: npm ci
-      
-    - name: Build app for web (if applicable)
-      run: |
-        # This step would be for web version accessibility testing
-        # For React Native, we'll focus on the component-level testing
-        echo "Skipping web build for React Native app"
-        
-    - name: Run component accessibility audit
-      run: |
-        npm run a11y:audit || true
-        
-    - name: Upload lighthouse results
-      uses: actions/upload-artifact@v3
-      if: always()
-      with:
-        name: lighthouse-accessibility
-        path: lighthouse-results/
-        retention-days: 7
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build app for web (if applicable)
+        run: |
+          # This step would be for web version accessibility testing
+          # For React Native, we'll focus on the component-level testing
+          echo "Skipping web build for React Native app"
+
+      - name: Run component accessibility audit
+        run: |
+          npm run a11y:audit || true
+
+      - name: Upload lighthouse results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: lighthouse-accessibility
+          path: lighthouse-results/
+          retention-days: 7
 
   accessibility-summary:
     runs-on: ubuntu-latest
     needs: [accessibility-tests, lighthouse-accessibility]
     if: always()
-    
+
     steps:
-    - name: Download accessibility artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: accessibility-report
-        
-    - name: Generate summary
-      run: |
-        echo "## Accessibility Check Summary" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        
-        if [ -f "accessibility-report.json" ]; then
-          echo "📊 **Accessibility Report Generated**" >> $GITHUB_STEP_SUMMARY
-          
-          # Parse JSON and add to summary
-          node -e "
-            const fs = require('fs');
-            const report = JSON.parse(fs.readFileSync('accessibility-report.json', 'utf8'));
-            console.log('- Critical Issues: ' + (report.criticalIssues || 0));
-            console.log('- Warnings: ' + (report.warnings || 0));
-            console.log('- Color Contrast Issues: ' + (report.contrastIssues || 0));
-            console.log('- Overall Compliance: ' + (report.overallScore || 'N/A'));
-          " >> $GITHUB_STEP_SUMMARY
-        else
-          echo "⚠️ **No accessibility report generated**" >> $GITHUB_STEP_SUMMARY
-        fi
-        
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
-        echo "1. Review the accessibility report artifact" >> $GITHUB_STEP_SUMMARY
-        echo "2. Fix any critical issues before merging" >> $GITHUB_STEP_SUMMARY
-        echo "3. Consider addressing warnings for better accessibility" >> $GITHUB_STEP_SUMMARY
+      - name: Download accessibility artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: accessibility-report
+
+      - name: Generate summary
+        run: |
+          echo "## Accessibility Check Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f "accessibility-report.json" ]; then
+            echo "📊 **Accessibility Report Generated**" >> $GITHUB_STEP_SUMMARY
+            
+            # Parse JSON and add to summary
+            node -e "
+              const fs = require('fs');
+              const report = JSON.parse(fs.readFileSync('accessibility-report.json', 'utf8'));
+              console.log('- Critical Issues: ' + (report.criticalIssues || 0));
+              console.log('- Warnings: ' + (report.warnings || 0));
+              console.log('- Color Contrast Issues: ' + (report.contrastIssues || 0));
+              console.log('- Overall Compliance: ' + (report.overallScore || 'N/A'));
+            " >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ **No accessibility report generated**" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "1. Review the accessibility report artifact" >> $GITHUB_STEP_SUMMARY
+          echo "2. Fix any critical issues before merging" >> $GITHUB_STEP_SUMMARY
+          echo "3. Consider addressing warnings for better accessibility" >> $GITHUB_STEP_SUMMARY

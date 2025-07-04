@@ -4,13 +4,13 @@
  */
 
 import {createApi} from '@reduxjs/toolkit/query/react';
+import type {PaginatedRequest, PaginatedResponse} from '../../utils/apiHelpers';
 import {
   baseQuery,
   transformResponse,
   transformError,
   provideTags,
 } from '../baseQuery';
-import type {PaginatedRequest, PaginatedResponse} from '../../utils/apiHelpers';
 
 /**
  * Service Types
@@ -78,7 +78,7 @@ export const servicesApi = createApi({
       transformErrorResponse: transformError,
       providesTags: result => provideTags('Service', result?.data),
       // Demo implementation
-      queryFn: async (arg, queryApi, extraOptions, baseQuery) => {
+      queryFn: async arg => {
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 800));
 
@@ -197,7 +197,7 @@ export const servicesApi = createApi({
       transformErrorResponse: transformError,
       providesTags: ['ServiceCategory'],
       // Demo implementation
-      queryFn: async (arg, queryApi, extraOptions, baseQuery) => {
+      queryFn: async () => {
         await new Promise(resolve => setTimeout(resolve, 500));
 
         const demoCategories: ServiceCategory[] = [

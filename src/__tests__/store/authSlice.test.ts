@@ -55,7 +55,9 @@ describe('Enhanced Auth Slice', () => {
 
   describe('Initial State', () => {
     it('should return the initial state', () => {
-      expect(authReducer(undefined, {type: undefined})).toEqual(initialState);
+      expect(authReducer(undefined, {type: undefined})).toStrictEqual(
+        initialState
+      );
     });
 
     it('should have correct initial state structure', () => {
@@ -91,7 +93,7 @@ describe('Enhanced Auth Slice', () => {
       expect(actual.isLoading).toBe(false);
       expect(actual.token).toBe('test_token');
       expect(actual.refreshToken).toBe('refresh_token');
-      expect(actual.user).toEqual(mockUser);
+      expect(actual.user).toStrictEqual(mockUser);
       expect(actual.error).toBeUndefined();
       expect(actual.lastLoginTime).toBeDefined();
       expect(typeof actual.lastLoginTime).toBe('number');
@@ -121,7 +123,7 @@ describe('Enhanced Auth Slice', () => {
 
       const actual = authReducer(loggedInState, logout());
 
-      expect(actual).toEqual(initialState);
+      expect(actual).toStrictEqual(initialState);
     });
 
     it('should handle clearError', () => {
@@ -150,7 +152,7 @@ describe('Enhanced Auth Slice', () => {
 
       const actual = authReducer(loggedInState, updateUserProfile(updates));
 
-      expect(actual.user).toEqual({...mockUser, ...updates});
+      expect(actual.user).toStrictEqual({...mockUser, ...updates});
       expect(actual.isLoggedIn).toBe(true);
     });
 
@@ -166,7 +168,7 @@ describe('Enhanced Auth Slice', () => {
       const actual = authReducer(initialState, updateUserProfile(updates));
 
       expect(actual.user).toBeUndefined();
-      expect(actual).toEqual(initialState);
+      expect(actual).toStrictEqual(initialState);
     });
   });
 
@@ -345,7 +347,7 @@ describe('Enhanced Auth Slice', () => {
 
       // Should preserve all other properties
       expect(actual.isLoggedIn).toBe(true);
-      expect(actual.user).toEqual(mockUser);
+      expect(actual.user).toStrictEqual(mockUser);
       expect(actual.token).toBe('existing_token');
       expect(actual.lastLoginTime).toBe(1234567890);
       expect(actual.error).toBeUndefined();
@@ -375,7 +377,7 @@ describe('Enhanced Auth Slice', () => {
       expect(actual.token).toBe('new_token');
       expect(actual.refreshToken).toBe('new_refresh_token');
       expect(actual.isLoggedIn).toBe(true);
-      expect(actual.user).toEqual(mockUser);
+      expect(actual.user).toStrictEqual(mockUser);
     });
 
     it('should track login time for token expiry', () => {

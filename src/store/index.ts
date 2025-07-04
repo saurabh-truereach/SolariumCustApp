@@ -4,19 +4,18 @@
  */
 
 import {combineReducers, configureStore} from '@reduxjs/toolkit';
+import {setupListeners} from '@reduxjs/toolkit/query';
 import {persistReducer, persistStore} from 'redux-persist';
 import {FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER} from 'redux-persist';
-import {setupListeners} from '@reduxjs/toolkit/query';
-
 // Existing reducers
+import {authApi, servicesApi, leadsApi} from '../api/endpoints';
 import authReducer from './authSlice';
-import uiReducer from './uiSlice';
 import cacheReducer from './cacheSlice';
-import {persistConfig} from './persistConfig';
 import {validatePersistedState} from './migrations';
+import {persistConfig} from './persistConfig';
+import uiReducer from './uiSlice';
 
 // API reducers
-import {authApi, servicesApi, leadsApi} from '../api/endpoints';
 
 /**
  * Root reducer with API slices

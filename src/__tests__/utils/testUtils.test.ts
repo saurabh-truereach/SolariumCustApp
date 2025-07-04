@@ -92,7 +92,7 @@ describe('Test Utilities', () => {
       const response = mockApiResponse(data);
 
       expect(response.success).toBe(true);
-      expect(response.data).toEqual(data);
+      expect(response.data).toStrictEqual(data);
       expect(response.error).toBeNull();
     });
 

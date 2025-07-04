@@ -103,7 +103,7 @@ export const getRequestHeaders = (
   };
 
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers.Authorization = `Bearer ${token}`;
   }
 
   return headers;
@@ -193,13 +193,15 @@ export const calculateRetryDelay = (
  * Format file size for uploads
  */
 export const formatFileSize = (bytes: number): string => {
-  if (bytes === 0) return '0 Bytes';
+  if (bytes === 0) {
+    return '0 Bytes';
+  }
 
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
 };
 
 /**
@@ -259,7 +261,9 @@ export const debugApiCall = (
   response?: any,
   error?: any
 ) => {
-  if (!__DEV__) return;
+  if (!__DEV__) {
+    return;
+  }
 
   console.group(`[API] ${method} ${url}`);
 

@@ -3,9 +3,9 @@
  * Defines TypeScript types for all navigation stacks and screens
  */
 
+import type {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import type {NavigatorScreenParams} from '@react-navigation/native';
 import type {StackScreenProps} from '@react-navigation/stack';
-import type {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 
 /**
  * Root Stack Navigator Params

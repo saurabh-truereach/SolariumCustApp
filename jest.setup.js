@@ -30,7 +30,7 @@ jest.mock('react-native-config', () => ({
 // Mock React Navigation
 jest.mock('@react-navigation/native', () => ({
   ...jest.requireActual('@react-navigation/native'),
-  NavigationContainer: ({ children }) => children,
+  NavigationContainer: ({children}) => children,
   useNavigation: () => ({
     navigate: jest.fn(),
     goBack: jest.fn(),
@@ -48,14 +48,14 @@ jest.mock('@react-navigation/native', () => ({
   }),
   useFocusEffect: jest.fn(),
   useIsFocused: () => true,
-  useNavigationContainerRef: () => ({ current: null }),
+  useNavigationContainerRef: () => ({current: null}),
 }));
 
 // Mock React Navigation Stack
 jest.mock('@react-navigation/stack', () => ({
   createStackNavigator: () => ({
-    Navigator: ({ children }) => children,
-    Screen: ({ children }) => children,
+    Navigator: ({children}) => children,
+    Screen: ({children}) => children,
   }),
   CardStyleInterpolators: {
     forHorizontalIOS: {},
@@ -68,8 +68,8 @@ jest.mock('@react-navigation/stack', () => ({
 // Mock React Navigation Bottom Tabs
 jest.mock('@react-navigation/bottom-tabs', () => ({
   createBottomTabNavigator: () => ({
-    Navigator: ({ children }) => children,
-    Screen: ({ children }) => children,
+    Navigator: ({children}) => children,
+    Screen: ({children}) => children,
   }),
 }));
 
@@ -80,45 +80,45 @@ jest.mock('react-native-vector-icons/MaterialIcons', () => 'MaterialIcons');
 jest.mock('react-native-paper', () => {
   const React = require('react');
   const RN = require('react-native');
-  
+
   return {
     // Provider
-    PaperProvider: ({ children }) => children,
+    PaperProvider: ({children}) => children,
     DefaultTheme: {},
-    MD3LightTheme: { colors: {}, fonts: {} },
+    MD3LightTheme: {colors: {}, fonts: {}},
     configureFonts: jest.fn(() => ({})),
-    
+
     // Components
-    Button: ({ children, onPress, ...props }) =>
-      React.createElement(RN.TouchableOpacity, { onPress, ...props }, children),
+    Button: ({children, onPress, ...props}) =>
+      React.createElement(RN.TouchableOpacity, {onPress, ...props}, children),
     Card: {
-      Content: ({ children }) => children,
-      Actions: ({ children }) => children,
-      Cover: ({ children }) => children,
-      Title: ({ children }) => children,
+      Content: ({children}) => children,
+      Actions: ({children}) => children,
+      Cover: ({children}) => children,
+      Title: ({children}) => children,
     },
-    Text: ({ children, ...props }) =>
+    Text: ({children, ...props}) =>
       React.createElement(RN.Text, props, children),
     TextInput: React.forwardRef((props, ref) =>
-      React.createElement(RN.TextInput, { ref, ...props })
+      React.createElement(RN.TextInput, {ref, ...props})
     ),
-    Surface: ({ children, ...props }) =>
+    Surface: ({children, ...props}) =>
       React.createElement(RN.View, props, children),
-    Portal: ({ children }) => children,
-    Modal: ({ children, visible, ...props }) =>
+    Portal: ({children}) => children,
+    Modal: ({children, visible, ...props}) =>
       visible ? React.createElement(RN.View, props, children) : null,
-    Snackbar: ({ children, visible, ...props }) =>
+    Snackbar: ({children, visible, ...props}) =>
       visible ? React.createElement(RN.View, props, children) : null,
-    FAB: (props) => React.createElement(RN.TouchableOpacity, props),
-    Chip: ({ children, ...props }) =>
+    FAB: props => React.createElement(RN.TouchableOpacity, props),
+    Chip: ({children, ...props}) =>
       React.createElement(RN.TouchableOpacity, props, children),
     Avatar: {
-      Text: ({ children, ...props }) =>
+      Text: ({children, ...props}) =>
         React.createElement(RN.View, props, children),
-      Image: (props) => React.createElement(RN.Image, props),
-      Icon: (props) => React.createElement(RN.View, props),
+      Image: props => React.createElement(RN.Image, props),
+      Icon: props => React.createElement(RN.View, props),
     },
-    
+
     // Hooks
     useTheme: () => ({
       colors: {
@@ -141,23 +141,23 @@ jest.mock('react-native-paper', () => {
 
 // Mock React Native Gesture Handler
 jest.mock('react-native-gesture-handler', () => ({
-  GestureHandlerRootView: ({ children }) => children,
-  PanGestureHandler: ({ children }) => children,
+  GestureHandlerRootView: ({children}) => children,
+  PanGestureHandler: ({children}) => children,
   State: {},
   Directions: {},
 }));
 
 // Mock React Native Safe Area Context
 jest.mock('react-native-safe-area-context', () => ({
-  SafeAreaProvider: ({ children }) => children,
-  SafeAreaView: ({ children }) => children,
-  useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
-  useSafeAreaFrame: () => ({ x: 0, y: 0, width: 375, height: 812 }),
+  SafeAreaProvider: ({children}) => children,
+  SafeAreaView: ({children}) => children,
+  useSafeAreaInsets: () => ({top: 0, bottom: 0, left: 0, right: 0}),
+  useSafeAreaFrame: () => ({x: 0, y: 0, width: 375, height: 812}),
 }));
 
 // Mock Dimensions
 jest.mock('react-native/Libraries/Utilities/Dimensions', () => ({
-  get: jest.fn(() => ({ width: 375, height: 812 })),
+  get: jest.fn(() => ({width: 375, height: 812})),
   addEventListener: jest.fn(),
   removeEventListener: jest.fn(),
 }));
@@ -186,7 +186,7 @@ jest.mock('react-native/Libraries/Alert/Alert', () => ({
 
 // Mock Keyboard
 jest.mock('react-native/Libraries/Components/Keyboard/Keyboard', () => ({
-  addListener: jest.fn(() => ({ remove: jest.fn() })),
+  addListener: jest.fn(() => ({remove: jest.fn()})),
   removeListener: jest.fn(),
   removeAllListeners: jest.fn(),
   dismiss: jest.fn(),
@@ -198,22 +198,22 @@ jest.mock('react-native/Libraries/Utilities/Platform', () => ({
   Version: '14.0',
   isPad: false,
   isTesting: true,
-  select: jest.fn((obj) => obj.ios || obj.default),
+  select: jest.fn(obj => obj.ios || obj.default),
 }));
 
 // Mock NetInfo
 jest.mock('@react-native-community/netinfo', () => ({
-  fetch: jest.fn(() => Promise.resolve({ isConnected: true })),
+  fetch: jest.fn(() => Promise.resolve({isConnected: true})),
   addEventListener: jest.fn(() => jest.fn()),
-  useNetInfo: () => ({ isConnected: true }),
+  useNetInfo: () => ({isConnected: true}),
 }));
 
 // Global test utilities
-global.requestAnimationFrame = (cb) => {
+global.requestAnimationFrame = cb => {
   setTimeout(cb, 0);
 };
 
-global.cancelAnimationFrame = (id) => {
+global.cancelAnimationFrame = id => {
   clearTimeout(id);
 };
 

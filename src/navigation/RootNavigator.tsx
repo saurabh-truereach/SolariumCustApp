@@ -3,23 +3,23 @@
  * Main navigation container with deep linking and state persistence
  */
 
-import React, {useEffect, useState} from 'react';
 import {
   NavigationContainer,
   useNavigationContainerRef,
   DefaultTheme,
 } from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import type {RootStackParamList} from './types';
-import {linkingConfig, NAVIGATION_PERSISTENCE_KEY} from './types';
+import React, {useEffect, useState} from 'react';
+import {useAppSelector} from '../hooks/useTypedRedux';
+import {ServiceDetailScreen} from '../screens';
+import {selectIsLoggedIn} from '../store/authSlice';
+import {useAppTheme} from '../theme/ThemeProvider';
 import {getStorageItem, setStorageItem} from '../utils/storageHelpers';
 import AuthStack from './AuthStack';
 import MainTabNavigator from './MainTabNavigator';
-import {ServiceDetailScreen} from '../screens';
 // import RoleBasedGuard from './roleBasedGuard';
-import {useAppSelector} from '../hooks/useTypedRedux';
-import {selectIsLoggedIn} from '../store/authSlice';
-import {useAppTheme} from '../theme/ThemeProvider';
+import type {RootStackParamList} from './types';
+import {linkingConfig, NAVIGATION_PERSISTENCE_KEY} from './types';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
